@@ -13,51 +13,40 @@ const Home = () => {
   // Setting the state 
   const [loading, setLoading] = useState(true);
   const [statusMessage, setStatusMessage] = useState(""); 
+  const [emailAddress, setEmailAddress] = useState("");
+  const [password, setPassword] = useState("");
 
   // setting a function for getting the input forms 
   const handleSubmit = (event) => {
-    // Getting the email and password 
-    const emailAddress = document.querySelector("#email").value; 
-    const password = document.querySelector("#password").value;
+    // Prevent the default form submission behavior
+    event.preventDefault();
+
+    // The flash message div can be retrieved here if needed
     const flashMessageDiv = document.getElementById("flashMessageDiv"); 
 
     // Using if/ else statement to test for the data 
     if (emailAddress === "") {
       // Setting the state 
       setStatusMessage("Email address is required"); 
-
       // Opening the flash message function 
-      flashMessageFunction(flashMessageDiv, emailAddress); 
-
-      // Pausing the submission 
+      flashMessageFunction(flashMessageDiv, "Email address is required"); 
       return; 
-
     }
-
     // Checking for the @ symbol 
     else if (emailAddress.indexOf("@") === -1) {
       // Setting the state 
       setStatusMessage("Your email address is incorrect"); 
-
       // Opening the flash message 
-      flashMessageFunction(flashMessageDiv, emailAddress); 
-
-      // Pausing 
+      flashMessageFunction(flashMessageDiv, "Your email address is incorrect"); 
       return; 
-
     }
-    
     // Else if the password field is missing 
     else if (password === "") {
       // Setting the state 
       setStatusMessage("Password is required"); 
-
       // Opening the flash message function 
-      flashMessageFunction(flashMessageDiv, password); 
-
-      // Pausing the submission
+      flashMessageFunction(flashMessageDiv, "Password is required"); 
       return; 
-
     }
 
     // Else if the submission data was validated, 
@@ -80,10 +69,8 @@ const Home = () => {
     .then((response) => response.json())
     .then((responseData) => {
        console.log(responseData); 
-    })
-
-
-  }
+    });
+  };
 
   // Using the useEffect hooks 
   useEffect(() => {
@@ -91,7 +78,6 @@ const Home = () => {
     const timer = setTimeout(() => {
       setLoading(false); 
     }, 3000); 
-
     // Clearing the timeout 
     return () => clearTimeout(timer); 
   }, []);
@@ -103,50 +89,58 @@ const Home = () => {
         <div className={styles.mainDiv}> 
             <MoonLoader color="blue" size="100" /> 
         </div>
-      
-      ):(
-        <Fragment>          {/* Adding the flash message */}
-        <div className="flashMessageDiv" id="flashMessageDiv"> 
-            <p> {statusMessage} </p> 
-        </div> 
-        <div className={styles.mainDiv}>
-            <div className={styles.logoDiv}>
-                <img src={ciaLogo} alt="CIA Logo" className={styles.ciaLogo} />
-            </div>
-            <div>
-                <Form>
-                    <Form.Group className="mb-3" controlId="formBasicEmail">
-                        <Form.Label> Email Address </Form.Label>
-                        <Form.Control type="email" placeholder="Enter email" id="email"/>
-                        <Form.Text className="text-muted"> 
-                            We'll never share your email with anyone else. 
-                        </Form.Text>
-                    </Form.Group>
-
-                    <Form.Group className="mb-3" controlId="formBasicPassword">
-                        <Form.Label> Password </Form.Label>
-                        <Form.Control type='password' placeholder='Enter Password' id="password" />
-                    </Form.Group>
-
-                    <Form.Group className="mb-3" controlId="formBasicCheckbox" >
-                      <div className={styles.userRegisterDiv}> 
-                        <Form.Check type="checkbox" label="Check me out" className={styles.labelTag} id="checkbox"/> 
-                        <Link to="/register"> Register Here </Link>
-                      </div>
-                    </Form.Group>
-
-                    <Form.Group className="mb-2" controlId="formBasicButton">
-                        <Button className="w-100" onClick={handleSubmit}> Login </Button>
-                    </Form.Group>
-
-                </Form>
-            </div>
-        </div>
+      ) : (
+        <Fragment>          
+          {/* Adding the flash message */}
+          <div className="flashMessageDiv" id="flashMessageDiv"> 
+              <p> {statusMessage} </p> 
+          </div> 
+          <div className={styles.mainDiv}>
+              <div className={styles.logoDiv}>
+                  <img src={ciaLogo} alt="CIA Logo" className={styles.ciaLogo} />
+              </div>
+              <div>
+                  <Form onSubmit={handleSubmit}>
+                      <Form.Group className="mb-3" controlId="formBasicEmail">
+                          <Form.Label> Email Address </Form.Label>
+                          <Form.Control 
+                              type="email" 
+                              placeholder="Enter email" 
+                              id="email"
+                              value={emailAddress}
+                              onChange={(e) => setEmailAddress(e.target.value)}
+                          />
+                          <Form.Text className="text-muted"> 
+                              We'll never share your email with anyone else. 
+                          </Form.Text>
+                      </Form.Group>
+                      <Form.Group className="mb-3" controlId="formBasicPassword">
+                          <Form.Label> Password </Form.Label>
+                          <Form.Control 
+                              type='password' 
+                              placeholder='Enter Password' 
+                              id="password" 
+                              value={password}
+                              onChange={(e) => setPassword(e.target.value)}
+                          />
+                      </Form.Group>
+                      <Form.Group className="mb-3" controlId="formBasicCheckbox" >
+                        <div className={styles.userRegisterDiv}> 
+                          <Form.Check type="checkbox" label="Check me out" className={styles.labelTag} id="checkbox"/> 
+                          <Link to="/register"> Register Here </Link>
+                        </div>
+                      </Form.Group>
+                      <Form.Group className="mb-2" controlId="formBasicButton">
+                          <Button className="w-100" type="submit"> Login </Button>
+                      </Form.Group>
+                  </Form>
+              </div>
+          </div>
         </Fragment>
       )}
     </Fragment>
   );
-}
+};
 
 // exporting the Home component 
 export default Home;
