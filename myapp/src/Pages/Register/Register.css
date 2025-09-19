@@ -1,0 +1,52 @@
+#flashMessageDiv {
+    border: 1px solid rgb(221 221 221);
+    position: fixed;
+    top: 4%;
+    left: -100%;
+    display: flex;
+    text-align: left;
+    font-size: 16px;
+    float: right;
+    height: 48px;
+    padding-right: 92px;
+    color: #2f2727;
+    padding-top: 16px;
+    margin-left: 27px;
+    background-color: #fffcd2;
+    border-radius: 5px;
+    transition: left 0.3s ease-in;
+    align-items: center;
+}
+#flashMessageDiv.open {
+    left: 0; 
+    width: fit-content;
+}
+.flashMessageDiv p {
+    text-align: left;
+    padding-left: 30px;
+}
+#menuflashMessageDiv {
+    border: 1px solid rgb(221 221 221);
+    position: fixed;
+    top: 8%;
+    left: -100%;
+    width: 18%;
+    text-align: center;
+    font-size: 12px;
+    float: right;
+    height: 27px;
+    color: #2f2727;
+    padding-top: 3px;
+    margin-left: 20px;
+    background: #f31616;
+    border-radius: 5px;
+    transition: left 0.3s ease-in;
+    color: white;
+    font-weight: bold;
+    text-align: left;
+    padding-left: 10px;
+}
+#menuflashMessageDiv.open {
+    left: 0;
+
+}
