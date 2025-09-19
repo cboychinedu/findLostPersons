@@ -1,3 +1,4 @@
+// Importing the necessary module 
 import "./Home.css"; 
 import ciaLogo from "../../Images/ciaLogo.png";
 import { Fragment, useEffect, useState, useContext } from 'react';// (optional, can be replaced with pure Tailwind)
