@@ -13,6 +13,7 @@ const morgan_1 = __importDefault(require("morgan"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const homeRoutes_1 = __importDefault(require("./routes/homeRoutes"));
+const logger_1 = __importDefault(require("./logs/logger"));
 // Setting the database url 
 const databaseUri = "mongodb://localhost:27017/findLostFaces";
 // Configuring the environment variables 
@@ -37,10 +38,11 @@ app.use((0, cors_1.default)({
     optionsSuccessStatus: 200,
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
-app.use((0, morgan_1.default)('dev'));
 app.use(express_1.default.json());
 app.use((0, cookie_parser_1.default)());
 app.use(express_1.default.urlencoded({ extended: true }));
+app.use((0, morgan_1.default)('combined'));
+app.use((0, morgan_1.default)('combined', { stream: logger_1.default }));
 // Setting the host 
 const HOST = process.env.HOST || "localhost";
 const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;

@@ -57,6 +57,7 @@ class App extends Component {
             </>
           ) : (
             <>
+              <Route path="/" element={<Home />} />
               <Route path="/dashboard" element={<Home />} />
               <Route path="*" element={<Home />} />
             </>

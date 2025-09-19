@@ -1,8 +1,8 @@
 #flashMessageDiv {
     border: 1px solid rgb(221 221 221);
     position: fixed;
-    top: 4%;
-    left: -100%;
+    top: 14%;
+    left: -100%; 
     display: flex;
     text-align: left;
     font-size: 16px;
