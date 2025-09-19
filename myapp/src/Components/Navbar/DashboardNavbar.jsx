@@ -25,9 +25,12 @@ const DashboardNavbar = () => {
         <nav className="p-4 text-white flex justify-between items-center bg-[rgb(18,48,114)]"> 
             <div className="text-lg font-bold"> 
                 <img src={logo} alt="Logo" className="inline-block mr-2 w-16 h-[35px]" />
- <Link to="/dashboard" className="hover:underline text-decoration-none text-white w-[100%]">Find Missing Persons</Link>
+                <Link to="/dashboard" className="hover:underline text-decoration-none text-white w-[100%]">Find Missing Persons</Link>
             </div>
             <div className="flex justify-space mr-[20px]"> 
+                <Link to="#" className="mr-[20px] bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded hover:underline text-decoration-none -mt-[7px]"> 
+                    Train Neural Net On Missing Persons
+                </Link> 
                 <Link to="#" className="mr-[20px] hover:underline text-decoration-none text-white"> 
                     Analyzed Videos 
                 </Link>
