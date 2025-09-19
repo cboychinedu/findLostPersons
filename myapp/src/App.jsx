@@ -49,9 +49,11 @@ class App extends Component {
         <Routes>
           <Route path="/" element={<Home />} /> 
           <Route path="/register" element={<Register /> } /> 
+          <Route path="*" element={<Home />} /> 
 
           {isLoggedIn && xAuthToken ? (
             <> 
+              <Route path="/" element={<Dashboard />} />
               <Route path="/dashboard" element={<Dashboard /> } />
               <Route path="*" element={<Dashboard /> } />
             </>
@@ -59,6 +61,7 @@ class App extends Component {
             <>
               <Route path="/" element={<Home />} />
               <Route path="/dashboard" element={<Home />} />
+              <Route path="/login" element={<Home /> } /> 
               <Route path="*" element={<Home />} />
             </>
           )}

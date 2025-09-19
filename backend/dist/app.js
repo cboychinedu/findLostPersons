@@ -32,7 +32,7 @@ const app = (0, express_1.default)();
 // Middleware setup
 app.use(body_parser_1.default.json());
 app.use((0, cors_1.default)({
-    origin: '*',
+    origin: "http://localhost:3000",
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
     optionsSuccessStatus: 200,
@@ -45,7 +45,7 @@ app.use((0, morgan_1.default)('combined'));
 app.use((0, morgan_1.default)('combined', { stream: logger_1.default }));
 // Setting the host 
 const HOST = process.env.HOST || "localhost";
-const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
+const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 5000;
 // Routes 
 app.use('/', homeRoutes_1.default);
 // Running the node.js server 

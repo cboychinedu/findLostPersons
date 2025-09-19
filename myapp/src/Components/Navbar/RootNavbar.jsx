@@ -13,13 +13,18 @@ const RootNavbar = () => {
     <nav className="p-4 text-white flex justify-between items-center bg-[rgb(18,48,114)]">
       <div className="text-lg font-bold">
         <img src={logo}  alt="Logo" className="inline-block mr-2 w-16 h-[35px]"  />
-        <Link to="/" className="hover:underline text-decoration-none text-white">Find Missing Persons</Link>
+        <Link to="/" className="hover:underline text-decoration-none text-white w-[100%]">Find Missing Persons</Link>
       </div>
       <div>
         {token ? (
-          <Link to="/dashboard" className="hover:underline text-decoration-none text-white">
-            Dashboard
-          </Link>
+            <>
+              <Link to="/dashboard" className="hover:underline text-decoration-none text-white">
+                Dashboard
+              </Link>
+              <Link to="/logout" className="hover:underline text-decoration-none text-white">
+                Logout
+              </Link>
+            </>
         ) : (
           <>
             <a href="/login" className="mr-4 hover:underline text-decoration-none text-white">

@@ -43,16 +43,45 @@ const Register = () => {
 
     const serverUrl = "http://localhost:5000/register";
 
-    fetch(serverUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: userData,
-    })
+    // Using try catch error 
+    try {
+      fetch(serverUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: userData,
+      })
       .then((response) => response.json())
       .then((responseData) => {
-        console.log(responseData);
-        alert(responseData);
+        // Handle the successful register response 
+        if (responseData.status === "success") {
+          // Set the status message 
+          setStatusMessage("User registered!. Redirecting..."); 
+          flashMessageFunction(flashMessageDiv, responseData.message);
+
+          // Redirecting the user to the login page
+          setTimeout(() => {
+            window.location.href = "/";
+          }, 2000);  
+
+        }
+        // Else if the status was not successful 
+        else {
+          // handle the failed login response 
+          setStatusMessage(responseData.message || "Register failed");
+          flashMessageFunction(flashMessageDiv, responseData.message || "Register failed");
+        }
       });
+    }
+
+    // Catch the error if the data was not sent to the 
+    // server 
+    catch (error) {
+      // Handle network or server errors 
+      console.log("Fetch error:", error); 
+      setStatusMessage("Unable to reach server");
+      flashMessageFunction(flashMessageDiv, error.message || "Unable to reach server"); 
+      
+    }
   };
 
   return (
@@ -161,4 +190,5 @@ const Register = () => {
   );
 };
 
+// Exporting the register component 
 export default Register;

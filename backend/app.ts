@@ -32,7 +32,7 @@ const app = express();
 // Middleware setup
 app.use(bodyParser.json());
 app.use(cors({
-    origin: '*',
+    origin: "http://localhost:3000",
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
     optionsSuccessStatus: 200,
@@ -46,7 +46,7 @@ app.use(morgan('combined', { stream: accessLogStream}));
 
 // Setting the host 
 const HOST = process.env.HOST || "localhost";
-const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
+const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 5000;
 
 // Routes 
 app.use('/', home); 

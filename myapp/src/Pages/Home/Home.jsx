@@ -1,29 +1,34 @@
 // Importing the necessary module 
 import "./Home.css"; 
 import ciaLogo from "../../Images/ciaLogo.png";
-import { Fragment, useEffect, useState, useContext } from 'react';// (optional, can be replaced with pure Tailwind)
+import { Fragment, useEffect, useState, useContext } from 'react';
 import { MoonLoader } from 'react-spinners';
 import { AuthContext } from '../../Auth/AuthContext';
 import RootNavbar from "../../Components/Navbar/RootNavbar";
 import flashMessageFunction from "../../Components/FlashMessage/FlashMessage";
+import axios from "axios"; // ✅ Import axios
 
 const Home = () => {
+  // Get setToken from context so we can store auth token globally
   const { setToken } = useContext(AuthContext);
 
-  const [loading, setLoading] = useState(true);
-  const [statusMessage, setStatusMessage] = useState(""); 
-  const [emailAddress, setEmailAddress] = useState("");
-  const [password, setPassword] = useState("");
+  // Component state values
+  const [loading, setLoading] = useState(true); // Loader spinner control
+  const [statusMessage, setStatusMessage] = useState(""); // Flash message content
+  const [emailAddress, setEmailAddress] = useState(""); // Email input value
+  const [password, setPassword] = useState(""); // Password input value
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  // Handle login form submission
+  const handleSubmit = async (event) => {
+    event.preventDefault(); // Prevent page reload on form submit
     const flashMessageDiv = document.getElementById("flashMessageDiv"); 
 
+    // ✅ Input validations
     if (emailAddress === "") {
       setStatusMessage("Email address is required"); 
       flashMessageFunction(flashMessageDiv, "Email address is required"); 
       return; 
-    } else if (emailAddress.indexOf("@") === -1) {
+    } else if (!emailAddress.includes("@")) {
       setStatusMessage("Your email address is incorrect"); 
       flashMessageFunction(flashMessageDiv, "Your email address is incorrect"); 
       return; 
@@ -33,34 +38,51 @@ const Home = () => {
       return; 
     }
 
-    const userData = JSON.stringify({
-       emailAddress: emailAddress, 
-       password: password, 
-    }); 
+    // ✅ Data object for request body
+    const userData = {
+      emailAddress: emailAddress, 
+      password: password, 
+    }; 
 
+    // ✅ Your backend API endpoint (adjust to match your server route)
     const serverUrl = "http://localhost:5000/login"; 
 
-    fetch(serverUrl, {
-      method: "POST", 
-      headers: { "Content-Type": "application/json"}, 
-      body: userData
-    })
-    .then((response) => response.json())
-    .then((responseData) => {
-      if (responseData.status === "success") {
+    try {
+      // Axios POST request
+      const response = await axios.post(serverUrl, userData, {
+        headers: { "Content-Type": "application/json" }
+      });
+
+      // Handle successful login response
+      if (response.data.status === "success") {
         setStatusMessage("Login successful. Redirecting..."); 
-        const tokenValue = responseData.tokenValue;
+
+        // Store token in localStorage + context
+        const tokenValue = response.data.tokenValue;
         localStorage.setItem("xAuthToken", tokenValue);
         setToken(tokenValue); 
+
+        // Show flash message
         flashMessageFunction(flashMessageDiv, "Login successful. Redirecting..."); 
         
+        // Redirect to dashboard after 2 seconds
         setTimeout(() => {
           window.location.href = "/dashboard"; 
         }, 2000); 
+      } else {
+        // ✅ Handle failed login response
+        setStatusMessage(response.data.message || "Login failed");
+        flashMessageFunction(flashMessageDiv, response.data.message || "Login failed");
       }
-    });
+    } catch (err) {
+      // Handle network or server errors
+      console.error("Axios error:", err);
+      setStatusMessage("Unable to reach server");
+      flashMessageFunction(flashMessageDiv, "Unable to reach server");
+    }
   };
 
+  // Loader timeout (3s)
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false); 
@@ -71,6 +93,7 @@ const Home = () => {
   return (
     <Fragment>
       {loading ? (
+        // Loader spinner
         <div className="flex items-center justify-center h-screen">
           <MoonLoader color="blue" size={100} /> 
         </div>
@@ -81,17 +104,19 @@ const Home = () => {
             <RootNavbar /> 
           </div>
           <div
-          id="flashMessageDiv"
-          className="
-            fixed top-[4%] left-[-100%] 
-            flex items-center text-left text-[16px] 
-            h-[48px] pr-[92px] pt-[16px] ml-[27px] 
-            border border-[#dddddd] bg-[#fffcd2] text-[#2f2727] 
-            rounded-md transition-all duration-300 ease-in
-          ">
+            id="flashMessageDiv"
+            className="
+              fixed top-[4%] left-[-100%] 
+              flex items-center text-left text-[16px] 
+              h-[48px] pr-[92px] pt-[16px] ml-[27px] 
+              border border-[#dddddd] bg-[#fffcd2] text-[#2f2727] 
+              rounded-md transition-all duration-300 ease-in
+            "
+          >
             <p className="pl-[30px]"> {statusMessage} </p>
           </div> 
 
+          {/* Main content with form */}
           <div className="flex flex-col md:flex-row justify-center items-center h-screen gap-10">
             
             {/* Logo */}
@@ -102,6 +127,7 @@ const Home = () => {
             {/* Form */}
             <div className="w-full max-w-md bg-white shadow-md rounded-xl p-6">
               <form onSubmit={handleSubmit} className="space-y-4">
+                
                 {/* Email */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -141,9 +167,6 @@ const Home = () => {
                     <input type="checkbox" id="checkbox" className="h-4 w-4 text-blue-600 border-gray-300 rounded" />
                     <span className="text-gray-700">Check me out</span>
                   </label>
-                  {/* <Link to="/register" className="text-blue-600 hover:underline">
-                    Register Here
-                  </Link> */}
                   <a href="/register" className="text-blue-600 hover:underline"> Register </a> 
                 </div>
 
