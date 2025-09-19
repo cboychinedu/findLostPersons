@@ -28,6 +28,10 @@ const DashboardNavbar = () => {
  <Link to="/dashboard" className="hover:underline text-decoration-none text-white w-[100%]">Find Missing Persons</Link>
             </div>
             <div className="flex justify-space mr-[20px]"> 
+                <Link to="#" className="mr-[20px] hover:underline text-decoration-none text-white"> 
+                    Analyzed Videos 
+                </Link>
+                    
                 <Link to="/dashboard" className="mr-[20px] hover:underline text-decoration-none text-white">
                     Dashboard 
                 </Link>

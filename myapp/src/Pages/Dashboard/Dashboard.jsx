@@ -48,8 +48,8 @@ const Dashboard = () => {
                             <p>Welcome to your dashboard! <b> {userName} </b> </p>
 
                             <p> 
-                                To continue, click on the upload video button to select a video frame to scan for the person, then after uploading, <br /> 
-                                Click on <b> Analyze Video</b> to search the video frame for missing persons. 
+                                To continue, click on the upload video button to select a video file to scan for the missing person, then after uploading, <br /> 
+                                Click on <b> Analyze Video</b> to search the video frame for missing person. 
 
                             </p>
                         </div>
