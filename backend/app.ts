@@ -8,6 +8,7 @@ import morgan from 'morgan';
 import dotenv from 'dotenv';
 import mongodb from 'mongoose'; 
 import home from './routes/homeRoutes'; 
+import accessLogStream from './logs/logger'; 
 
 // Setting the database url 
 const databaseUri:string = "mongodb://localhost:27017/findLostFaces"; 
@@ -37,10 +38,11 @@ app.use(cors({
     optionsSuccessStatus: 200,
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
-app.use(morgan('dev'));
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
+app.use(morgan('combined'));
+app.use(morgan('combined', { stream: accessLogStream}));
 
 // Setting the host 
 const HOST = process.env.HOST || "localhost";
