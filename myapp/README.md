@@ -1,8 +1,5 @@
 # Finding Lost Persons
 
-<img src="./images/homePage.png" alt="Home Page" >
-
-
 This project is a web application designed to help find and report lost persons. It provides a platform for users to register, report missing individuals, and access information about ongoing cases.
 
 ## Features
@@ -65,4 +62,3 @@ src/
 
 ## License
 This project is licensed under the MIT License.
-
