@@ -2,14 +2,18 @@
 import "./Home.css"; 
 import styles from "./Home.module.css"; 
 import ciaLogo from "../../Images/ciaLogo.png";
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useEffect, useState, useContext } from 'react';
 import { Form, Button } from "react-bootstrap";
 import { BarLoader, MoonLoader } from 'react-spinners';
 import { Link } from "react-router-dom";
+import { AuthContext } from '../../Auth/AuthContext';
 import flashMessageFunction from "../../Components/FlashMessage/FlashMessage";
 
 // rendering the Home component 
 const Home = () => {
+  // Accessing the Auth context using the useContext hook 
+  const { setToken } = useContext(AuthContext);
+
   // Setting the state 
   const [loading, setLoading] = useState(true);
   const [statusMessage, setStatusMessage] = useState(""); 
@@ -68,7 +72,28 @@ const Home = () => {
     })
     .then((response) => response.json())
     .then((responseData) => {
-       console.log(responseData); 
+      // if the response data has the success key 
+      if (responseData.status === "success") {
+        // Setting the state 
+        setStatusMessage("Login successful. Redirecting..."); 
+
+        // Getting the token 
+        const tokenValue = responseData.tokenValue;
+
+        // Saving the token to local storage
+        localStorage.setItem("xAuthToken", tokenValue);
+
+        // Update the token in context
+        setToken(tokenValue); 
+
+        // Opening the flash message function 
+        flashMessageFunction(flashMessageDiv, "Login successful. Redirecting..."); 
+        
+        // Redirecting the user to the dashboard after 2 seconds 
+        setTimeout(() => {
+          window.location.href = "/dashboard"; 
+        }, 2000); 
+      }
     });
   };
 
