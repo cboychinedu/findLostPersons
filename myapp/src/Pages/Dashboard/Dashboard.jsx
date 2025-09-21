@@ -192,13 +192,13 @@ const App = () => {
         <div className="min-h-screen bg-gray-100 font-sans text-gray-800">
           <DashboardNavbar />
 
-          <div className="container mx-auto p-4 md:p-8">
-            <header className="text-center my-8">
+          <div className="container p-4 md:p-8">
+            <header className="text-left my-8 mt-[60px]">
               <h1 className="text-4xl font-extrabold text-gray-900">Dashboard</h1>
               <p className="mt-2 text-lg text-gray-600">
                 Welcome, <b>{userName}</b>. Upload media for analysis.
               </p>
-              <p className="mt-4 max-w-2xl mx-auto text-gray-500">
+              <p className="text-left mt-4 text-gray-500">
                 The system will process your image or video and display the results below.
               </p>
               {statusMessage && (
