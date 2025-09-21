@@ -78,7 +78,7 @@ This project is a web application designed to help find and report lost persons.
 <p> Follow these steps to set up the project locally </p>
 
 <h4> Prerequisites </h4> 
-<p> You must have <b> Nodejs, npm, python3 </b> installed on your machine </p> 
+<p> You must have <b> Nodejs, Npm, Python3, Mongodb database </b> installed on your machine </p> 
 
 <h4> 1. Backend Setup </h4> 
 <p> First, set up the Nodejs backend to handle API requests and real time communication </p>
@@ -125,7 +125,91 @@ Once you find it, navigate into the folder and change your directory into the <b
 $ python app.py 
 ```
 
-<h3> 3. React Server Setup </h3> 
+<h3> 3. React Server Setup </h3>
+<p> 
+Open another terminal and navigate to where the findLostPersons folder is located. <br> 
+
+Once you find it, navigate into the folder and change your directory into the <b> myapp/ </b> folder. 
+</p> 
+
+1. Change directory into the myapp/ folder. 
+
+```bash 
+  $ cd myapp/ 
+```
+
+2. Install dependencies 
+
+```bash 
+  $ npm install . 
+
+```
+
+3. Start the reactjs application server 
+
+<p> Start the React development server. </p> 
+
+```bash 
+  $ npm start 
+```
+
+<p> This will open the application in your default web browser at 
+
+```bash 
+http://localhost:3000 
+```
+
+<h3> How to Use the Application </h3> 
+
+<p>
+<ol> 
+<li> Registration & Login: </li>
+<ul>
+<li> Navigate to the registration page to create a new user accout. </lI> 
+<li> Log in using your credential to access the secure dashboard. </li> 
+</ul>
+
+<li> Dashboard: </li> 
+<ul>
+<li> On the dashboard, you will find two main section: Image Analysis and Video Analysis. </lI> 
+<li> Image Analysis: </li>
+<ul>
+<li> Click "Upload Image" to select an image file from your computer. </li> 
+<li> The image will appear in the preview window. </li> 
+<li> Click "Analyze Image" to send the file to the backend for processing. </li> 
+</ul>
+
+<li> Video Analysis: </li>
+<ul>
+<li> Click <b> Upload Video </b> to select a video file. </li> 
+<li> The video will appear in the preview window. </li> 
+<li> Click <b> Analyze Video </b> to upload the file and begin the analysis </li> 
+</ul>
+</ul>
+</ol>
+</p>
+
+
+<h3> Credits </h3> 
+<p> 
+This project was developed using a variety of open-source libaries and frameworks. A huge thank you to the creators and maintainers of:
+</p>
+
+- React
+- Node.js & Express
+- Tailwind CSS
+- Socket.IO
+- TypeScript
+- ts-node-dev
+- jsonwebtoken
+- bcrypt
+
+
+<h3> Creator </h3> 
+<p> This program was created by <b> Engr Mbonu Chinedum </b> </p>
+
+
+
 
 
 
