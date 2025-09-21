@@ -162,5 +162,5 @@ router.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* 
         return res.send(responseMessage);
     }
 }));
-// Exporting the server 
+// Exporting the routes 
 exports.default = router;

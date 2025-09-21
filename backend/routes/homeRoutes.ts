@@ -187,8 +187,7 @@ router.post('/login', async(req:Request, res:Response) => {
         // Sending the JSON object 
         return res.send(responseMessage); 
     }
-})
+}); 
 
-
-// Exporting the server 
+// Exporting the routes 
 export default router; 

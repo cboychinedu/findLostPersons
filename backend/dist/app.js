@@ -13,6 +13,7 @@ const morgan_1 = __importDefault(require("morgan"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const homeRoutes_1 = __importDefault(require("./routes/homeRoutes"));
+const usersRoutes_1 = __importDefault(require("./routes/usersRoutes"));
 const logger_1 = __importDefault(require("./logs/logger"));
 // Setting the database url 
 const databaseUri = "mongodb://localhost:27017/findLostFaces";
@@ -32,11 +33,11 @@ const app = (0, express_1.default)();
 // Middleware setup
 app.use(body_parser_1.default.json());
 app.use((0, cors_1.default)({
-    origin: "http://localhost:3000",
+    origin: ["http://localhost:3000"],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
     optionsSuccessStatus: 200,
-    allowedHeaders: ['Content-Type', 'Authorization']
+    allowedHeaders: ['Content-Type', 'Authorization', 'token']
 }));
 app.use(express_1.default.json());
 app.use((0, cookie_parser_1.default)());
@@ -48,6 +49,7 @@ const HOST = process.env.HOST || "localhost";
 const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 5000;
 // Routes 
 app.use('/', homeRoutes_1.default);
+app.use('/api', usersRoutes_1.default);
 // Running the node.js server 
 app.listen(PORT, HOST, () => {
     let serverInfo = chalk_1.default.red.bold(`Server is running at http://${HOST}:${PORT}`);

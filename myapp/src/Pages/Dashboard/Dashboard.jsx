@@ -7,10 +7,10 @@ import Footer from "../../Components/Footer/Footer";
 // Establish socket connection once
 const socket = io("http://127.0.0.1:3001");
 
-const App = () => {
+const Dashboard = () => {
   // States
   const [loading, setLoading] = useState(true);
-  const [userName] = useState("Alan Smith");
+  const [userName, setUsername] = useState("Alan Smith");
   const [statusMessage, setStatusMessage] = useState("");
   const [detectionMessage, setDetectionMessage] = useState(null);
   const [isProcessingImage, setIsProcessingImage] = useState(false);
@@ -24,12 +24,64 @@ const App = () => {
   const imageInputRef = useRef(null);
   const videoInputRef = useRef(null);
 
+  // Corrected function to fetch the username from the server
+  const fetchUsername = async () => {
+    try {
+      // Getting the token value
+      let tokenValue = localStorage.getItem("xAuthToken") || null;
+
+      if (!tokenValue) {
+        setUsername("Guest");
+        return;
+      }
+
+      // Making a request to the backend to get the user's username
+      // NOTE: Replace this mock URL with your actual backend endpoint.
+      const response = await fetch("http://localhost:5000/api/username", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${tokenValue}`,
+          "token": tokenValue,
+        }
+      });
+
+      // If there is no response, set the username to an error state
+      if (!response.ok) {
+        console.error("Failed to fetch username:", response.status, response.statusText);
+        setUsername("Error fetching username");
+        return;
+      }
+
+      // Get the data and save the user name
+      let data = await response.json();
+ 
+      // Setting the username 
+      setUsername(data.userName);
+
+    } 
+    
+    // Catching the error 
+    catch (error) {
+      // On error to the server, execute the block of code below
+      console.error("Error fetching the username:", error);
+      setUsername("Error");
+    }
+  };
+
   // Socket event listeners
   useEffect(() => {
-    socket.on("connect", () => {
+    // Fetch the username on component mount
+    fetchUsername();
+
+    // Socket event listeners 
+    socket.on("connect", async () => {
       console.log("Connected to server via WebSocket");
+
     });
 
+    // Creating a function that goes to the 
+    // backend and gets the user name 
     socket.on("progress", (data) => {
       const newProgress = parseFloat(data.data);
       if (data.type === "image") {
@@ -349,4 +401,4 @@ const App = () => {
 };
 
 // Exporting the application as app 
-export default App;
+export default Dashboard;

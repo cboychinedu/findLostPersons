@@ -8,6 +8,7 @@ import morgan from 'morgan';
 import dotenv from 'dotenv';
 import mongodb from 'mongoose'; 
 import home from './routes/homeRoutes'; 
+import users from './routes/usersRoutes'; 
 import accessLogStream from './logs/logger'; 
 
 // Setting the database url 
@@ -32,11 +33,11 @@ const app = express();
 // Middleware setup
 app.use(bodyParser.json());
 app.use(cors({
-    origin: "http://localhost:3000",
+    origin: ["http://localhost:3000"],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
     optionsSuccessStatus: 200,
-    allowedHeaders: ['Content-Type', 'Authorization']
+    allowedHeaders: ['Content-Type', 'Authorization', 'token']
 }));
 app.use(express.json());
 app.use(cookieParser());
@@ -50,6 +51,7 @@ const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 5000;
 
 // Routes 
 app.use('/', home); 
+app.use('/api', users); 
 
 // Running the node.js server 
 app.listen(PORT, HOST, () => {
