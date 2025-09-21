@@ -2,6 +2,10 @@
 
 <img src="./images/homePage.png" alt="Home Page" >
 
+<img src="./images/imageAnalysis.png" alt="Image Analysis/Video Analysis" >
+
+<img src="./images/videoAnalysis.png" alt="Video Analysis">
+
 
 This project is a web application designed to help find and report lost persons. It provides a platform for users to register, report missing individuals, and access information about ongoing cases.
 
