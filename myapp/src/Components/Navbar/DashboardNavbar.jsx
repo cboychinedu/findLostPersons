@@ -11,7 +11,7 @@ const logoSVG = (
 
 // Dashboard component 
 const DashboardNavbar = () => {
-    const { token } = useContext(AuthContext);
+    const { removeToken } = useContext(AuthContext);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); 
 
     // Creating a function for logging out the user 
