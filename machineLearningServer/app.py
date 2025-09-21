@@ -5,14 +5,13 @@ import os
 import logging 
 from flask import Flask, session 
 from flask_cors import CORS 
+from flask_socketio import SocketIO, emit 
 from datetime import timedelta 
 from dotenv import load_dotenv 
+from extensions import socketio
 
 # Loading the environment variables 
 load_dotenv() 
-
-# Importing the views 
-from Home.routes import home
 
 # Creating the flask application 
 app = Flask(__name__, static_folder=None, template_folder=None) 
@@ -22,13 +21,24 @@ app.secret_key = os.getenv('SECRET_KEY')
 app.permanent_session_lifetime = timedelta(days=24)
 
 # Setting the cors configurations 
-CORS(app) 
+CORS(app, origins="http://localhost:3000") 
+
+# Using socket io 
+# socketio = SocketIO(app, cors_allowed_origins="http://localhost:3000")
+socketio.init_app(app, cors_allowed_origins="http://localhost:3000")
+
+# Importing the views 
+from Home.routes import home
 
 # Register the views using app.register method 
 app.register_blueprint(home, url_prefix="/")
 
+# Socket variable
+app.config["SOCKET_VARIABLE"] = socketio
 
 # Running the main flask application 
 if __name__ == "__main__": 
-	app.run(port=5000, host="localhost", debug=True) 
-	app.run() 
+	# app.run(port=3001, host="0.0.0.0", debug=True) 
+	# app.run() 
+    # Using socket.run() insted of app.run() 
+    socketio.run(app, port=3001, host="0.0.0.0", debug=True)
