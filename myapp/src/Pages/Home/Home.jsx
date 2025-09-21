@@ -6,7 +6,8 @@ import { MoonLoader } from 'react-spinners';
 import { AuthContext } from '../../Auth/AuthContext';
 import RootNavbar from "../../Components/Navbar/RootNavbar";
 import flashMessageFunction from "../../Components/FlashMessage/FlashMessage";
-import axios from "axios"; // ✅ Import axios
+import axios from "axios"; 
+import Footer from "../../Components/Footer/Footer";
 
 const Home = () => {
   // Get setToken from context so we can store auth token globally
@@ -23,7 +24,7 @@ const Home = () => {
     event.preventDefault(); // Prevent page reload on form submit
     const flashMessageDiv = document.getElementById("flashMessageDiv"); 
 
-    // ✅ Input validations
+    // Input validations
     if (emailAddress === "") {
       setStatusMessage("Email address is required"); 
       flashMessageFunction(flashMessageDiv, "Email address is required"); 
@@ -38,13 +39,13 @@ const Home = () => {
       return; 
     }
 
-    // ✅ Data object for request body
+    // Data object for request body
     const userData = {
       emailAddress: emailAddress, 
       password: password, 
     }; 
 
-    // ✅ Your backend API endpoint (adjust to match your server route)
+    // Your backend API endpoint (adjust to match your server route)
     const serverUrl = "http://localhost:5000/login"; 
 
     try {
@@ -70,7 +71,7 @@ const Home = () => {
           window.location.href = "/dashboard"; 
         }, 2000); 
       } else {
-        // ✅ Handle failed login response
+        // Handle failed login response
         setStatusMessage(response.data.message || "Login failed");
         flashMessageFunction(flashMessageDiv, response.data.message || "Login failed");
       }
@@ -181,6 +182,11 @@ const Home = () => {
                 </div>
               </form>
             </div>
+          </div>
+
+          {/* Adding the footer div  */}
+          <div> 
+            <Footer /> 
           </div>
         </Fragment>
       )}

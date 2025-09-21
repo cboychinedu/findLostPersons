@@ -1,8 +1,7 @@
 import React, { Fragment, useEffect, useState, useRef } from "react";
 import io from "socket.io-client";
 import DashboardNavbar from "../../Components/Navbar/DashboardNavbar"
-import MoonLoader from "react-spinners/MoonLoader";
-import BarLoader from "react-spinners/BarLoader";
+import Footer from "../../Components/Footer/Footer";
 
 
 // Establish socket connection once
@@ -338,7 +337,12 @@ const App = () => {
               </div>
             </div>
           </div>
+
+          {/* Adding the footer  */}
+          <Footer /> 
         </div>
+
+
       )}
     </Fragment>
   );

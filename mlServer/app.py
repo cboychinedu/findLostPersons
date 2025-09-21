@@ -33,6 +33,11 @@ from Home.routes import home
 # Register the views using app.register method 
 app.register_blueprint(home, url_prefix="/")
 
+# Logging the configurations to a file on disk
+logging.basicConfig(filename="requests.log", level=logging.DEBUG,
+                    format="%(asctime)s %(message)s %(filename)s %(module)s %(pathname)s",
+                    datefmt="%m/%d/%Y %I:%M:%S %p")
+
 # Socket variable
 app.config["SOCKET_VARIABLE"] = socketio
 

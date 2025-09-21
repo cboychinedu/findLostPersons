@@ -8,7 +8,6 @@
 import cv2
 import os
 import base64
-import time
 from flask import Blueprint, jsonify, request, send_from_directory
 from flask_socketio import emit
 from .imageClass.imageAnalysis import ImageModelClass
@@ -19,10 +18,14 @@ from werkzeug.utils import secure_filename
 
 # Paths for demonstration
 tempDir = "tempFiles"
+
+# Ensuring the temp directory exists 
 os.makedirs(tempDir, exist_ok=True)
 
+# Setting the blue print 
 home = Blueprint("home", __name__)
 
+# Setting the routes 
 @home.route("/", methods=["GET"])
 def homePage():
     return jsonify({"message": "Home Route", "statusCode": 200})
