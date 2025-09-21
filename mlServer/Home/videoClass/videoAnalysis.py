@@ -31,6 +31,9 @@ class VideoModelClass:
     
     # Perform the object detection 
     def performObjectDetection(self): 
+        # Creating a list to hold the class name 
+        classNameList = []  
+
         # Perform object detection by calling the function 
         # and passing the result 
         (inputTensor, image) = self.processVideoFrames()
@@ -75,6 +78,9 @@ class VideoModelClass:
                 # Get the class name from the labels list 
                 className = labels[classId]
                 randomColor = (randint(0, 256), randint(0, 256), randint(0, 256))
+
+                # Appending the class name 
+                classNameList.append(className)
                 
                 # Draw bounding box and label the image 
                 cv2.rectangle(image, (xmin, ymin), (xmax, ymax), randomColor, 2)
@@ -82,4 +88,4 @@ class VideoModelClass:
                 cv2.putText(image, label, (xmin, ymin - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, randomColor, 2) 
                 
         # Returning the image 
-        return image 
+        return (image, classNameList)  

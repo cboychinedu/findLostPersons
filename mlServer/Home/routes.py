@@ -15,11 +15,10 @@ from .imageClass.imageAnalysis import ImageModelClass
 from .videoClass.videoAnalysis import VideoModelClass
 from extensions import socketio
 from datetime import datetime
-from threading import Thread
 from werkzeug.utils import secure_filename
 
 # Paths for demonstration
-tempDir = "temp_files"
+tempDir = "tempFiles"
 os.makedirs(tempDir, exist_ok=True)
 
 home = Blueprint("home", __name__)
@@ -53,7 +52,9 @@ def uploadVideo():
     
     return jsonify({"message": "An error occurred during upload"}), 500
 
-# Image Analysis 
+# ------------------------------
+# IMAGE analysis
+# ------------------------------
 def analyzeImageTask(sid, fileData, fileName):
     try:
         imagePath = os.path.join(tempDir, f"{datetime.now().strftime('%Y%m%d%H%M%S')}_{fileName}")
@@ -69,7 +70,11 @@ def analyzeImageTask(sid, fileData, fileName):
         socketio.emit("progress", {"data": 25, "type": "image"}, room=sid)
 
         objectDetection = ImageModelClass(image=imagePath)
-        processed = objectDetection.performObjectDetection()
+        (processed, classNameList) = objectDetection.performObjectDetection()
+
+        # Check if 'person' is found in the list of detected classes
+        if ("person" in classNameList): 
+            socketio.emit("detectionEvent", {"message": "Person detected in image", "type": "image"}, room=sid)
 
         socketio.emit("progress", {"data": 70, "type": "image"}, room=sid)
 
@@ -130,10 +135,12 @@ def analyzeVideoTask(sid, fileName):
 
             # Run ML model on each frame
             objectDetection = VideoModelClass(image=frame)
-            processedFrame = objectDetection.performObjectDetection()
-
-            # Writing the output video to disk 
+            (processedFrame, classNameList) = objectDetection.performObjectDetection()
             out.write(processedFrame)
+            
+            # Check if 'person' is found in the list of detected classes
+            if ("person" in classNameList): 
+                socketio.emit("detectionEvent", {"message": "Person detected in video", "type": "video"}, room=sid)
 
             processedFrames += 1
             progress = (processedFrames / frameCount) * 100

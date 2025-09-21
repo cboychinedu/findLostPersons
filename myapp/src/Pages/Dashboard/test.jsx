@@ -13,7 +13,6 @@ const App = () => {
   const [loading, setLoading] = useState(true);
   const [userName] = useState("Alan Smith");
   const [statusMessage, setStatusMessage] = useState("");
-  const [detectionMessage, setDetectionMessage] = useState(null);
   const [isProcessingImage, setIsProcessingImage] = useState(false);
   const [isProcessingVideo, setIsProcessingVideo] = useState(false);
   const [imageProgress, setImageProgress] = useState(0);
@@ -47,7 +46,7 @@ const App = () => {
     });
 
     socket.on("analysisComplete", (data) => {
-      console.log("Analysis completed:", data);
+      console.log("✅ Analysis completed:", data);
       if (data.type === "image") {
         setImagePreviewUrl(data.resultUrl);
         setStatusMessage("Image analysis complete!");
@@ -59,10 +58,6 @@ const App = () => {
         setVideoProgress(100);
         setIsProcessingVideo(false);
       }
-    });
-
-    socket.on("detectionEvent", (data) => {
-      setDetectionMessage(data.message);
     });
 
     socket.on("analysisError", (data) => {
@@ -79,7 +74,6 @@ const App = () => {
       socket.off("progress");
       socket.off("analysisComplete");
       socket.off("analysisError");
-      socket.off("detectionEvent");
     };
   }, []);
 
@@ -128,7 +122,6 @@ const App = () => {
       setIsProcessingImage(true);
       setImageProgress(0);
       setStatusMessage("Analyzing image...");
-      setDetectionMessage(null);
 
       const file = imageInputRef.current.files[0];
       const reader = new FileReader();
@@ -151,7 +144,6 @@ const App = () => {
       setIsProcessingVideo(true);
       setVideoProgress(0);
       setStatusMessage("Uploading video...");
-      setDetectionMessage(null);
 
       const formData = new FormData();
       formData.append("file", file);
@@ -200,20 +192,18 @@ const App = () => {
         <div className="min-h-screen bg-gray-100 font-sans text-gray-800">
           <DashboardNavbar />
 
+
           <div className="container p-4 md:p-8">
-            <header className="text-left my-8 mt-[60px]">
+            <header className="text-center my-8">
               <h1 className="text-4xl font-extrabold text-gray-900">Dashboard</h1>
               <p className="mt-2 text-lg text-gray-600">
                 Welcome, <b>{userName}</b>. Upload media for analysis.
               </p>
-              <p className="text-left mt-4 text-gray-500">
+              <p className="mt-4 max-w-2xl mx-auto text-gray-500">
                 The system will process your image or video and display the results below.
               </p>
               {statusMessage && (
                 <p className="mt-4 font-semibold text-blue-600">{statusMessage}</p>
-              )}
-              {detectionMessage && (
-                <p className="mt-2 font-semibold text-red-600">{detectionMessage}</p>
               )}
             </header>
 
