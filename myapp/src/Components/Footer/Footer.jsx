@@ -9,10 +9,10 @@ const Footer = () => {
     <footer className="bg-[rgb(18,48,114)] text-gray-200 py-12 shadow-inner mt-[160px]">
       <div className="container mx-auto px-4">
         {/* Main Grid for Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-8 mb-8">
-          {/* Adding the image column  */}
-          <div> 
-            <img className="h-[100px]"src={ciaLogo} alt="ciaLogo" /> 
+        <div className="flex flex-col md:grid md:grid-cols-5 gap-8 mb-8 text-left">
+          {/* Adding the logo column  */}
+          <div className="flex items-center"> 
+            <img className="h-[100px] -ml-[45px] "src={ciaLogo} alt="ciaLogo" /> 
           </div>
 
           {/* Column 1: About */}

@@ -3,6 +3,7 @@ import "./Register.css";
 import RootNavbar from "../../Components/Navbar/RootNavbar";
 import ciaLogo from "../../Images/ciaLogo.png"; 
 import { Fragment, useState } from "react";
+import Footer from "../../Components/Footer/Footer";
 import flashMessageFunction from "../../Components/FlashMessage/FlashMessage"; 
 
 
@@ -105,7 +106,7 @@ const Register = () => {
       <div className="flex flex-col md:flex-row items-center justify-center h-screen gap-10">
         
         {/* Logo */}
-        <div className="flex justify-center">
+        <div className="flex justify-center mt-[80px] ">
           <img src={ciaLogo} alt="CIA Logo" className="h-[250px]" />
         </div>
 
@@ -184,8 +185,11 @@ const Register = () => {
               </button>
             </div>
           </form>
-        </div>
+        </div> 
       </div>
+
+        {/* Adding the footer  */}
+        <Footer /> 
     </Fragment>
   );
 };
