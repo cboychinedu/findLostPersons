@@ -25,34 +25,43 @@ os.makedirs(tempDir, exist_ok=True)
 # Setting the blue print 
 home = Blueprint("home", __name__)
 
-# Setting the routes 
+# Setting the home routes
 @home.route("/", methods=["GET"])
 def homePage():
     return jsonify({"message": "Home Route", "statusCode": 200})
 
+# Setting the media path routes 
 @home.route('/media/<path:filename>')
 def serveMedia(filename):
     """Serve processed media files from the temporary directory."""
     return send_from_directory(tempDir, filename)
 
-@home.route('/upload-video', methods=['POST'])
+# Setting the home route for uploading the video 
+@home.route('/uploadVideo', methods=['POST'])
 def uploadVideo():
     """Handle video file uploads via HTTP POST."""
     if 'file' not in request.files:
         return jsonify({"message": "No file part"}), 400
 
+    # Getting the uploaded file from the request body 
     file = request.files['file']
     if file.filename == '':
         return jsonify({"message": "No selected file"}), 400
 
+    # if the file exist, execute the block of code below 
     if file:
+        # Getting the filename 
         filename = secure_filename(file.filename)
+
         # Add a timestamp to the filename to make it unique
         uniqueFilename = f"{datetime.now().strftime('%Y%m%d%H%M%S')}_{filename}"
         filePath = os.path.join(tempDir, uniqueFilename)
+
+        # Saving the file to disk 
         file.save(filePath)
         return jsonify({"message": "File uploaded successfully", "fileName": uniqueFilename})
     
+    # On errors generated, return the block of code below. 
     return jsonify({"message": "An error occurred during upload"}), 500
 
 # ------------------------------

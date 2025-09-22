@@ -1,14 +1,16 @@
+// Importing the necessary modules 
 import React, { Fragment, useEffect, useState, useRef } from "react";
 import io from "socket.io-client";
 import DashboardNavbar from "../../Components/Navbar/DashboardNavbar"
 import Footer from "../../Components/Footer/Footer";
 
 
-// Establish socket connection once
+// Establish socket connection once to the server 
 const socket = io("http://127.0.0.1:3001");
 
+// Creating the dashboard function component 
 const Dashboard = () => {
-  // States
+  // Setting the state 
   const [loading, setLoading] = useState(true);
   const [userName, setUsername] = useState("Alan Smith");
   const [statusMessage, setStatusMessage] = useState("");
@@ -20,7 +22,7 @@ const Dashboard = () => {
   const [imagePreviewUrl, setImagePreviewUrl] = useState(null);
   const [videoPreviewUrl, setVideoPreviewUrl] = useState(null);
 
-  // Refs
+  // Setting the refs for the image and video inputs 
   const imageInputRef = useRef(null);
   const videoInputRef = useRef(null);
 
@@ -30,8 +32,13 @@ const Dashboard = () => {
       // Getting the token value
       let tokenValue = localStorage.getItem("xAuthToken") || null;
 
+      // If the token value is not present, set the username 
+      // as guest 
       if (!tokenValue) {
+        // Set the username 
         setUsername("Guest");
+
+        // Pause the program, by returning nothing. 
         return;
       }
 
@@ -48,8 +55,11 @@ const Dashboard = () => {
 
       // If there is no response, set the username to an error state
       if (!response.ok) {
+        // Log the error, and set the username as guest
         console.error("Failed to fetch username:", response.status, response.statusText);
-        setUsername("Error fetching username");
+        setUsername("Guest");
+
+        // Pause the program 
         return;
       }
 
@@ -65,7 +75,9 @@ const Dashboard = () => {
     catch (error) {
       // On error to the server, execute the block of code below
       console.error("Error fetching the username:", error);
-      setUsername("Error");
+
+      // Set the username as guest 
+      setUsername("Guest");
     }
   };
 
@@ -208,7 +220,7 @@ const Dashboard = () => {
       formData.append("file", file);
 
       try {
-        const response = await fetch("http://127.0.0.1:3001/upload-video", {
+        const response = await fetch("http://127.0.0.1:3001/uploadVideo", {
           method: "POST",
           body: formData,
         });
