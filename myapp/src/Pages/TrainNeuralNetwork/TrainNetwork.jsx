@@ -38,7 +38,7 @@ const TrainNeuralNetwork = () => {
                 <div className="flex justify-center mb-[50px]">
                     <div> 
                         <h1 className="text-3xl font-bold mb-4">Train Neural Network</h1>
-                        <p className="mb-4">This is where you can train the machine's Neural Network model on the <b className="text-[25px] ml-[7px]"> missing person's image.  </b>  <br/> 
+                        <p className="mb-4">This is where you can train the machine's Neural Network model on the <b className="text-[18px] ml-[7px]"> missing person's image.  </b>  <br/> 
                             <ol className="mt-[20px] list-decimal list-inside leading-[40px] "> 
                                 <span className=" mb-[50px]"> Firstly, get the following: </span>
                                 <li> An image of the missing person. </li>
