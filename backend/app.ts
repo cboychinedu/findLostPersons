@@ -10,6 +10,7 @@ import mongodb from 'mongoose';
 import home from './routes/homeRoutes'; 
 import users from './routes/usersRoutes'; 
 import accessLogStream from './logs/logger'; 
+import corsOptions from "./corsConfig/corsConfig";
 
 // Setting the database url 
 const databaseUri:string = "mongodb://localhost:27017/findLostFaces"; 
@@ -32,24 +33,7 @@ const app = express();
 
 // Middleware setup
 app.use(bodyParser.json());
-app.use(cors({
-    origin: [
-        "http://localhost:5000", 
-        "http://localhost:3000", 
-        "http://localhost:3001"
-    ],
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    credentials: true,
-    optionsSuccessStatus: 200,
-    preflightContinue: true,
-    allowedHeaders: [
-        'Content-Type', 'Authorization', 
-        'Access-Control-Allow-Methods', 
-        'access-control-allow-orign', 
-        'Access-Control-Allow-Origin', 
-        'Access-Control-Allow-Headers', 
-    ]
-}));
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));

@@ -205,6 +205,11 @@ This project was developed using a variety of open-source libaries and framework
 - bcrypt
 
 
+<p> References </p>
+
+- https://markaicode.com/solving-cors-errors-react-nodejs-guide/ 
+
+
 <h3> Creator </h3> 
 <p> This program was created by <b> Engr Mbonu Chinedum </b> </p>
 

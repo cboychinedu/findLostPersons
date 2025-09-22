@@ -15,6 +15,7 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const homeRoutes_1 = __importDefault(require("./routes/homeRoutes"));
 const usersRoutes_1 = __importDefault(require("./routes/usersRoutes"));
 const logger_1 = __importDefault(require("./logs/logger"));
+const corsConfig_1 = __importDefault(require("./corsConfig/corsConfig"));
 // Setting the database url 
 const databaseUri = "mongodb://localhost:27017/findLostFaces";
 // Configuring the environment variables 
@@ -32,23 +33,7 @@ mongoose_1.default.connect(databaseUri, {
 const app = (0, express_1.default)();
 // Middleware setup
 app.use(body_parser_1.default.json());
-app.use((0, cors_1.default)({
-    origin: [
-        "http://localhost:5000",
-        "http://localhost:3000",
-        "http://localhost:3001"
-    ],
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    credentials: true,
-    optionsSuccessStatus: 200,
-    allowedHeaders: [
-        'Content-Type', 'Authorization',
-        'Access-Control-Allow-Methods',
-        'access-control-allow-orign',
-        'Access-Control-Allow-Origin',
-        'Access-Control-Allow-Headers',
-    ]
-}));
+app.use((0, cors_1.default)(corsConfig_1.default));
 app.use(express_1.default.json());
 app.use((0, cookie_parser_1.default)());
 app.use(express_1.default.urlencoded({ extended: true }));
