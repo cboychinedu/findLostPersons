@@ -7,12 +7,18 @@ import Footer from '../../Components/Footer/Footer';
 const TrainNeuralNetwork = () => {
     // Setting the state variables 
     const [loading, setLoading] = useState(true);
-    const [selectedFile, setSelectedFile] = useState(null);
+    const [selectedImageFile, setSelectedImageFile] = useState(null);
+    const [selectedAnnotationFile, setSelectedAnnotationFile] = useState(null);
     const fileInputRef = useRef(null);
 
     // Creating a fuction to handle file selection 
-    const handleFileChange = (event) => {
-        setSelectedFile(event.target.files[0]);
+    const handleImageFileChange = (event) => {
+        setSelectedImageFile(event.target.files[0]);
+    }; 
+
+    // Creating a function to handle the file selection for xml or txt file 
+    const handleAnnotationFileChange = (event) => {
+        setSelectedAnnotationFile(event.target.files[0]);
     }; 
 
     // Creating a function to handle the training process
@@ -24,12 +30,23 @@ const TrainNeuralNetwork = () => {
     return (
         <Fragment> 
             {/* Adding the navbar component  */}
-            <DashboardNavbar /> 
+            <DashboardNavbar />                                                                             
 
             {/* Adding the main div  */}
-            <div className="container min-h-screen p-30 mx-auto my-10 mt-[110px]">
+            <div className="container min-h-screen p-30 mx-auto my-10 mt-[110px] mb-[300px]">
                 <h1 className="text-3xl font-bold mb-4">Train Neural Network</h1>
-                <p className="mb-4">This is where you can train your neural network model.</p>
+                <p className="mb-4">This is where you can train the machine's Neural Network model on the <b className="text-[25px] ml-[7px]"> missing person's image.  </b>  <br/> 
+                    <ol className="mt-[20px] list-decimal list-inside leading-[40px] "> 
+                        <span className=" mb-[50px]"> Firstly, get the following: </span>
+                        <li> An image of the missing person. </li>
+                        <li> The labeled annotations for the image in either Pascal VOC XML format or YOLO TXT format.</li>
+                        <li> Upload the image and the corresponding labeled annotations using the provided file input fields below.</li>
+                        <li> Click the "<b> Train Model </b>" button to initiate the training process.</li>
+                        <li> The system will process the uploaded data and train the neural network model accordingly.</li>
+                        <li> Once the training is complete, you will receive a notification indicating that the model has been successfully trained.</li>
+                        <li> You can then use the trained model for object detection tasks related to missing persons.</li>
+                    </ol>
+                </p>
                 
                 {/* Add your image for training the model here */}
                 <div className=''>
@@ -44,7 +61,7 @@ const TrainNeuralNetwork = () => {
                             type="file"
                             id="image-upload"
                             accept="image/*"
-                            onChange={handleFileChange}
+                            onChange={handleImageFileChange}
                             ref={fileInputRef}
                             className="border border-gray-300 p-2 rounded w-[25%]"
                         />
@@ -53,11 +70,14 @@ const TrainNeuralNetwork = () => {
 
                 {/* Add your labeled annotations for traning the model  */}
                 <div className='mb-[38px]'>
-                    <h2 className="mb-4">Labeled Annotations</h2>
+                    <h2 className="mb-[8px] mt-[40px]">Labeled Annotations</h2>
 
                     {/* File input field for the pascal/yolo xml or .txt file for training 
                     the model neural network  */}
-                    <div> 
+                    <div className="mb-4"> 
+                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="image-upload">
+                            Choose File Annotations (XML or TXT):
+                        </label>
                         <input 
                             type="file"
                             id="annotation-upload"
@@ -71,9 +91,9 @@ const TrainNeuralNetwork = () => {
                     
                     {/* You can implement a form or a text area for adding annotations */}
                     <textarea
-                        className="w-full border border-gray-300 p-2 rounded h-[165px] w-[38%]"
+                        className="border border-[#d4d3d3] outline outline-white p-[20px] h-[165px] w-[38%]"
                         rows="4"
-                        placeholder="Enter annotations here..."
+                        placeholder="Enter annotations class here, e.g (missing person's name, Sarah, Mike, Steff)..."
                     ></textarea>
                 </div>
 
