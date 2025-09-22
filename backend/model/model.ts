@@ -1,7 +1,7 @@
 // Importing the necessary modules 
 import mongodb from 'mongoose';
 
-// Creating the user schema
+// Creating the user schemas
 const userSchema = new mongodb.Schema({
     fullname: {type: String, required:false}, 
     emailAddress: { type: String, required: true, unique:true}, 

@@ -41,13 +41,19 @@ app.use(cors({
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
     optionsSuccessStatus: 200,
-    allowedHeaders: ['Content-Type', 'Authorization', 'token']
+    allowedHeaders: [
+        'Content-Type', 'Authorization', 
+        'Access-Control-Allow-Methods', 
+        'access-control-allow-orign', 
+        'Access-Control-Allow-Origin', 
+        'Access-Control-Allow-Headers', 
+    ]
 }));
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan('combined'));
-app.use(morgan('combined', { stream: accessLogStream}));
+app.use(morgan('combined', { stream: accessLogStream, immediate: true }));
 
 // Setting the host 
 const HOST = process.env.HOST || "localhost";
