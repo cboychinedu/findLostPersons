@@ -2,17 +2,11 @@
 import jwt from 'jsonwebtoken'; 
 import bcrypt from 'bcrypt'; 
 import { Request, Response, Router } from 'express';
+import { ErrorMessage } from '../types/serverTypes';
 import User from '../model/model';
 
 // Creating the router object 
 const router = Router(); 
-
-// Creating type alias for the error message 
-type ErrorMessage = {
-    message: string; 
-    status: string; 
-    statusCode: number; 
-}
 
 // Setting the route for the home page 
 router.post('/register', async(req:Request, res:Response) => {

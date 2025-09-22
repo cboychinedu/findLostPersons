@@ -1,24 +1,11 @@
 // Importing the necessary modules 
 import User from "../model/model";
 import jwt from "jsonwebtoken"; 
+import { ErrorMessage, successData } from "../types/serverTypes";
 import { Request, Response, Router } from "express"; 
 
 // Creating the router object 
 const router = Router(); 
-
-// Creating a type alias for the error message 
-type ErrorMessage = {
-    message: string; 
-    status: string; 
-    statusCode: number; 
-}
-
-// Creating a type alia for the success message 
-type successData = {
-    email: string; 
-    userName: string; 
-    statusCode: number; 
-}
 
 // using a get request 
 router.post('/username', async (req: Request, res: Response) => {
