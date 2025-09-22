@@ -1,0 +1,19 @@
+09/22/2025 06:18:44 PM  * Debugger is active! _internal.py _internal /opt/anaconda3/envs/ml/lib/python3.12/site-packages/werkzeug/_internal.py
+09/22/2025 06:18:44 PM  * Debugger PIN: 116-560-793 _internal.py _internal /opt/anaconda3/envs/ml/lib/python3.12/site-packages/werkzeug/_internal.py
+09/22/2025 06:19:06 PM [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:3001
+ * Running on http://172.20.10.2:3001 _internal.py _internal /opt/anaconda3/envs/ml/lib/python3.12/site-packages/werkzeug/_internal.py
+09/22/2025 06:19:06 PM [33mPress CTRL+C to quit[0m _internal.py _internal /opt/anaconda3/envs/ml/lib/python3.12/site-packages/werkzeug/_internal.py
+09/22/2025 06:19:06 PM  * Restarting with stat _internal.py _internal /opt/anaconda3/envs/ml/lib/python3.12/site-packages/werkzeug/_internal.py
+09/22/2025 06:19:08 PM  * Debugger is active! _internal.py _internal /opt/anaconda3/envs/ml/lib/python3.12/site-packages/werkzeug/_internal.py
+09/22/2025 06:19:08 PM  * Debugger PIN: 116-560-793 _internal.py _internal /opt/anaconda3/envs/ml/lib/python3.12/site-packages/werkzeug/_internal.py
+09/22/2025 06:19:32 PM 127.0.0.1 - - [22/Sep/2025 18:19:32] "GET /socket.io/?EIO=4&transport=polling&t=e5lbkikw HTTP/1.1" 200 - _internal.py _internal /opt/anaconda3/envs/ml/lib/python3.12/site-packages/werkzeug/_internal.py
+09/22/2025 06:19:32 PM 127.0.0.1 - - [22/Sep/2025 18:19:32] "POST /socket.io/?EIO=4&transport=polling&t=e5lcgfgl&sid=5YH-evxv6XUOq2JxAAAA HTTP/1.1" 200 - _internal.py _internal /opt/anaconda3/envs/ml/lib/python3.12/site-packages/werkzeug/_internal.py
+09/22/2025 06:19:32 PM 127.0.0.1 - - [22/Sep/2025 18:19:32] "GET /socket.io/?EIO=4&transport=polling&t=e5lcge8j&sid=5YH-evxv6XUOq2JxAAAA HTTP/1.1" 200 - _internal.py _internal /opt/anaconda3/envs/ml/lib/python3.12/site-packages/werkzeug/_internal.py
+09/22/2025 06:19:32 PM 127.0.0.1 - - [22/Sep/2025 18:19:32] "GET /socket.io/?EIO=4&transport=polling&t=e5ldqxfs&sid=5YH-evxv6XUOq2JxAAAA HTTP/1.1" 200 - _internal.py _internal /opt/anaconda3/envs/ml/lib/python3.12/site-packages/werkzeug/_internal.py
+09/22/2025 06:19:44 PM 127.0.0.1 - - [22/Sep/2025 18:19:44] "GET /socket.io/?EIO=4&transport=websocket&sid=5YH-evxv6XUOq2JxAAAA HTTP/1.1" 200 - _internal.py _internal /opt/anaconda3/envs/ml/lib/python3.12/site-packages/werkzeug/_internal.py
+09/22/2025 06:19:44 PM 127.0.0.1 - - [22/Sep/2025 18:19:44] "GET /socket.io/?EIO=4&transport=polling&t=e5uxxugy HTTP/1.1" 200 - _internal.py _internal /opt/anaconda3/envs/ml/lib/python3.12/site-packages/werkzeug/_internal.py
+09/22/2025 06:19:44 PM 127.0.0.1 - - [22/Sep/2025 18:19:44] "POST /socket.io/?EIO=4&transport=polling&t=e5uyjk6v&sid=KLaUvpE3ore_U7IyAAAC HTTP/1.1" 200 - _internal.py _internal /opt/anaconda3/envs/ml/lib/python3.12/site-packages/werkzeug/_internal.py
+09/22/2025 06:19:44 PM 127.0.0.1 - - [22/Sep/2025 18:19:44] "GET /socket.io/?EIO=4&transport=polling&t=e5uyjy76&sid=KLaUvpE3ore_U7IyAAAC HTTP/1.1" 200 - _internal.py _internal /opt/anaconda3/envs/ml/lib/python3.12/site-packages/werkzeug/_internal.py
+09/22/2025 06:19:44 PM 127.0.0.1 - - [22/Sep/2025 18:19:44] "GET /socket.io/?EIO=4&transport=polling&t=e5uz7s8e&sid=KLaUvpE3ore_U7IyAAAC HTTP/1.1" 200 - _internal.py _internal /opt/anaconda3/envs/ml/lib/python3.12/site-packages/werkzeug/_internal.py
