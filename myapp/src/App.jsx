@@ -4,6 +4,7 @@ import Home from "./Pages/Home/Home";
 import { AuthContext } from './Auth/AuthContext';
 import Register from "./Pages/Register/Register";
 import Dashboard from "./Pages/Dashboard/Dashboard";
+import TrainNeuralNetwork from './Pages/TrainNeuralNetwork/TrainNetwork';
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Fragment } from 'react';
 
@@ -53,6 +54,7 @@ class App extends Component {
               <Route path="/" element={<Dashboard />} />
               <Route path="/register" element={<Dashboard />} />
               <Route path="/dashboard" element={<Dashboard /> } />
+              <Route path="/trainNeuralNetwork" element={<TrainNeuralNetwork /> } />
               <Route path="*" exact={true} element={<Dashboard /> } />
           </Routes>
           </BrowserRouter>

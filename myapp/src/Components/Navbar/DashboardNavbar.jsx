@@ -1,6 +1,5 @@
 // Importing the necessary modules 
 import React, { useContext, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { AuthContext } from '../../Auth/AuthContext';
 import logo from '../../Images/ciaLogo.png'; 
 
@@ -31,7 +30,7 @@ const DashboardNavbar = () => {
         <nav className="p-4 text-white flex justify-between items-center bg-[rgb(18,48,114)]"> 
             <div className="text-lg font-bold flex items-center"> 
                 <img src={logo} alt="CIA logo" className="h-[50px]" /> 
-                <Link to="/dashboard" className="ml-2 hover:underline text-decoration-none text-white">Find Missing Persons</Link>
+                <a href="/dashboard" className="ml-2 hover:underline text-decoration-none text-white">Find Missing Persons</a>
             </div>
 
             {/* Hamburger menu for mobile */}
@@ -45,18 +44,18 @@ const DashboardNavbar = () => {
                 </svg>
             </button>
 
-            {/* Desktop navigation links */}
+            {/* Desktop navigation as */}
             <div className="hidden md:flex items-center space-x-4"> 
-                <Link to="#" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded hover:underline text-decoration-none mt-[2px] "> 
+                <a href="/trainNeuralNetwork" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded hover:underline text-decoration-none mt-[2px] "> 
                     Train Neural Net On Missing Persons
-                </Link> 
-                <Link to="#" className="hover:underline text-decoration-none text-white"> 
+                </a> 
+                <a href="#" className="hover:underline text-decoration-none text-white"> 
                     Analyzed Videos 
-                </Link>
-                <Link to="/dashboard" className="hover:underline text-decoration-none text-white">
+                </a>
+                <a href="/dashboard" className="hover:underline text-decoration-none text-white">
                     Dashboard 
-                </Link>
-                <Link onClick={logoutUser} to="#" className="text-decoration-none text-white"> Logout </Link>
+                </a>
+                <a onClick={logoutUser} href="#" className="text-decoration-none text-white"> Logout </a>
             </div>
 
             {/* Mobile menu (hidden by default) */}
@@ -73,18 +72,18 @@ const DashboardNavbar = () => {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
                         </svg>
                     </button>
-                    <Link onClick={() => setIsMobileMenuOpen(false)} to="#" className="w-full text-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded hover:underline text-decoration-none">
+                    <a onClick={() => setIsMobileMenuOpen(false)} href="#" className="w-full text-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded hover:underline text-decoration-none">
                         Train Neural Net On Missing Persons
-                    </Link>
-                    <Link onClick={() => setIsMobileMenuOpen(false)} to="#" className="w-full text-center hover:underline text-decoration-none text-white">
+                    </a>
+                    <a onClick={() => setIsMobileMenuOpen(false)} href="#" className="w-full text-center hover:underline text-decoration-none text-white">
                         Analyzed Videos
-                    </Link>
-                    <Link onClick={() => setIsMobileMenuOpen(false)} to="/dashboard" className="w-full text-center hover:underline text-decoration-none text-white">
+                    </a>
+                    <a onClick={() => setIsMobileMenuOpen(false)} href="/dashboard" className="w-full text-center hover:underline text-decoration-none text-white">
                         Dashboard
-                    </Link>
-                    <Link onClick={() => { logoutUser(); setIsMobileMenuOpen(false); }} to="#" className="w-full text-center text-decoration-none text-white">
+                    </a>
+                    <a onClick={() => { logoutUser(); setIsMobileMenuOpen(false); }} href="#" className="w-full text-center text-decoration-none text-white">
                         Logout
-                    </Link>
+                    </a>
                 </div>
             </div>
         </nav>

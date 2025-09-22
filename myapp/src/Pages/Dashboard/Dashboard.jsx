@@ -255,6 +255,7 @@ const Dashboard = () => {
     </div>
   );
 
+  // Rendering the dashboard component 
   return (
     <Fragment>
       {loading ? (
