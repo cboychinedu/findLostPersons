@@ -1,5 +1,5 @@
 // Importing the necessary modules 
-import React, { Component, createContext, Fragment } from 'react';
+import { Component, createContext, Fragment } from 'react';
 
 // Creating the AuthContext object 
 const AuthContext = createContext(); 

@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 
+# Author: Engr Mbonu Chinedum 
+# Date Created: 23/09/2025 
+# Date Modified: 22/09/2025 
+
 # This is a self-contained Flask blueprint for media analysis.
 # The video analysis has been updated to serve processed files
 # via an HTTP route instead of sending them over a WebSocket.
@@ -101,10 +105,6 @@ def analyzeImageTask(sid, fileData, fileName):
             "type": "image",
             "resultUrl": f"data:image/jpeg;base64,{encodedString}"
         }, room=sid)
-
-        # Cleanup temporary files
-        os.remove(imagePath)
-        os.remove(saveImagePath)
 
     except Exception as e:
         socketio.emit("analysisError", {"message": str(e)}, room=sid)

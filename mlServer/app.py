@@ -1,5 +1,9 @@
 #!/usr/bin/env python3 
 
+# Author: Engr Mbonu Chinedum 
+# Date Created: 23/09/2025 
+# Date Modified: 22/09/2025
+
 # Importing the necessary modules 
 import os 
 import logging 
@@ -29,9 +33,11 @@ socketio.init_app(app, cors_allowed_origins="http://localhost:3000")
 
 # Importing the views 
 from Home.routes import home
+from History.routes import history
 
 # Register the views using app.register method 
 app.register_blueprint(home, url_prefix="/")
+app.register_blueprint(history, url_prefix="/history")
 
 # Logging the configurations to a file on disk
 logging.basicConfig(filename="requests.log", level=logging.DEBUG,

@@ -41,13 +41,19 @@ app.use((0, cors_1.default)({
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
     optionsSuccessStatus: 200,
-    allowedHeaders: ['Content-Type', 'Authorization', 'token']
+    allowedHeaders: [
+        'Content-Type', 'Authorization',
+        'Access-Control-Allow-Methods',
+        'access-control-allow-orign',
+        'Access-Control-Allow-Origin',
+        'Access-Control-Allow-Headers',
+    ]
 }));
 app.use(express_1.default.json());
 app.use((0, cookie_parser_1.default)());
 app.use(express_1.default.urlencoded({ extended: true }));
 app.use((0, morgan_1.default)('combined'));
-app.use((0, morgan_1.default)('combined', { stream: logger_1.default }));
+app.use((0, morgan_1.default)('combined', { stream: logger_1.default, immediate: true }));
 // Setting the host 
 const HOST = process.env.HOST || "localhost";
 const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 5000;

@@ -78,8 +78,7 @@ class App extends Component {
           </BrowserRouter>
         </Fragment>
       )
-    }
-    
+    } 
   }
 }
 
