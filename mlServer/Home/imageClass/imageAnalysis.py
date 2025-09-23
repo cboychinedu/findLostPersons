@@ -6,7 +6,7 @@ import cv2
 from random import randint
 
 # Setting the path to the model
-modelPath = os.path.join("Home", "savedModel")
+modelPath = "savedModel"
 
 # Defining a class
 class ImageModelClass:

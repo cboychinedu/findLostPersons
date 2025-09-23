@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # Author: Engr Mbonu Chinedum 
-# Date Created: 23/09/2025 
+# Date Created: 21/09/2025 
 # Date Modified: 22/09/2025 
 
 # This is a self-contained Flask blueprint for media analysis.
@@ -12,21 +12,21 @@
 import cv2
 import os
 import base64
-from flask import Blueprint, jsonify, request, send_from_directory
 from flask_socketio import emit
-from .imageClass.imageAnalysis import ImageModelClass
-from .videoClass.videoAnalysis import VideoModelClass
 from extensions import socketio
 from datetime import datetime
 from werkzeug.utils import secure_filename
+from .imageClass.imageAnalysis import ImageModelClass
+from .videoClass.videoAnalysis import VideoModelClass
+from flask import Blueprint, jsonify, request, send_from_directory
 
 # Paths for demonstration
-tempDir = "tempFiles"
+tempDir = "tempFile"
 
 # Ensuring the temp directory exists 
 os.makedirs(tempDir, exist_ok=True)
 
-# Setting the blue print 
+# Setting the blue print configuration
 home = Blueprint("home", __name__)
 
 # Setting the home routes
@@ -160,7 +160,8 @@ def analyzeVideoTask(sid, fileName):
             # Throttle updates (every 10 frames)
             if processedFrames % 10 == 0 or processedFrames == frameCount:
                 socketio.emit("progress", {"data": progress, "type": "video"}, room=sid)
-
+        
+        # Release resources
         cap.release()
         out.release()
         

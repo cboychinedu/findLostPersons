@@ -26,7 +26,7 @@ app.permanent_session_lifetime = timedelta(days=24)
 
 # Setting the cors configurations 
 CORS(app, 
-    origins="http://localhost:3000", 
+    origins=["http://localhost:3000", "http://localhost:3001"], 
     methods=["POST", "GET", "PUT", "DELETE"], 
     allow_headers=[
         'Origin',
@@ -49,13 +49,18 @@ socketio.init_app(app, cors_allowed_origins="http://localhost:3000")
 # Importing the views 
 from Home.routes import home
 from History.routes import history
+from TrainNetwork.routes import trainNetwork
 
 # Register the views using app.register method 
 app.register_blueprint(home, url_prefix="/")
 app.register_blueprint(history, url_prefix="/history")
+app.register_blueprint(trainNetwork, url_prefix="/trainModel")  
+
+# Setting the path to the logs 
+logsDir = os.path.sep.join(['logs', 'requests.log']) 
 
 # Logging the configurations to a file on disk
-logging.basicConfig(filename="requests.log", level=logging.DEBUG,
+logging.basicConfig(filename=logsDir, level=logging.DEBUG,
                     format="%(asctime)s %(message)s %(filename)s %(module)s %(pathname)s",
                     datefmt="%m/%d/%Y %I:%M:%S %p")
 
