@@ -1,9 +1,8 @@
 # importing the necessary modules
 import os
-import pickle
-import tensorflow as tf
-import numpy as np
 import cv2
+import pickle
+import numpy as np
 
 # Setting the path to the model
 modelPath = "models"

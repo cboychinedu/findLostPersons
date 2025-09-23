@@ -4,5 +4,4 @@ bcrypt
 python-dotenv 
 opencv-python
 flask-socketio
-tensorflow=2.18.1
 sklearn

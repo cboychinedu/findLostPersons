@@ -125,7 +125,8 @@ def analyzeVideoTask(sid, fileName):
         socketio.emit("progress", {"data": 1, "type": "video"}, room=sid)
 
         cap = cv2.VideoCapture(videoPath)
-        fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+        # fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+        fourcc = cv2.VideoWriter_fourcc(*'avc1')
         
         # Create a unique filename for the processed video
         processedFileName = f"processed_{datetime.now().strftime('%Y%m%d%H%M%S')}_{os.path.basename(videoPath)}"
@@ -147,12 +148,12 @@ def analyzeVideoTask(sid, fileName):
 
             # Run ML model on each frame
             objectDetection = VideoModelClass(image=frame)
-            (processedFrame, classNameList) = objectDetection.performObjectDetection()
+            (processedFrame, predName, proba) = objectDetection.performFaceRecognition()
             out.write(processedFrame)
             
             # Check if 'person' is found in the list of detected classes
-            if ("person" in classNameList): 
-                socketio.emit("detectionEvent", {"message": "Person detected in video", "type": "video"}, room=sid)
+            if (predName): 
+                socketio.emit("detectionEvent", {"message": f"{predName}", "type": "video"}, room=sid)
 
             processedFrames += 1
             progress = (processedFrames / frameCount) * 100

@@ -26,7 +26,7 @@ app.permanent_session_lifetime = timedelta(days=24)
 
 # Setting the cors configurations 
 CORS(app, 
-    origins=["http://localhost:3000", "http://localhost:3001"], 
+    origins="http://localhost:3000", 
     methods=["POST", "GET", "PUT", "DELETE"], 
     allow_headers=[
         'Origin',
