@@ -21,7 +21,7 @@ class ImageModelClass:
         self.labelModel = os.path.join(outputPath, "le.pickle")
 
         # Loading the serialized face detector model into memory
-        self.confidenceValue = 0.5
+        self.confidenceValue = 0.6
         self.protoPath = os.path.join(self.detectorModel, 'deploy.prototxt')
         self.modelPath = os.path.join(self.detectorModel, 'res10.caffemodel')
         self.detector = cv2.dnn.readNetFromCaffe(self.protoPath, self.modelPath)

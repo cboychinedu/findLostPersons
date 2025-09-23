@@ -12,36 +12,39 @@ import os
 import zipfile  
 from datetime import datetime
 from flask import Blueprint, jsonify, request
+from flask_cors import cross_origin
+from .trainModelClass.trainModel import TrainModelClass
 
 # Setting the blue print configuration 
 trainNetwork = Blueprint("trainNetwork", __name__)
 
+# Defining the necessary directories
+uploadsDir = "uploads"
+datasetDir = "dataset"
+
+@trainNetwork.route("/", methods=["GET"])
+def homePage(): 
+    return jsonify({"home": "home message"})
+
 # Setting the train network routes 
-@trainNetwork.route("/", methods=["POST"])
-def trainModel():
+@trainNetwork.route("/trainModel", methods=["POST"])
+@cross_origin(origin="http://localhost:3000")
+def trainModelFunction():
     # Handle model training via HTTP POST 
     # The if statement is redundant since the route is already restricted to POST
     if request.method == "POST":
+        # Check if a file is present in the request 
+        if "file" not in request.files: 
+            return jsonify({"status": "error", "message": "No file part in the form"})
+        
         # Access the uploaded zip file 
         try:
-            # Access the uploaded zip file 
-            if ("zipImageFile" not in request.files): 
-                return jsonify({
-                    "status": "error", 
-                    "message": "No zip file uploaded.", 
-                    "statusCode": 400 
-                })
-            
             # Getting the zip files 
-            zipImageFile = request.files["zipImageFile"]
-            label = request.files["labels"] 
+            zipImageFile = request.files['file']
+            labels = request.form.get("labels")
 
             # Saving giving the files a unique name using timestamp  
             timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-            
-            # Define directories
-            uploadsDir = "uploads"
-            datasetDir = "dataset"
             
             # Ensure the uploads and dataset directories exist on the server
             os.makedirs(uploadsDir, exist_ok=True)
@@ -49,22 +52,57 @@ def trainModel():
 
             # Define file paths
             zipFile = os.path.join(uploadsDir, f"zip_{timestamp}.zip")
-            labelFile = os.path.join(uploadsDir, f"label_{timestamp}.txt")
-            
+         
             # Saving the files to the server
             zipImageFile.save(zipFile)
-            label.save(labelFile)
 
+            # Extracting the files into the dataset/labels directory 
             with zipfile.ZipFile(zipFile, 'r') as zipref:
-                zipref.extractall(os.path.join(datasetDir, f"{timestamp}"))
+                zipref.extractall(datasetDir)
 
-            # Return a success message if the unzipping is successful
-            return jsonify({
-                "status": "success", 
-                "message": "Files uploaded and unzipped successfully.",
-                "statusCode": 200
-            }), 200
+            # Creating an instance of the trainclass 
+            # Training the model
+            trainmodel = TrainModelClass(labels=labels)
 
+            # Training the model on the uploaded images in zip format 
+            (message, status) = trainmodel.loadModelFromDisk() 
+
+            # Checking the message and status 
+            if (status == "error"): 
+                # Return an error message 
+                errorMessage = {
+                    "status": status, 
+                    "message": message, 
+                    "statusCode": 404,
+                }
+
+                # return the message 
+                return jsonify(errorMessage)
+            
+            # Else if the training was a success, 
+            # Execute the block of code below. 
+            else:
+                # Else if the training was successful
+                return jsonify({
+                    "status": "success", 
+                    "message": "Files sucessfully trained on the model.",
+                    "statusCode": 200
+                })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        # Unless exception as error 
         except Exception as error: 
             print(f"[ERROR]: An error occurred during training - {str(error)}")
             

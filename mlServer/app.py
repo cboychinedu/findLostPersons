@@ -7,9 +7,8 @@
 # Importing the necessary modules 
 import os 
 import logging 
-from flask import Flask, session 
+from flask import Flask  
 from flask_cors import CORS 
-from flask_socketio import SocketIO, emit 
 from datetime import timedelta 
 from dotenv import load_dotenv 
 from extensions import socketio
@@ -25,9 +24,15 @@ app.secret_key = os.getenv('SECRET_KEY')
 app.permanent_session_lifetime = timedelta(days=24)
 
 # Setting the cors configurations 
-CORS(app, resources={r"/*": {"origins": "*"}})
-# CORS(app, 
-#     origins=["http://localhost:3000", "http://localhost:3001"], 
+CORS(app) 
+# CORS(app, resources={r"/*": {"origins": "*"}})
+# CORS(app,  
+#     origins=[
+#         "http://localhost:3000", 
+#         "http://localhost:3001", 
+#         "http://127.0.0.1:3000", 
+#         "http://127.0.0.1:3001"
+#     ], 
 #     methods=["POST", "GET", "PUT", "DELETE"],
 #     allow_headers=[
 #         'Origin',
@@ -40,7 +45,7 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 #         'Access-Control-Allow-Headers',
 #         'Authorization',
 #         'Cache-Control', 
-#         'token'
+#         'xtoken'
 #     ]) 
 
 # Using socket io 
@@ -55,7 +60,7 @@ from TrainNetwork.routes import trainNetwork
 # Register the views using app.register method 
 app.register_blueprint(home, url_prefix="/")
 app.register_blueprint(history, url_prefix="/history")
-app.register_blueprint(trainNetwork, url_prefix="/trainModel")  
+app.register_blueprint(trainNetwork, url_prefix="/train")  
 
 # Setting the path to the logs 
 logsDir = os.path.sep.join(['logs', 'requests.log']) 
@@ -73,4 +78,4 @@ if __name__ == "__main__":
 	# app.run(port=3001, host="0.0.0.0", debug=True) 
 	# app.run() 
     # Using socket.run() insted of app.run() 
-    socketio.run(app, port=3001, host="0.0.0.0", debug=True)
+    socketio.run(app, port=3001, host="localhost", debug=True)

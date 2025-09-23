@@ -1,210 +1,163 @@
 // Importing the necessary modules 
+import "./TrainNeuralNetwork.css";
+import axios from "axios";
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 import DashboardNavbar from '../../Components/Navbar/DashboardNavbar';
 import Footer from '../../Components/Footer/Footer';
-import trainImageDisplay from "../../Images/trainImage.jpg";
+import flashMessageFunction from '../../Components/FlashMessage/FlashMessage';
 
 // Creating the TrainNeuralNetwork component 
 const TrainNeuralNetwork = () => {
     // Setting the state variables 
+    const [statusMessage, setStatusMessage] = useState("");
     const [loading, setLoading] = useState(true);
-    const fileInputRef = useRef(null);
-    const [imageFile, setImageFile] = useState(null);
-    const [annotationFile, setAnnotationFile] = useState(null);
-    // New state to track training progress (0-100)
+    const fileInputRef = useRef(null); // Ref to access the file input element
     const [trainingProgress, setTrainingProgress] = useState(0);
-    // New state to check if training is in progress
     const [isTraining, setIsTraining] = useState(false);
+    const [zipImageFile, setZipImageFile] = useState(null); // State for the file
+    const [labels, setLabels] = useState(""); // State for the text input
 
-    // useEffect hook to handle initial loading state
+    const flashMessageDiv = document.querySelector("#flashMessageDiv");
+    const tokenValue = localStorage.getItem("xAuthToken") || null;
+
     useEffect(() => {
-        // Simulating a loading process
         const timer = setTimeout(() => {
             setLoading(false);
         }, 1500);
         return () => clearTimeout(timer);
     }, []);
 
-    // Creating a function to handle file selection for the image
-    const handleImageFileChange = (event) => {
-        // Getting the selected image file 
-        const imageFileDocument = event.target.files[0];
-        // Setting the image file to the state variable 
-        setImageFile(imageFileDocument);
+    // Function to handle the file change
+    const handleFileChange = (event) => {
+        // Set the selected file to state
+        setZipImageFile(event.target.files[0]);
     };
 
-    // Creating a function to handle the file selection for xml or txt file 
-    const handleAnnotationFileChange = (event) => {
-        // Getting the selected annotation file 
-        const annotationFileDocument = event.target.files[0];
-        // Setting the annotation file to the state variable 
-        setAnnotationFile(annotationFileDocument);
+    // Function to handle the labels change
+    const handleLabelsChange = (event) => {
+        // Set the label value to state
+        setLabels(event.target.value);
     };
 
     // Creating a function to handle the training process
-    const handleTrainModel = (event) => {
-        // Preventing the default form submission behavior 
+    const handleTrainModel = async (event) => {
         event.preventDefault();
 
-        // Checking if both image and annotation files are selected
-        if (!imageFile || !annotationFile) {
-            alert("Please select both image and annotation files.");
+        // Check if both image and labels are present from state
+        if (!zipImageFile) {
+            flashMessageFunction(flashMessageDiv, "Please select a zipped image file.");
             return;
         }
 
-        // Set training to true and progress to 0 to show the progress bar
+        if (!labels) {
+            flashMessageFunction(flashMessageDiv, "Please type the name of the missing person (label).");
+            return;
+        }
+
         setIsTraining(true);
         setTrainingProgress(0);
 
-        // Creating a FormData object to send the files to the server 
+        // Create FormData using the data from state
         const formData = new FormData();
-        formData.append("image", imageFile);
-        formData.append("annotation", annotationFile);
+        formData.append("file", zipImageFile);
+        formData.append("labels", labels);
 
-        // Here's where you would make an API call.
-        // For demonstration, we'll simulate progress.
+        // Optional: Log FormData content for debugging
+        for (let pair of formData.entries()) {
+            console.log(`${pair[0]}: ${pair[1]}`);
+        }
+
         const simulateProgress = setInterval(() => {
             setTrainingProgress(prevProgress => {
                 const newProgress = prevProgress + 10;
-                return newProgress > 90 ? 90 : newProgress; // Stop at 90% to show final step
+                return newProgress > 90 ? 90 : newProgress;
             });
-        }, 500); // Update every 0.5 seconds
+        }, 500);
 
-        // Sending the files to the server for training
-        fetch("/trainNetwork/train", {
-                method: "POST",
-                body: formData,
-            })
-            .then((response) => response.json())
-            .then((data) => {
-                // Stop the progress simulation and set to 100% on success
-                clearInterval(simulateProgress);
-                setTrainingProgress(100);
-                setIsTraining(false);
+        const serverUrl = 'http://localhost:3001/train/trainModel';
 
-                // Handling the server response 
-                if (data.success) {
-                    alert("Model trained successfully!");
-                } else {
-                    alert("Error training model: " + data.message);
+        try {
+            const config = {
+                headers: {
+                    'x-auth-token': tokenValue,
                 }
-            })
-            .catch((error) => {
-                console.error("Error:", error);
-                // Stop the progress simulation and reset on error
-                clearInterval(simulateProgress);
-                setTrainingProgress(0);
-                setIsTraining(false);
-                alert("An error occurred while training the model.");
-            });
-    }
+            };
 
-    // Rendering the training network component 
+            const response = await axios.post(serverUrl, formData, config);
+            console.log(response.data);
+
+            clearInterval(simulateProgress);
+            setTrainingProgress(100);
+            setIsTraining(false);
+            setStatusMessage("Model trained successfully!");
+            flashMessageFunction(flashMessageDiv, "Model trained successfully!");
+
+            // Reset the form after success
+            setZipImageFile(null);
+            setLabels("");
+            if (fileInputRef.current) {
+                fileInputRef.current.value = "";
+            }
+
+        } catch (error) {
+            console.error("Error:", error);
+            clearInterval(simulateProgress);
+            setTrainingProgress(0);
+            setIsTraining(false);
+            const errorMessage = (error.response?.data?.message) || error.message || "An unknown error occurred.";
+            setStatusMessage(errorMessage);
+            flashMessageFunction(flashMessageDiv, errorMessage);
+        }
+    };
+
     return (
         <Fragment>
-            {/* Adding the navbar component */}
             <DashboardNavbar />
-
-            {/* Adding the main div */}
+            <div id="flashMessageDiv" className="...">
+                <p className="pl-[30px]"> {statusMessage} </p>
+            </div>
             <div className="container min-h-screen p-30 mx-auto my-10 mt-[110px] mb-[300px]">
                 <div className="flex justify-center mb-[50px]">
                     <div>
                         <h1 className="text-3xl font-bold mb-4">Train Neural Network</h1>
-                        <p className="mb-4">This is where you can train the machine's Neural Network model on the <b className="text-[18px] ml-[7px]"> missing person's image. </b> <br />
-                            <ol className="mt-[20px] list-decimal list-inside leading-[40px] ">
-                                <span className=" mb-[50px]"> Firstly, get the following: </span>
-                                <li> An image of the missing person. </li>
-                                <li> The labeled annotations for the image in either Pascal VOC XML format or YOLO TXT format.</li>
-                                <li> Upload the image and the corresponding labeled annotations using the provided file input fields below.</li>
-                                <li> Click the "<b> Train Model </b>" button to initiate the training process.</li>
-                                <li> The system will process the uploaded data and train the neural network model accordingly.</li>
-                                <li> Once the training is complete, you will receive a notification indicating that the model has been successfully trained.</li>
-                                <li> You can then use the trained model for object detection tasks related to missing persons.</li>
-                            </ol>
-                        </p>
+                        <form onSubmit={handleTrainModel} className="space-y-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700">Upload Zipped Images</label>
+                                <input
+                                    type="file"
+                                    id="zipImageFile" // Match the ID to allow `useRef` to work
+                                    name="file"
+                                    accept=".zip"
+                                    ref={fileInputRef}
+                                    onChange={handleFileChange}
+                                    className="mt-1 block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700">Enter Labels (e.g., person's name)</label>
+                                <input
+                                    type="text"
+                                    id="labels" // Match the ID
+                                    name="labels"
+                                    value={labels} // Controlled component
+                                    onChange={handleLabelsChange}
+                                    placeholder="Enter person's name"
+                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                />
+                            </div>
+                            <button
+                                type="submit"
+                                disabled={isTraining}
+                                className="w-full inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50">
+                                {isTraining ? 'Training...' : 'Start Training'}
+                            </button>
+                        </form>
                     </div>
-
-                    <div className="w-[50%] px-[30px] pl-[100px] py-[30px]">
-                        <img src={trainImageDisplay} alt="Train Neural Network" className="w-[100%] h-[65%] rounded-lg mt-[20px] mb-[20px]" />
-                    </div>
-                </div>
-
-                {/* Add your image for training the model here */}
-                <div className=''>
-                    <h2 className="mt-[30px] mb-[10px]">Upload Image for Object Detection Training</h2>
-                    {/* File input field for image upload */}
-                    <div className="mb-4">
-                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="image-upload">
-                            Choose Image:
-                        </label>
-                        <input
-                            type="file"
-                            id="image-upload"
-                            accept="image/*"
-                            onChange={handleImageFileChange}
-                            ref={fileInputRef}
-                            className="border border-gray-300 p-2 rounded w-[25%]"
-                        />
-                    </div>
-                </div>
-
-                {/* Add your labeled annotations for traning the model  */}
-                <div className='mb-[38px]'>
-                    <h2 className="mb-[8px] mt-[40px]">Labeled Annotations</h2>
-                    {/* File input field for the pascal/yolo xml or .txt file for training the model neural network  */}
-                    <div className="mb-4">
-                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="annotation-upload">
-                            Choose File Annotations (XML or TXT):
-                        </label>
-                        <input
-                            type="file"
-                            id="annotation-upload"
-                            accept=".xml, .txt"
-                            onChange={handleAnnotationFileChange} // Added the onChange handler here
-                            className="border border-gray-300 p-2 rounded w-[25%]"
-                        />
-                    </div>
-                    {/* Label description */}
-                    <p className="mb-4">Add labeled annotations for the uploaded image here.</p>
-                    {/* You can implement a form or a text area for adding annotations */}
-                    <textarea
-                        className="border border-[#d4d3d3] outline outline-white p-[20px] h-[165px] w-[38%]"
-                        rows="4"
-                        placeholder="Enter annotations class here, e.g (missing person's name, Sarah, Mike, Steff)..."
-                    ></textarea>
-                </div>
-
-                {/* --- Progress Bar Section --- */}
-                {isTraining && (
-                    <div className="mt-8 mb-4">
-                        <h3 className="text-lg font-semibold mb-2">Training Progress:</h3>
-                        <div className="w-full bg-gray-200 rounded-full h-4">
-                            <div
-                                className="bg-green-500 h-4 rounded-full transition-all duration-300 ease-in-out"
-                                style={{ width: `${trainingProgress}%` }}
-                            ></div>
-                        </div>
-                        <p className="text-center mt-2 font-medium">{trainingProgress}% Complete</p>
-                    </div>
-                )}
-                
-                {/* Button to trigger the training process */}
-                <div>
-                    <button
-                        onClick={handleTrainModel}
-                        disabled={isTraining} // Disable the button while training is in progress
-                        className={`px-4 py-2 rounded ${isTraining ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600 text-white'}`}
-                    >
-                        {isTraining ? 'Training...' : 'Train Model'}
-                    </button>
                 </div>
             </div>
-
-            {/* Adding the footer component */}
             <Footer />
         </Fragment>
-    )
-}
+    );
+};
 
-// Exporting the TrainNeuralNetwork component 
 export default TrainNeuralNetwork;
