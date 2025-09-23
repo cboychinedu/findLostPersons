@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/home/vitaminx/Documents/Projects/webDevelopmentProjects/findLostPersons/mlServer/app.py", line 12, in <module>
+    from flask_socketio import SocketIO, emit 
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ModuleNotFoundError: No module named 'flask_socketio'
