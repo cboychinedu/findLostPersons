@@ -25,22 +25,23 @@ app.secret_key = os.getenv('SECRET_KEY')
 app.permanent_session_lifetime = timedelta(days=24)
 
 # Setting the cors configurations 
-CORS(app, 
-    origins="http://localhost:3000", 
-    methods=["POST", "GET", "PUT", "DELETE"], 
-    allow_headers=[
-        'Origin',
-        'X-Requested-With',
-        'Content-Type',
-        'Accept',
-        'Access-Control-Allow-Methods', 
-        'access-control-allow-orign', 
-        'Access-Control-Allow-Origin', 
-        'Access-Control-Allow-Headers',
-        'Authorization',
-        'Cache-Control', 
-        'token'
-    ]) 
+CORS(app, resources={r"/*": {"origins": "*"}})
+# CORS(app, 
+#     origins=["http://localhost:3000", "http://localhost:3001"], 
+#     methods=["POST", "GET", "PUT", "DELETE"],
+#     allow_headers=[
+#         'Origin',
+#         'X-Requested-With',
+#         'Content-Type',
+#         'Accept',
+#         'Access-Control-Allow-Methods', 
+#         'access-control-allow-orign', 
+#         'Access-Control-Allow-Origin', 
+#         'Access-Control-Allow-Headers',
+#         'Authorization',
+#         'Cache-Control', 
+#         'token'
+#     ]) 
 
 # Using socket io 
 # socketio = SocketIO(app, cors_allowed_origins="http://localhost:3000")
@@ -65,7 +66,7 @@ logging.basicConfig(filename=logsDir, level=logging.DEBUG,
                     datefmt="%m/%d/%Y %I:%M:%S %p")
 
 # Socket variable
-app.config["SOCKET_VARIABLE"] = socketio
+# app.config["SOCKET_VARIABLE"] = socketio
 
 # Running the main flask application 
 if __name__ == "__main__": 

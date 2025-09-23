@@ -12,14 +12,16 @@ const TrainNeuralNetwork = () => {
     const [statusMessage, setStatusMessage] = useState("");
     const [loading, setLoading] = useState(true);
     const fileInputRef = useRef(null);
-    const [imageFile, setImageFile] = useState(null);
-    const [annotationFile, setAnnotationFile] = useState(null);
-    const [annotationName, setAnnotationName] = useState("");
+    const [zipImageFile, setZipImageFile] = useState(null);
+    const [labels, setLabels] = useState(null); 
     const [trainingProgress, setTrainingProgress] = useState(0);
     const [isTraining, setIsTraining] = useState(false);
 
     // Getting the flash message div element from the DOM using its ID.
     const flashMessageDiv = document.querySelector("#flashMessageDiv");
+
+    // Getting the token value
+    let tokenValue = localStorage.getItem("xAuthToken") || null;
 
     // useEffect hook to handle initial loading state
     useEffect(() => {
@@ -30,63 +32,45 @@ const TrainNeuralNetwork = () => {
         return () => clearTimeout(timer);
     }, []);
 
-    // Creating a function to handle file selection for the image
-    const handleImageFileChange = (event) => {
+    // Creating a function to handle the zip file selection for the image
+    const handleZipImageFileChange = (event) => {
         // Getting the selected image file 
-        const imageFileDocument = event.target.files[0];
-        // Setting the image file to the state variable 
-        setImageFile(imageFileDocument);
-    };
-
-    // Creating a function to handle the file selection for xml or txt file 
-    const handleAnnotationFileChange = (event) => {
-        // Getting the selected annotation file 
-        const annotationFileDocument = event.target.files[0];
+        const zipImageFileDocument = event.target.files[0];
         
-        // Setting the annotation file to the state variable 
-        setAnnotationFile(annotationFileDocument);
+        // Setting the image file to the state variable 
+        setZipImageFile(zipImageFileDocument);
     };
 
-    // Creating a function to handle the annotation name change
-    const handleAnnotationNameChange = (event) => {
-        // Getting the annotation name from the textarea html element 
-        const annotationNameValue = event.target.value;
+    // Creating a function to handle the label selection 
+    const handleLabelChange = (event) => {
+        // Getting the selected label data 
+        const labelData = event.target.value; 
+        console.dir(labelData); 
 
-        // Setting the annotation name to the state variable 
-        setAnnotationName(annotationNameValue);
+        // Setting the label state 
+        setLabels(labelData); 
     }; 
 
     // Creating a function to handle the training process
-    const handleTrainModel = (event) => {
+    const handleTrainModel = async (event) => {
         // Preventing the default form submission behavior 
         event.preventDefault();
 
         // Checking if both image and annotation files are selected
-        if (!imageFile) {
+        if (!zipImageFile) {
             // Setting the flash message to display the error 
-            setStatusMessage("Please select an image file.");
-            flashMessageFunction(flashMessageDiv, "Please select an image file.");
+            setStatusMessage("Please select a zipped image files.");
+            flashMessageFunction(flashMessageDiv, statusMessage);
 
             // Stopping the function's execution. 
             return;
         }
 
-        else if (!annotationFile) {
-            // Setting the flash message to display the error 
-            setStatusMessage("Please select an annotation file.");
-            flashMessageFunction(flashMessageDiv, "Please select an annotation file.");
-
-            // Stopping the function's execution. 
-            return;
-        }
-
-        else if (annotationName.trim() === "") {
-            // Setting the flash message to display the error 
-            setStatusMessage("Please enter the annotation name.");
-            flashMessageFunction(flashMessageDiv, "Please enter the annotation name.");
-
-            // Stopping the function's execution. 
-            return;
+        // Checking if the labels data is missing 
+        else if (!labels) {
+            // Setting the flash message to display the error message 
+            setStatusMessage("Please type the name of the missing person (label)."); 
+            flashMessageFunction(flashMessageDiv, statusMessage)
         }
 
         // if all validation pass, execute the training process
@@ -98,12 +82,8 @@ const TrainNeuralNetwork = () => {
 
             // Creating a FormData object to send the files to the server 
             const formData = new FormData();
-            formData.append("image", imageFile);
-            formData.append("annotation", annotationFile);
-
-            // Getting the type fo annotation file
-            const annotationFileType = annotationFile.name.split('.').pop().toLowerCase();
-            formData.append("annotation_type", annotationFileType);
+            formData.append("zipImageFile", zipImageFile);
+            formData.append("labels", labels);
 
             // Here's where you would make an API call.
             // For demonstration, we'll simulate progress.
@@ -115,28 +95,39 @@ const TrainNeuralNetwork = () => {
             }, 500); // Update every 0.5 seconds
 
             // Setting the server url 
-            const serverUrl = process.env.REACT_APP_SERVER_URL || 'http://localhost:3001/trainModel';
+            const serverUrl = process.env.REACT_APP_SERVER_URL || 'http://127.0.0.1:3001/trainModel/';
+
+            // Setting the headers 
+            const headers = {
+                'Content-Type':'application/json',
+                'Access-Control-Allow-Origin':'*',
+                'Access-Control-Allow-Methods':'POST,PATCH,OPTIONS,PUT,DELETE'
+            }
+
 
             // Sending the files to the server for training
             fetch(serverUrl, {
                     method: "POST",
                     body: formData,
+                    headers: headers
                 })
                 .then((response) => response.json())
                 .then((data) => {
-                    // Stop the progress simulation and set to 100% on success
-                    clearInterval(simulateProgress);
-                    setTrainingProgress(100);
-                    setIsTraining(false);
+                    console.log(data); 
 
-                    // Display the success message to the user using flash messsage
-                    setStatusMessage("Model trained successfully!");
-                    flashMessageFunction(flashMessageDiv, "Model trained successfully!");
+                    // Stop the progress simulation and set to 100% on success
+                    // clearInterval(simulateProgress);
+                    // setTrainingProgress(100);
+                    // setIsTraining(false);
+
+                    // // Display the success message to the user using flash messsage
+                    // setStatusMessage("Model trained successfully!");
+                    // flashMessageFunction(flashMessageDiv, "Model trained successfully!");
 
                     // Optionally, reset the form inputs
-                    setImageFile(null);
-                    setAnnotationFile(null);
-                    setAnnotationName(""); 
+                    // setImageFile(null);
+                    // setAnnotationFile(null);
+                    // setAnnotationName(""); 
 
                     // Handling the server response 
                     // if (data.success) {
@@ -186,13 +177,13 @@ const TrainNeuralNetwork = () => {
                         <p className="mb-4">This is where you can train the machine's Neural Network model on the <b className="text-[18px] ml-[7px]"> missing person's image. </b> <br />
                             <ol className="mt-[20px] list-decimal list-inside leading-[40px] ">
                                 <span className=" mb-[50px]"> Firstly, get the following: </span>
-                                <li> An image of the missing person. </li>
-                                <li> The labeled annotations for the image in either Pascal VOC XML format or YOLO TXT format.</li>
-                                <li> Upload the image and the corresponding labeled annotations using the provided file input fields below.</li>
+                                <li> A zipped images of the missing person. Include many images for better inference. </li>
+                                <li> Upload the zipped image and the into the provided file input fields below.</li>
+                                <li> Type the name or label of the missing person e.g (Mark, Alan, James) </li>
                                 <li> Click the "<b> Train Model </b>" button to initiate the training process.</li>
                                 <li> The system will process the uploaded data and train the neural network model accordingly.</li>
                                 <li> Once the training is complete, you will receive a notification indicating that the model has been successfully trained.</li>
-                                <li> You can then use the trained model for object detection tasks related to missing persons.</li>
+                                <li> You can then use the trained model for facial recognition tasks related to missing persons. </li>
                             </ol>
                         </p>
                     </div>
@@ -204,17 +195,17 @@ const TrainNeuralNetwork = () => {
 
                 {/* Add your image for training the model here */}
                 <div className=''>
-                    <h2 className="mt-[30px] mb-[10px]">Upload Image for Object Detection Training</h2>
+                    <h3 className="mt-[30px] mb-[10px]"> Upload zipped images of the person. </h3>
                     {/* File input field for image upload */}
                     <div className="mb-4">
                         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="image-upload">
-                            Choose Image:
+                            Choose zip files:
                         </label>
                         <input
                             type="file"
                             id="image-upload"
-                            accept="image/*"
-                            onChange={handleImageFileChange}
+                             accept=".zip"
+                            onChange={handleZipImageFileChange}
                             ref={fileInputRef}
                             className="border border-gray-300 p-2 rounded w-[25%]"
                         />
@@ -223,25 +214,12 @@ const TrainNeuralNetwork = () => {
 
                 {/* Add your labeled annotations for traning the model  */}
                 <div className='mb-[38px]'>
-                    <h2 className="mb-[8px] mt-[40px]">Labeled Annotations</h2>
-                    {/* File input field for the pascal/yolo xml or .txt file for training the model neural network  */}
-                    <div className="mb-4">
-                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="annotation-upload">
-                            Choose File Annotations (XML or TXT):
-                        </label>
-                        <input
-                            type="file"
-                            id="annotation-upload"
-                            accept=".xml, .txt"
-                            onChange={handleAnnotationFileChange} // Added the onChange handler here
-                            className="border border-gray-300 p-2 rounded w-[25%]"
-                        />
-                    </div>
+                    <h3 className="mb-[8px] mt-[40px]">Labeled Data </h3>
                     {/* Label description */}
-                    <p className="mb-4">Add labeled annotations for the uploaded image here.</p>
+                    <p className="mb-4">Add the missing person label here e.g (Mark, James, Sarah).</p>
                     {/* You can implement a form or a text area for adding annotations */}
                     <textarea
-                        onChange={handleAnnotationNameChange}
+                        onChange={handleLabelChange}
                         className="border border-[#d4d3d3] outline outline-white p-[20px] h-[165px] w-[38%]"
                         rows="4"
                         placeholder="Enter annotations class here, e.g (missing person's name, Sarah, Mike, Steff)..."

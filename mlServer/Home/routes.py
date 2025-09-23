@@ -21,7 +21,7 @@ from .videoClass.videoAnalysis import VideoModelClass
 from flask import Blueprint, jsonify, request, send_from_directory
 
 # Paths for demonstration
-tempDir = "tempFile"
+tempDir = "tempFiles"
 
 # Ensuring the temp directory exists 
 os.makedirs(tempDir, exist_ok=True)
@@ -73,7 +73,9 @@ def uploadVideo():
 # ------------------------------
 def analyzeImageTask(sid, fileData, fileName):
     try:
+        # CORRECTED: Changed tempFiles to tempDir
         imagePath = os.path.join(tempDir, f"{datetime.now().strftime('%Y%m%d%H%M%S')}_{fileName}")
+        # CORRECTED: Changed tempFiles to tempDir
         saveImagePath = os.path.join(tempDir, f"processed_{datetime.now().strftime('%Y%m%d%H%M%S')}_{fileName}")
 
         base64Data = fileData.split(",")[1] if "," in fileData else fileData
