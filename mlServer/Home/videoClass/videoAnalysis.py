@@ -1,91 +1,103 @@
-# Importing the necessary modules 
-import os 
-import tensorflow as tf 
-import numpy as np 
-import cv2 
-from random import randint 
+# importing the necessary modules
+import os
+import cv2
+import pickle
+import numpy as np
 
-# Setting the path to the model 
-modelPath = os.path.join("Home", "savedModel")
+# Setting the path to the model
+modelPath = "models"
 
-# Defining the class 
-class VideoModelClass: 
-    def __init__(self, image=None): 
-        # load the model 
-        self.model = tf.saved_model.load(modelPath)
-        self.image = image 
+# Output path
+outputPath = os.path.join(modelPath, 'output')
 
-    # Process Video Frames 
-    def processVideoFrames(self):
-        # load the image 
-        # image = cv2.imread(self.image) 
+# Defining a class to load the model
+class VideoModelClass:
+    def __init__(self, image):
+        # Load the model and the image
+        self.image = image
+        self.detectorModel = os.path.join(modelPath, "faceDetectionModel")
+        self.embeddingModel = os.path.join(modelPath, "embeddingModel.t7")
+        self.recognizerModel = os.path.join(outputPath, "recognizer.pickle")
+        self.labelModel = os.path.join(outputPath, "le.pickle")
 
-        # Convert the image to a numpy array 
-        image = np.array(self.image) 
+        # Loading the serialized face detector model into memory
+        self.confidenceValue = 0.5
+        self.protoPath = os.path.join(self.detectorModel, 'deploy.prototxt')
+        self.modelPath = os.path.join(self.detectorModel, 'res10.caffemodel')
+        self.detector = cv2.dnn.readNetFromCaffe(self.protoPath, self.modelPath)
 
-        # convert the image into an input tensor (blob) 
-        inputTensor = tf.convert_to_tensor(np.expand_dims(image, 0), dtype=tf.uint8)
+        # Loading the serialized face embedding model into memory
+        self.embedder = cv2.dnn.readNetFromTorch(self.embeddingModel)
 
-        # Return the processed tensor 
-        return (inputTensor, image) 
-    
-    # Perform the object detection 
-    def performObjectDetection(self): 
-        # Creating a list to hold the class name 
-        classNameList = []  
+        # Correcting the way the pickle files are loaded
+        self.recognizer = pickle.load(open(self.recognizerModel, "rb"))
+        self.le = pickle.load(open(self.labelModel, "rb"))
 
-        # Perform object detection by calling the function 
-        # and passing the result 
-        (inputTensor, image) = self.processVideoFrames()
+    # Creating a method for processing the image
+    def processImage(self):
+        # if the image is none 
+        if self.image is None:
+            raise FileNotFoundError(f"Image not found at path: {self.image}")
 
-        # Getting the detections 
-        detection = self.model(inputTensor) 
+        (h, w) = self.image.shape[:2]
 
-        # Parse the detection results 
-        # Parse the detection results
-        boxes = detection["detection_boxes"].numpy()
-        classes = detection["detection_classes"].numpy().astype(int)
-        scores = detection["detection_scores"].numpy()
+        # Construct a blob from the image
+        imageBlob = cv2.dnn.blobFromImage(cv2.resize(self.image, (300, 300)), 1.0, (300, 300),
+                                          (104.0, 177.0, 123.0), swapRB=False, crop=False)
 
-        # Setting the labels
-        labels = ['__background__', 'person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus',
-                  'train', 'truck', 'boat', 'traffic light', 'fire hydrant', 'stop sign', 'parking meter',
-                  'bench', 'bird', 'cat', 'dog', 'horse', 'sheep', 'cow', 'elephant', 'bear', 'zebra',
-                  'giraffe', 'backpack', 'umbrella', 'handbag', 'tie', 'suitcase', 'frisbee', 'skis',
-                  'snowboard', 'sports ball', 'kite', 'baseball bat', 'baseball glove', 'skateboard', 'surfboard',
-                  'tennis racket', 'bottle', 'wine glass', 'cup', 'fork', 'knife', 'spoon', 'bowl', 'banana',
-                  'apple', 'sandwich', 'orange', 'broccoli', 'carrot', 'hot dog', 'pizza', 'donut', 'cake',
-                  'chair', 'couch', 'potted plant', 'bed', 'dining table', 'toilet', 'tv', 'laptop', 'mouse',
-                  'remote', 'keyboard', 'cell phone', 'microwave', 'oven', 'toaster', 'sink', 'refrigerator',
-                  'book', 'clock', 'vase', 'scissors', 'teddy bear', 'hair drier', 'toothbrush']
+        # Applying openCV's deep learning face detector to localize
+        # the faces in the input image
+        self.detector.setInput(imageBlob)
+        detections = self.detector.forward()
 
-        # Detecting the object inside the image 
-        for i in range(classes.shape[1]): 
-            classId = int(classes[0, i]) 
-            score = scores[0, i]
-            
-            # Confidence level 
-            if np.any(score > 0.5): 
-                h, w, _ = image.shape
-                ymin, xmin, ymax, xmax = boxes[0, i] 
-                
-                # Convert the normalized coordinates to image coordinates 
-                xmin = int(xmin * w) 
-                xmax = int(xmax * w) 
-                ymin = int(ymin * h) 
-                ymax = int(ymax * h) 
-                
-                # Get the class name from the labels list 
-                className = labels[classId]
-                randomColor = (randint(0, 256), randint(0, 256), randint(0, 256))
+        # Return the processed image
+        return (detections, self.image, w, h, imageBlob)
 
-                # Appending the class name 
-                classNameList.append(className)
-                
-                # Draw bounding box and label the image 
-                cv2.rectangle(image, (xmin, ymin), (xmax, ymax), randomColor, 2)
-                label = f"{className}, {score}"
-                cv2.putText(image, label, (xmin, ymin - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, randomColor, 2) 
-                
-        # Returning the image 
-        return (image, classNameList)  
+    # Creating a method for performing the face recognition
+    def performFaceRecognition(self):
+        # Getting the processed image
+        (detections, image, w, h, imageBlob) = self.processImage()
+        predName = "No face detected"
+        proba = 0.0
+
+        # Creating a loop to loop over the detections and make predictions on the image
+        # Also extract the confidence associated with the predictions,
+        # and filter out weak detections
+        for i in range(0, detections.shape[2]):
+            confidence = detections[0, 0, i, 2]
+            if confidence > self.confidenceValue:
+                # Compute the (x, y)-coordinates of the bounding box for the face
+                box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
+                (startX, startY, endX, endY) = box.astype("int")
+
+                # Extract the face ROI
+                face = image[startY:endY, startX:endX]
+                (fH, fW) = face.shape[:2]
+
+                # Ensure the face width and height are sufficiently large
+                if fW < 20 or fH < 20:
+                    continue
+
+                # Construct a blob for the face ROI, then pass the blob through
+                # our face embedding model to obtain the 128-d quantification of the face
+                faceBlob = cv2.dnn.blobFromImage(face, 1.0 / 255, (96, 96),
+                                                 (0, 0, 0), swapRB=True, crop=False)
+                self.embedder.setInput(faceBlob)
+                vec = self.embedder.forward()
+
+                # Perform classification to recognize the face
+                prediction = self.recognizer.predict_proba(vec)[0]
+                result = np.argmax(prediction)
+                proba = prediction[result]
+                name = self.le.classes_[result]
+
+                # Draw the bounding box of the face along with the associated probability
+                predName = "{}: {:.2f}%".format(name, proba * 100)
+                y = startY - 10 if startY - 10 > 10 else startY + 10
+                cv2.rectangle(image, (startX, startY), (endX, endY), (0, 0, 255), 4)
+                cv2.putText(image, predName, (startX, y), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 0, 255), 2)
+
+        # Return the image
+        return (image, predName, proba)
+
+

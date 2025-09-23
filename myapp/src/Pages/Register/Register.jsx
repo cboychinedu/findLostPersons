@@ -1,74 +1,107 @@
 // Importing the necessary modules 
-import "./Register.css";
-import RootNavbar from "../../Components/Navbar/RootNavbar";
-import ciaLogo from "../../Images/ciaLogo.png"; 
-import { Fragment, useState } from "react";
-import Footer from "../../Components/Footer/Footer";
-import flashMessageFunction from "../../Components/FlashMessage/FlashMessage"; 
+import "./Register.css"; // Importing the CSS file for the Register component's styles.
+import RootNavbar from "../../Components/Navbar/RootNavbar"; // Importing the navigation bar component for the root (public) pages.
+import ciaLogo from "../../Images/ciaLogo.png"; // Importing the CIA logo image asset.
+import { Fragment, useState } from "react"; // Importing Fragment and useState hook from React to manage component state.
+import Footer from "../../Components/Footer/Footer"; // Importing the Footer component.
+import flashMessageFunction from "../../Components/FlashMessage/FlashMessage"; // Importing a utility function to display flash messages.
 
 
 const Register = () => {
+  // Setting the state variables using the useState hook.
+  // State for the user's full name.
+  // State for the user's email address.
+  // State for the user's password.
+  // This state holds the message to be displayed in the flash message div.
   const [statusMessage, setStatusMessage] = useState("");  
   const [fullname, setFullname] = useState("");
   const [emailAddress, setEmailAddress] = useState("");
   const [password, setPassword] = useState("");
 
+  // Function to handle the form submission.
   const handleSubmitRegister = (event) => {
+    // Preventing the default form submission behavior to handle it with JavaScript.
     event.preventDefault();
 
+    // Getting the flash message div element from the DOM using its ID.
     const flashMessageDiv = document.getElementById("flashMessageDiv");
 
+    // Validating the input fields. If a field is empty, a status message is set and a flash message is displayed.
     if (fullname === "") {
+      
+      // Setting the status message for the UI.
       setStatusMessage("Fullname is required");
+      
+      // Calling the flash message utility function to show an alert.
       flashMessageFunction(flashMessageDiv, "Fullname is required");
+     
+      // Stopping the function's execution.
       return;
-    } else if (emailAddress === "") {
+    } 
+    // Checking if the email address is empty.
+    else if (emailAddress === "") {
       setStatusMessage("Email address is required");
       flashMessageFunction(flashMessageDiv, "Email address is required");
       return;
-    } else if (emailAddress.indexOf("@") === -1) {
+    } 
+    
+    // Checking if the email address format is incorrect (lacks an "@" symbol).
+    else if (emailAddress.indexOf("@") === -1) {
       setStatusMessage("Your email address is incorrect");
       flashMessageFunction(flashMessageDiv, "Your email address is incorrect");
       return;
-    } else if (password === "") {
+    } 
+    
+    // Checking if the password is empty.
+    else if (password === "") {
       setStatusMessage("Password is required");
       flashMessageFunction(flashMessageDiv, "Password is required");
       return;
     }
 
+    // Creating a JSON object with the user data.
     const userData = JSON.stringify({
       fullname,
       emailAddress,
       password,
     });
 
+    // Defining the server URL for the registration endpoint.
     const serverUrl = "http://localhost:5000/register";
 
-    // Using try catch error 
+    // Using try-catch for error handling during the fetch request.
     try {
+      // Sending a POST request to the server with the user data.
       fetch(serverUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: userData,
+        method: "POST", // Specifying the HTTP method.
+        headers: { "Content-Type": "application/json" }, // Setting the content type header.
+        body: userData, // Attaching the JSON data to the request body.
       })
+      // Handling the response from the server.
       .then((response) => response.json())
       .then((responseData) => {
         // Handle the successful register response 
         if (responseData.status === "success") {
-          // Set the status message 
+          
+          // Set the status message for the UI.
           setStatusMessage("User registered!. Redirecting..."); 
+          
+          // Display a success flash message.
           flashMessageFunction(flashMessageDiv, responseData.message);
 
-          // Redirecting the user to the login page
+          // Redirecting the user to the login page after a delay.
           setTimeout(() => {
             window.location.href = "/";
-          }, 2000);  
+          }, 2000);  // Delay of 2 seconds.
 
         }
         // Else if the status was not successful 
         else {
           // handle the failed login response 
+          // Set the status message to the error message from the server or a default message.
           setStatusMessage(responseData.message || "Register failed");
+          
+          // Display the failed flash message.
           flashMessageFunction(flashMessageDiv, responseData.message || "Register failed");
         }
       });
@@ -78,13 +111,14 @@ const Register = () => {
     // server 
     catch (error) {
       // Handle network or server errors 
-      console.log("Fetch error:", error); 
-      setStatusMessage("Unable to reach server");
-      flashMessageFunction(flashMessageDiv, error.message || "Unable to reach server"); 
+      console.log("Fetch error:", error); // Logging the error to the console for debugging.
+      setStatusMessage("Unable to reach server"); // Setting a user-friendly status message.
+      flashMessageFunction(flashMessageDiv, error.message || "Unable to reach server"); // Displaying a flash message for the error.
       
     }
   };
 
+  // Rendering the component's UI.
   return (
     <Fragment>
     <div> 

@@ -18,7 +18,8 @@ const corsOptions = {
             "http://localhost:3000",
             "http://localhost:3001"
         ];
-        // 
+        // if the origin is not part of the allowed origin, 
+        // execute the block of code below 
         if (allowedOrigin.indexOf(origin) !== -1) {
             callback(null, true);
         }

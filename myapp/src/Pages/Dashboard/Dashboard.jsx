@@ -5,12 +5,12 @@ import DashboardNavbar from "../../Components/Navbar/DashboardNavbar"
 import Footer from "../../Components/Footer/Footer";
 
 
-// Establish socket connection once to the server 
+// Establish socket connection once to the server
 const socket = io("http://127.0.0.1:3001");
 
-// Creating the dashboard function component 
+// Creating the dashboard function component
 const Dashboard = () => {
-  // Setting the state 
+  // Setting the state
   const [loading, setLoading] = useState(true);
   const [userName, setUsername] = useState("Alan Smith");
   const [statusMessage, setStatusMessage] = useState("");
@@ -22,7 +22,7 @@ const Dashboard = () => {
   const [imagePreviewUrl, setImagePreviewUrl] = useState(null);
   const [videoPreviewUrl, setVideoPreviewUrl] = useState(null);
 
-  // Setting the refs for the image and video inputs 
+  // Setting the refs for the image and video inputs
   const imageInputRef = useRef(null);
   const videoInputRef = useRef(null);
 
@@ -32,13 +32,11 @@ const Dashboard = () => {
       // Getting the token value
       let tokenValue = localStorage.getItem("xAuthToken") || null;
 
-      // If the token value is not present, set the username 
-      // as guest 
+      // If the token value is not present, set the username
+      // as guest
       if (!tokenValue) {
-        // Set the username 
+        // Set the username
         setUsername("Guest");
-
-        // Pause the program, by returning nothing. 
         return;
       }
 
@@ -58,25 +56,18 @@ const Dashboard = () => {
         // Log the error, and set the username as guest
         console.error("Failed to fetch username:", response.status, response.statusText);
         setUsername("Guest");
-
-        // Pause the program 
         return;
       }
 
       // Get the data and save the user name
       let data = await response.json();
- 
-      // Setting the username 
       setUsername(data.userName);
-
     } 
-    
-    // Catching the error 
+    // Catching the error
     catch (error) {
       // On error to the server, execute the block of code below
       console.error("Error fetching the username:", error);
-
-      // Set the username as guest 
+      // Set the username as guest
       setUsername("Guest");
     }
   };
@@ -86,14 +77,11 @@ const Dashboard = () => {
     // Fetch the username on component mount
     fetchUsername();
 
-    // Socket event listeners 
-    socket.on("connect", async () => {
+    // Socket event listeners
+    socket.on("connect", () => {
       console.log("Connected to server via WebSocket");
-
     });
 
-    // Creating a function that goes to the 
-    // backend and gets the user name 
     socket.on("progress", (data) => {
       const newProgress = parseFloat(data.data);
       if (data.type === "image") {
@@ -116,7 +104,11 @@ const Dashboard = () => {
         setStatusMessage("Image analysis complete!");
         setImageProgress(100);
         setIsProcessingImage(false);
-      } else if (data.type === "video") {
+      } 
+      // Corrected video analysis logic.
+      // The state update is sufficient to trigger a re-render of the component
+      // and update the video element. Direct DOM manipulation is not needed.
+      else if (data.type === "video") {
         setVideoPreviewUrl(data.resultUrl);
         setStatusMessage("Video analysis complete!");
         setVideoProgress(100);
@@ -137,6 +129,7 @@ const Dashboard = () => {
       setVideoProgress(0);
     });
 
+    // Cleanup function for the effect
     return () => {
       socket.off("connect");
       socket.off("progress");
@@ -255,7 +248,7 @@ const Dashboard = () => {
     </div>
   );
 
-  // Rendering the dashboard component 
+  // Rendering the dashboard component
   return (
     <Fragment>
       {loading ? (
@@ -349,8 +342,17 @@ const Dashboard = () => {
                 </h2>
                 <div className="flex justify-center h-80 w-full bg-black rounded-lg shadow-inner overflow-hidden">
                   {videoPreviewUrl ? (
-                    <video controls className="w-full h-full object-contain">
-                      <source src={videoPreviewUrl} type="video/mp4" />
+                    // Corrected video element.
+                    // The src attribute is now directly on the video tag, which is more reliable.
+                    // The key prop forces React to re-mount the component when the URL changes,
+                    // ensuring the browser loads the new video.
+                    <video 
+                      key={videoPreviewUrl} // Force re-render when videoPreviewUrl changes
+                      controls 
+                      className="w-full h-full object-contain"
+                      src={videoPreviewUrl}
+                      id="videoPreview"
+                    >
                       Your browser cannot load the video.
                     </video>
                   ) : (
@@ -413,5 +415,5 @@ const Dashboard = () => {
   );
 };
 
-// Exporting the application as app 
+// Exporting the application as app
 export default Dashboard;

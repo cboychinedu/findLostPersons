@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # Author: Engr Mbonu Chinedum 
-# Date Created: 23/09/2025 
+# Date Created: 21/09/2025 
 # Date Modified: 22/09/2025 
 
 # This is a self-contained Flask blueprint for media analysis.
@@ -12,21 +12,21 @@
 import cv2
 import os
 import base64
-from flask import Blueprint, jsonify, request, send_from_directory
 from flask_socketio import emit
-from .imageClass.imageAnalysis import ImageModelClass
-from .videoClass.videoAnalysis import VideoModelClass
 from extensions import socketio
 from datetime import datetime
 from werkzeug.utils import secure_filename
+from .imageClass.imageAnalysis import ImageModelClass
+from .videoClass.videoAnalysis import VideoModelClass
+from flask import Blueprint, jsonify, request, send_from_directory
 
 # Paths for demonstration
-tempDir = "tempFiles"
+tempDir = "tempFile"
 
 # Ensuring the temp directory exists 
 os.makedirs(tempDir, exist_ok=True)
 
-# Setting the blue print 
+# Setting the blue print configuration
 home = Blueprint("home", __name__)
 
 # Setting the home routes
@@ -86,15 +86,15 @@ def analyzeImageTask(sid, fileData, fileName):
         socketio.emit("progress", {"data": 25, "type": "image"}, room=sid)
 
         objectDetection = ImageModelClass(image=imagePath)
-        (processed, classNameList) = objectDetection.performObjectDetection()
+        (image, predName, proba) = objectDetection.performFaceRecognition()
 
         # Check if 'person' is found in the list of detected classes
-        if ("person" in classNameList): 
-            socketio.emit("detectionEvent", {"message": "Person detected in image", "type": "image"}, room=sid)
+        if (predName): 
+            socketio.emit("detectionEvent", {"message": f"{predName} Detected.", "type": "image"}, room=sid)
 
         socketio.emit("progress", {"data": 70, "type": "image"}, room=sid)
 
-        cv2.imwrite(saveImagePath, processed)
+        cv2.imwrite(saveImagePath, image)
 
         with open(saveImagePath, "rb") as imgFile:
             encodedString = base64.b64encode(imgFile.read()).decode("utf-8")
@@ -125,7 +125,8 @@ def analyzeVideoTask(sid, fileName):
         socketio.emit("progress", {"data": 1, "type": "video"}, room=sid)
 
         cap = cv2.VideoCapture(videoPath)
-        fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+        # fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+        fourcc = cv2.VideoWriter_fourcc(*'avc1')
         
         # Create a unique filename for the processed video
         processedFileName = f"processed_{datetime.now().strftime('%Y%m%d%H%M%S')}_{os.path.basename(videoPath)}"
@@ -147,12 +148,12 @@ def analyzeVideoTask(sid, fileName):
 
             # Run ML model on each frame
             objectDetection = VideoModelClass(image=frame)
-            (processedFrame, classNameList) = objectDetection.performObjectDetection()
+            (processedFrame, predName, proba) = objectDetection.performFaceRecognition()
             out.write(processedFrame)
             
             # Check if 'person' is found in the list of detected classes
-            if ("person" in classNameList): 
-                socketio.emit("detectionEvent", {"message": "Person detected in video", "type": "video"}, room=sid)
+            if (predName): 
+                socketio.emit("detectionEvent", {"message": f"{predName}", "type": "video"}, room=sid)
 
             processedFrames += 1
             progress = (processedFrames / frameCount) * 100
@@ -160,7 +161,8 @@ def analyzeVideoTask(sid, fileName):
             # Throttle updates (every 10 frames)
             if processedFrames % 10 == 0 or processedFrames == frameCount:
                 socketio.emit("progress", {"data": progress, "type": "video"}, room=sid)
-
+        
+        # Release resources
         cap.release()
         out.release()
         
