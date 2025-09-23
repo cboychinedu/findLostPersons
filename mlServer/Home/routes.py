@@ -86,15 +86,15 @@ def analyzeImageTask(sid, fileData, fileName):
         socketio.emit("progress", {"data": 25, "type": "image"}, room=sid)
 
         objectDetection = ImageModelClass(image=imagePath)
-        (processed, classNameList) = objectDetection.performObjectDetection()
+        (image, predName, proba) = objectDetection.performFaceRecognition()
 
         # Check if 'person' is found in the list of detected classes
-        if ("person" in classNameList): 
-            socketio.emit("detectionEvent", {"message": "Person detected in image", "type": "image"}, room=sid)
+        if (predName): 
+            socketio.emit("detectionEvent", {"message": f"{predName} Detected.", "type": "image"}, room=sid)
 
         socketio.emit("progress", {"data": 70, "type": "image"}, room=sid)
 
-        cv2.imwrite(saveImagePath, processed)
+        cv2.imwrite(saveImagePath, image)
 
         with open(saveImagePath, "rb") as imgFile:
             encodedString = base64.b64encode(imgFile.read()).decode("utf-8")
