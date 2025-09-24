@@ -46,7 +46,7 @@ const Home = () => {
     }; 
 
     // Your backend API endpoint (adjust to match your server route)
-    const serverUrl = "http://localhost:5000/login"; 
+    const serverUrl = `${process.env.REACT_APP_SERVER_URL}/login`; 
 
     try {
       // Axios POST request

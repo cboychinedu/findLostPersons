@@ -1,7 +1,7 @@
 // Importing the necessary modules 
 import React, { useContext, useState } from 'react';
-import { AuthContext } from '../../Auth/AuthContext';
-import logo from '../../Images/ciaLogo.png'; 
+import { AuthContext } from '@auth/AuthContext';
+import logo from '@images/ciaLogo.png'; 
 
 // Since we cannot use external files, we will use a simple inline SVG for the logo.
 const logoSVG = (
@@ -49,8 +49,8 @@ const DashboardNavbar = () => {
                 <a href="/trainNeuralNetwork" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded hover:underline text-decoration-none mt-[2px] "> 
                     Train Neural Net On Missing Persons
                 </a> 
-                <a href="#" className="hover:underline text-decoration-none text-white"> 
-                    Analyzed Videos 
+                <a href="/history" className="hover:underline text-decoration-none text-white"> 
+                    Analyzed Data  
                 </a>
                 <a href="/dashboard" className="hover:underline text-decoration-none text-white">
                     Dashboard 

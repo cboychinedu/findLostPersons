@@ -12,6 +12,7 @@
 import cv2
 import os
 import base64
+import jwt 
 from flask_socketio import emit
 from extensions import socketio
 from datetime import datetime
@@ -32,7 +33,7 @@ home = Blueprint("home", __name__)
 # Setting the home routes
 @home.route("/", methods=["GET"])
 def homePage():
-    return jsonify({"message": "Home Route", "statusCode": 200})
+    return jsonify({"message": "Machine Learning Server...", "statusCode": 200})
 
 # Setting the media path routes 
 @home.route('/media/<path:filename>')
@@ -71,10 +72,14 @@ def uploadVideo():
 # ------------------------------
 # IMAGE analysis
 # ------------------------------
-def analyzeImageTask(sid, fileData, fileName):
+def analyzeImageTask(sid, fileData, fileName, token):
     try:
         # CORRECTED: Changed tempFiles to tempDir
         imagePath = os.path.join(tempDir, f"{datetime.now().strftime('%Y%m%d%H%M%S')}_{fileName}")
+
+        # Decoding the token 
+        decodedToken = jwt.decode(token, options={"verify_signature": False})
+
         # CORRECTED: Changed tempFiles to tempDir
         saveImagePath = os.path.join(tempDir, f"processed_{datetime.now().strftime('%Y%m%d%H%M%S')}_{fileName}")
 
@@ -96,6 +101,7 @@ def analyzeImageTask(sid, fileData, fileName):
 
         socketio.emit("progress", {"data": 70, "type": "image"}, room=sid)
 
+        # Saving the analyzed image to disk 
         cv2.imwrite(saveImagePath, image)
 
         with open(saveImagePath, "rb") as imgFile:
@@ -108,13 +114,35 @@ def analyzeImageTask(sid, fileData, fileName):
             "resultUrl": f"data:image/jpeg;base64,{encodedString}"
         }, room=sid)
 
+        # Saving the image url, and prediction to mongodb database
+
+        # Connect to MongoDB (adjust URI as needed)
+        # mongo_client = MongoClient("mongodb://localhost:27017/")
+        # db = mongo_client["findLostPersons"]
+        # collection = db["imagePredictions"]
+
+        # # Get email address from decoded token
+        # email_address = decodedToken.get("emailAddress")
+
+        # # Save the result URL and prediction label
+        # result_url = f"/media/{os.path.basename(saveImagePath)}"
+        # collection.insert_one({
+        #     "emailAddress": email_address,
+        #     "predictedLabel": predName,
+        #     "resultUrl": result_url,
+        #     "timestamp": datetime.now()
+        # })
+
     except Exception as e:
         socketio.emit("analysisError", {"message": str(e)}, room=sid)
 
 
 @socketio.on("analyzeImage")
 def handleAnalyzeImage(data):
-    socketio.start_background_task(analyzeImageTask, request.sid, data.get("fileData"), data.get("fileName"))
+    socketio.start_background_task(
+        analyzeImageTask, 
+        request.sid, data.get("fileData"), 
+        data.get("fileName"), data.get('token'))
 
 
 # ------------------------------
@@ -184,3 +212,8 @@ def analyzeVideoTask(sid, fileName):
 @socketio.on("startVideoAnalysis")
 def handleStartVideoAnalysis(data):
     socketio.start_background_task(analyzeVideoTask, request.sid, data.get("fileName"))
+
+
+
+
+

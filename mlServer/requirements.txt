@@ -6,3 +6,5 @@ opencv-python
 scikit-learn
 flask-socketio
 imutils
+pymongo
+PyJWT

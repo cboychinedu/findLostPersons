@@ -1,11 +1,10 @@
 // Importing the necessary modules 
 import "./TrainNeuralNetwork.css";
 import axios from "axios";
-import React, { Fragment, useEffect, useRef, useState } from 'react';
-import DashboardNavbar from '../../Components/Navbar/DashboardNavbar';
-import Footer from '../../Components/Footer/Footer';
-import trainImageDisplay from "../../Images/trainImage.jpg";
-import flashMessageFunction from '../../Components/FlashMessage/FlashMessage';
+import Footer from '@components/Footer/Footer';
+import { Fragment, useEffect, useRef, useState } from 'react';
+import DashboardNavbar from '@components/Navbar/DashboardNavbar';
+import flashMessageFunction from '@components/FlashMessage/FlashMessage';
 
 // Creating the TrainNeuralNetwork component 
 const TrainNeuralNetwork = () => {
@@ -18,9 +17,11 @@ const TrainNeuralNetwork = () => {
     const [zipImageFile, setZipImageFile] = useState(null); // State for the file
     const [labels, setLabels] = useState(""); // State for the text input
 
+    // Setting the flash message and token values 
     const flashMessageDiv = document.querySelector("#flashMessageDiv");
     const tokenValue = localStorage.getItem("xAuthToken") || null;
 
+    // Use effect to get the timer 
     useEffect(() => {
         const timer = setTimeout(() => {
             setLoading(false);
@@ -79,7 +80,7 @@ const TrainNeuralNetwork = () => {
         }, 500);
 
         // Setting the server url 
-        const serverUrl = 'http://localhost:3001/train/trainModel';
+        const serverUrl = `${process.env.REACT_APP_MACHINE_LEARNING_SERVER}/train/trainModel`;
 
         // Using try catch block 
         try {

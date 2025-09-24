@@ -1,12 +1,12 @@
 // Importing the necessary modules 
-import React, { Fragment, useEffect, useState, useRef } from "react";
 import io from "socket.io-client";
-import DashboardNavbar from "../../Components/Navbar/DashboardNavbar";
-import Footer from "../../Components/Footer/Footer";
+import React, { Fragment, useEffect, useState, useRef } from "react";
+import DashboardNavbar from "@components/Navbar/DashboardNavbar";
+import Footer from "@components/Footer/Footer";
 
 
 // Establish socket connection once to the server
-const socket = io("http://127.0.0.1:3001");
+const socket = io(process.env.REACT_APP_SOCKET_URL);
 
 // Creating the dashboard function component
 const Dashboard = () => {
@@ -26,12 +26,12 @@ const Dashboard = () => {
   const imageInputRef = useRef(null);
   const videoInputRef = useRef(null);
 
+  // Getting the token value
+  let tokenValue = localStorage.getItem("xAuthToken") || null;
+
   // Corrected function to fetch the username from the server
   const fetchUsername = async () => {
     try {
-      // Getting the token value
-      let tokenValue = localStorage.getItem("xAuthToken") || null;
-
       // If the token value is not present, set the username
       // as guest
       if (!tokenValue) {
@@ -42,7 +42,7 @@ const Dashboard = () => {
 
       // Making a request to the backend to get the user's username
       // NOTE: Replace this mock URL with your actual backend endpoint.
-      const response = await fetch("http://localhost:5000/api/username", {
+      const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/api/username`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -192,6 +192,7 @@ const Dashboard = () => {
         socket.emit("analyzeImage", {
           fileData: event.target.result,
           fileName: file.name,
+          token: tokenValue,
         });
       };
       reader.readAsDataURL(file);
@@ -213,7 +214,7 @@ const Dashboard = () => {
       formData.append("file", file);
 
       try {
-        const response = await fetch("http://127.0.0.1:3001/uploadVideo", {
+        const response = await fetch(`${process.env.REACT_APP_MACHINE_LEARNING_SERVER}/uploadVideo`, {
           method: "POST",
           body: formData,
         });

@@ -67,7 +67,7 @@ const Register = () => {
     });
 
     // Defining the server URL for the registration endpoint.
-    const serverUrl = "http://localhost:5000/register";
+    const serverUrl = `${process.env.REACT_APP_SERVER_URL}/register`;
 
     // Using try-catch for error handling during the fetch request.
     try {
