@@ -1,7 +1,7 @@
 // Importing the necessary modules 
 import React, { Fragment, useEffect, useState, useRef } from "react";
 import io from "socket.io-client";
-import DashboardNavbar from "../../Components/Navbar/DashboardNavbar"
+import DashboardNavbar from "../../Components/Navbar/DashboardNavbar";
 import Footer from "../../Components/Footer/Footer";
 
 

@@ -168,14 +168,19 @@ const TrainNeuralNetwork = () => {
                         <h1 className="text-3xl font-bold mb-4">Train Neural Network</h1>
                         <p> Watch the video to learn how to train the machine learning model. </p>
                         <div className="mb-[60px] mt-[10px] h-[fit-content] w-full"> 
-                            <video
-                            controls 
+                            {/* Adding the youtube link */}
+                            <iframe 
+                                className="w-[75%] h-[551px] object-contain rounded-lg shadow"
+                                width="956" 
+                                height="539" 
+                                src="https://www.youtube.com/embed/kOd9bkh4iL8" 
+                                title="zavod project" 
+                                frameborder="0" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                                referrerpolicy="strict-origin-when-cross-origin" 
+                                allowfullscreen>
 
-                            className="w-[75%] h-[551px] object-contain rounded-lg shadow"
-                            id="videoPreview"
-                            >
-                                <p> Play the video</p>
-                            </video>
+                            </iframe>
                         </div>
 
                         <p className="mb-4">This is where you can train the machine's Neural Network model on the <b className="text-[18px] ml-[7px]"> missing person's image. </b> <br />
