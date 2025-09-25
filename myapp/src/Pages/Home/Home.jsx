@@ -1,13 +1,13 @@
 // Importing the necessary module 
 import "./Home.css"; 
-import ciaLogo from "../../Images/ciaLogo.png";
+import ciaLogo from "@images/ciaLogo.png";
 import { Fragment, useEffect, useState, useContext } from 'react';
 import { MoonLoader } from 'react-spinners';
-import { AuthContext } from '../../Auth/AuthContext';
-import RootNavbar from "../../Components/Navbar/RootNavbar";
-import flashMessageFunction from "../../Components/FlashMessage/FlashMessage";
+import { AuthContext } from '@auth/AuthContext';
+import RootNavbar from "@components/Navbar/RootNavbar";
+import flashMessageFunction from "@components/FlashMessage/FlashMessage";
 import axios from "axios"; 
-import Footer from "../../Components/Footer/Footer";
+import Footer from "@components/Footer/Footer";
 
 const Home = () => {
   // Get setToken from context so we can store auth token globally
