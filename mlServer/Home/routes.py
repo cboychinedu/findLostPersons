@@ -251,7 +251,7 @@ def analyzeVideoTask(sid, fileName, token):
         result = db.saveVideoAnalysis('videoHistory', data)
         
         # Cleanup temporary files
-        os.remove(videoPath)
+        # os.remove(videoPath)
 
     # On exception as error, execute the following code below     
     except Exception as e:

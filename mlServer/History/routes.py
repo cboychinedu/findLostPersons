@@ -11,7 +11,7 @@
 import os   
 import jwt 
 from Database.mongo import MongoDB
-from flask import Blueprint, request 
+from flask import Blueprint, request, jsonify 
 
 # Creating an instance of the database 
 db = MongoDB()
@@ -41,18 +41,28 @@ def analyzedImageHistory():
 # Setting the analyzed video history routes 
 @history.route("/analyzedVideoHistory", methods=["POST"])
 def analyzedVideoHistory(): 
-    # Getting the request headers 
-    token = request.headers.get('xAuthtoken')
+    # Using try, and except block 
+    try: 
+        # Getting the request headers 
+        token = request.headers.get('xAuthtoken')
 
-    # Retrive the video data 
-    # Connecting to the mongodb database 
-    db.connect('mongodb://localhost:27017/', 'findLostFaces')
+        # Retrive the video data 
+        # Connecting to the mongodb database 
+        db.connect('mongodb://localhost:27017/', 'findLostFaces')
 
-    # Decoding the token 
-    decodedToken = jwt.decode(token, options={"verify_signature": False})
+        # Decoding the token 
+        decodedToken = jwt.decode(token, options={"verify_signature": False})
 
-    # Retrive the images data 
-    result = db.retriveVideoData(collectionName='', email=decodedToken["email"])
+        # Retrive the images data 
+        result = db.retriveVideoData(collectionName='videoHistory', email=decodedToken["email"])
 
-    # Returning the result 
-    return result 
+        # Returning the result 
+        return result 
+    
+    # Except 
+    except Exception as e: 
+        return jsonify({
+            "message": str(e), 
+            "status": "error",
+            "statusCode": 500
+        })

@@ -77,5 +77,40 @@ class MongoDB:
             return jsonData 
         
     # Creating a method for retriving the video data 
-    def retriveVideoData(self, collectionName, email): 
-        pass 
+    def retriveVideoData(self, collectionName, email):
+        # Setting the query 
+        query = { "emailAddress": email } 
+
+        # Getting the collection 
+        collection = self.db[collectionName]
+
+        # Find all the data for the video analysis by the 
+        # specified email address
+        data = collection.find(query, {
+            "_id": 1, 
+            "predictedLabel": 1, 
+            "proba": 1, 
+            "videoUrl": 1, 
+            "type": 1 
+        })
+
+        # if the returned type is None type, execute the 
+        # block of code below 
+        if (data == None): 
+            # Return the following 
+            return jsonify({
+                "status": "error", 
+                "message": "Error fetching the video history data", 
+                "statusCode": 404 
+            })
+        
+        # Else if the history data for the video file exists 
+        # Execute the block of code below 
+        else: 
+            # Convert the mongodb documents into a json object 
+            jsonData = json.dumps(list(data), default=str) 
+            jsonData = jsonify(json.loads(jsonData))
+
+            # Return the json object 
+            return jsonData 
+

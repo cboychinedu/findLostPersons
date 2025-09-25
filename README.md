@@ -57,6 +57,12 @@ This project is a web application designed to help find and report lost persons.
 
 <h4> Backend </h4>
 
+<p> On Mac, start the mongodb server </p>
+
+```bash 
+    $ brew services start mongodb/brew/mongodb-community
+```
+
 <p>
 <ul>
 <li> Node.js & Express: A robust and scalable backend runtime and web framework. </li>
