@@ -22,6 +22,27 @@ This project is a web application designed to help find and report lost persons.
 </p>
 
 
+<h4> Inspiration </h4>
+<img src="./images/ashleySummers.jpg">
+<p> 
+The genesis of the findLostPerson project lies in the ongoing case of <b> Ashley Nicole Summers</b>. 
+
+<br> Ashley, born June 16, 1993, was 14 years old when she disappeared near her home in Cleveland, Ohio, in early July 2007.
+
+<b> Key details from her case that informed this project:</b>
+
+- She was last seen on July 4, 2007.
+
+- Because she was frequently staying with her relatives, her disappearance tragically went unnoticed for two days.
+
+- Earlier that day, her ability to contact family or friends was removed when her phone was broken.
+
+Her case where every hour was critical—is a powerful motivation to develop better, faster technologies for locating lost or missing individuals.
+
+I believe if we are able to train a machine learning model, and perform an analysis on all camera frames, we should be able to locate her or know her last know location. 
+
+</p>
+
 ## Technologies Used
 - React
 - Python 

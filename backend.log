@@ -1,0 +1,13 @@
+
+> Video Finding Application@1.0.0 start
+> nodemon dist/app.js
+
+[33m[nodemon] 1.19.4[39m
+[33m[nodemon] to restart at any time, enter `rs`[39m
+[33m[nodemon] watching dir(s): *.*[39m
+[33m[nodemon] watching extensions: js,mjs,json[39m
+[32m[nodemon] starting `node dist/app.js`[39m
+Server is running at http://localhost:5000
+(node:72872) DeprecationWarning: collection.ensureIndex is deprecated. Use createIndexes instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+Connected to the database successfully
