@@ -8,22 +8,25 @@
 # history data of the analyzed video and images. 
 
 # Importing the necessary modules 
-import os 
-import cv2 
-import base64 
-from datetime import datetime 
-from flask import Blueprint, request
+import os   
+from Database.mongo import MongoDB
+from flask import Blueprint 
 
-# Path to load the history files 
-tempDir = "tempFile" 
+# Creating an instance of the database 
+db = MongoDB()
 
-# Ensuring the temp direcory exists 
-os.makedirs(tempDir, exist_ok=True)
+# Connecting to the mongodb database 
+db.connect('mongodb://localhost:27017/', 'findLostFaces')
 
 # Setting the blueprint 
 history = Blueprint("history", __name__)
 
-# Setting the history route 
-@history.route("/", methods=["GET", "POST"])
-def homePage(): 
+# Setting the analyzed image history route 
+@history.route("/analyzedImageHistory", methods=["POST"])
+def analyzedImageHistory(): 
+    pass 
+
+# Setting the analyzed video history routes 
+@history.route("/analyzedVideoHistory", methods=["POST"])
+def analyzedVideoHistory(): 
     pass 

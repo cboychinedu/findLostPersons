@@ -4,9 +4,11 @@ import React, { Fragment, useEffect, useState, useRef } from "react";
 import DashboardNavbar from "@components/Navbar/DashboardNavbar";
 import Footer from "@components/Footer/Footer";
 
-
 // Establish socket connection once to the server
 const socket = io(process.env.REACT_APP_SOCKET_URL);
+
+// Getting the token value
+let tokenValue = localStorage.getItem("xAuthToken") || null;
 
 // Creating the dashboard function component
 const Dashboard = () => {
@@ -25,9 +27,6 @@ const Dashboard = () => {
   // Setting the refs for the image and video inputs
   const imageInputRef = useRef(null);
   const videoInputRef = useRef(null);
-
-  // Getting the token value
-  let tokenValue = localStorage.getItem("xAuthToken") || null;
 
   // Corrected function to fetch the username from the server
   const fetchUsername = async () => {
@@ -228,6 +227,7 @@ const Dashboard = () => {
         setStatusMessage("Upload complete. Starting analysis...");
         socket.emit("startVideoAnalysis", {
           fileName: result.fileName,
+          token: tokenValue,
         });
         
       } catch (error) {

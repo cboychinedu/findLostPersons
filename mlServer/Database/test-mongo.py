@@ -5,10 +5,6 @@ import json
 from pymongo import MongoClient 
 from flask import jsonify
 
-# Getting the URI for the mongodb database 
-# client = MongoClient('mongodb://localhost:27017/')
-# db = client['car_tyre_analysis']
-# collection = db['users']
 
 # Creating a class for handling the database connections 
 class MongoDB: 
