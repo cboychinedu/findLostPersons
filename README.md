@@ -22,12 +22,12 @@ This project is a web application designed to help find and report lost persons.
 </p>
 
 
-<h4> Inspiration </h4>
+<h3> Inspiration </h3>
 <img src="./images/ashleySummers.jpg">
 <p> 
 The genesis of the findLostPerson project lies in the ongoing case of <b> Ashley Nicole Summers</b>. 
 
-<br> Ashley, born June 16, 1993, was 14 years old when she disappeared near her home in Cleveland, Ohio, in early July 2007.
+Ashley, born June 16, 1993, was 14 years old when she disappeared near her home in Cleveland, Ohio, in early July 2007.
 
 <b> Key details from her case that informed this project:</b>
 
