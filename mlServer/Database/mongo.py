@@ -48,7 +48,7 @@ class MongoDB:
 
         # Find all the data for image analysis by the specified 
         # email address 
-        data = collection.find(quit, {
+        data = collection.find(query, {
             "_id": 1, 
             "predictedLabel": 1, 
             "proba": 1, 
@@ -70,8 +70,12 @@ class MongoDB:
         # Execute the block of code below 
         else: 
             # Convert the MongoDB documents into a json object 
-            jsonData = json.dumps(dict(data), default=str)
-            jsonData = jsonify(jsonData)
+            jsonData = json.dumps(list(data), default=str)
+            jsonData = jsonify(json.loads(jsonData))
 
             # Return the json object 
             return jsonData 
+        
+    # Creating a method for retriving the video data 
+    def retriveVideoData(self, collectionName, email): 
+        pass 

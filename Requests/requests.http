@@ -1,0 +1,4 @@
+### Create item
+POST http://localhost:3001/history/analyzedImageHistory
+content-type: application/json
+xAuthtoken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1pa2VhZGFtc0BnbWFpbC5jb20iLCJpc0xvZ2dlZEluIjp0cnVlLCJpZCI6IjY4ZDQzMmU3NTQyNjU5YWY1MDE3NWIyNiIsImlhdCI6MTc1ODczNzE0NiwiZXhwIjoxNzYxMzI5MTQ2fQ.uemLZSGsy-tXE0a4IJvFQaG96_hSq_b4xMUn5HI6CFg
