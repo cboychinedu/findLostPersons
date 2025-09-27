@@ -1,12 +1,12 @@
 // Importing the necessary modules 
 import "./Register.css"; // Importing the CSS file for the Register component's styles.
-import RootNavbar from "../../Components/Navbar/RootNavbar"; // Importing the navigation bar component for the root (public) pages.
-import ciaLogo from "../../Images/ciaLogo.png"; // Importing the CIA logo image asset.
-import { Fragment, useState } from "react"; // Importing Fragment and useState hook from React to manage component state.
-import Footer from "../../Components/Footer/Footer"; // Importing the Footer component.
-import flashMessageFunction from "../../Components/FlashMessage/FlashMessage"; // Importing a utility function to display flash messages.
+import RootNavbar from "@components/Navbar/RootNavbar"; 
+import ciaLogo from "@images/ciaLogo.png"; 
+import { Fragment, useState } from "react"; 
+import Footer from "@components/Footer/Footer"; 
+import flashMessageFunction from "@components/FlashMessage/FlashMessage"; 
 
-
+// Creating the register function component 
 const Register = () => {
   // Setting the state variables using the useState hook.
   // State for the user's full name.

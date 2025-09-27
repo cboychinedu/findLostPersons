@@ -9,6 +9,7 @@ import flashMessageFunction from "@components/FlashMessage/FlashMessage";
 import axios from "axios"; 
 import Footer from "@components/Footer/Footer";
 
+// Creating the home component 
 const Home = () => {
   // Get setToken from context so we can store auth token globally
   const { setToken } = useContext(AuthContext);
