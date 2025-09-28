@@ -22,6 +22,16 @@ This project is a web application designed to help find and report lost persons.
 </p>
 
 
+<h3> Our Services </h3>
+
+<p> 
+<img src="./images/services1.png"> 
+
+<img src="./images/services2.png">
+
+</p>
+
+
 <h3> Inspiration </h3>
 <img src="./images/ashleySummers.jpg">
 <p> 

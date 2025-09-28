@@ -1,10 +1,13 @@
 // Importing the necessary modules 
 import React from "react";
-import ciaLogo from "../../Images/ciaLogo.png"; 
+import ciaLogo from "@images/ciaLogo.png"; 
 
 // Creating the footer 
 const Footer = () => {
+  // Getting the current year 
   const currentYear = new Date().getFullYear();
+
+  // returning the jsx component 
   return (
     <footer className="bg-[rgb(18,48,114)] text-gray-200 py-12 shadow-inner mt-[160px]">
       <div className="container mx-auto px-4">
@@ -38,7 +41,7 @@ const Footer = () => {
                 </a>
               </li>
               <li>
-                <a href="#" className="text-sm hover:text-white text-decoration-none text-white transition-colors duration-300">
+                <a href="/services" className="text-sm hover:text-white text-decoration-none text-white transition-colors duration-300">
                   Services
                 </a>
               </li>

@@ -27,7 +27,7 @@ const DashboardNavbar = () => {
 
     // return the jsx component 
     return (
-        <nav className="p-4 text-white flex justify-between items-center bg-[rgb(18,48,114)]"> 
+        <nav className="p-4 fixed w-full text-white flex justify-between items-center bg-[rgb(18,48,114)]"> 
             <a className="text-decoration-none text-lg font-bold flex items-center" href="/dashboard"> 
                 <img src={logo} alt="CIA logo" className="h-[50px]" /> 
                 <a href="/dashboard" className="ml-2 hover:underline text-decoration-none text-white">Find Missing Persons</a>

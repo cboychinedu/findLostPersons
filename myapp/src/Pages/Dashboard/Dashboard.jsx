@@ -259,7 +259,7 @@ const Dashboard = () => {
           <DashboardNavbar />
 
           <div className="container p-4 md:p-8">
-            <header className="text-left my-8 mt-[60px]">
+            <header className="text-left my-8 mt-[150px]">
               <h1 className="text-4xl font-extrabold text-gray-900">Dashboard</h1>
               <p className="mt-2 text-lg text-gray-600">
                 Welcome, <b>{userName}</b>. Upload media for analysis.

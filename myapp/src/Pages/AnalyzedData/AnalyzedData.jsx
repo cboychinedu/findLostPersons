@@ -159,7 +159,7 @@ const AnalyzedHistoryData = () => {
             </div> 
 
             {/* Setting a container to hold all the analyzed history data */}
-            <div className="container h-[fit-content] mb-[60vh] mt-[125px] mx-auto p-4">
+            <div className="container h-[fit-content] mb-[60vh] mx-auto pt-[200px]">
 
                 <h2 className="text-2xl font-bold mb-4">Analyzed Data History</h2>
 

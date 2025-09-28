@@ -1,8 +1,6 @@
 // Importing the necessary modules and components 
 import React, { useContext, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { AuthContext } from '../../Auth/AuthContext';
-import logo from '../../Images/ciaLogo.png'; 
+import { AuthContext } from '../../Auth/AuthContext'; 
 
 // Since we cannot use external files, we will use a simple inline SVG for the logo.
 const logoSVG = (
@@ -20,7 +18,7 @@ const RootNavbar = () => {
       {/* Logo Section */}
       <div className="text-lg font-bold flex items-center">
         {logoSVG}
-        <Link to="/" className="ml-2 hover:underline text-decoration-none text-white w-full">Find Missing Persons</Link>
+        <a href="/" className="ml-2 hover:underline text-decoration-none text-white w-full">Find Missing Persons</a>
       </div>
 
       {/* Hamburger menu for mobile */}
@@ -38,13 +36,12 @@ const RootNavbar = () => {
       <div className="hidden md:flex items-center space-x-4">
         {token ? (
             <>
-              <Link to="/dashboard" className="hover:underline text-decoration-none text-white">
+              <a href="/dashboard" className="hover:underline text-decoration-none text-white">
                 Dashboard
-              </Link>
-              <Link to="/logout" className="hover:underline text-decoration-none text-white">
+              </a>
+              <a href="/logout" className="hover:underline text-decoration-none text-white">
                 Logout
-              </Link>
-            </>
+              </a>href           </>
         ) : (
           <>
             <a href="/login" className="mr-4 hover:underline text-decoration-none text-white">
@@ -53,6 +50,9 @@ const RootNavbar = () => {
             <a href="/register" className="hover:underline text-decoration-none text-white">
               Register
             </a>
+            <a href="/services" className="hover:underline text-decoration-none text-white"> 
+                Services
+              </a>
           </>
         )}
       </div>
@@ -73,12 +73,12 @@ const RootNavbar = () => {
           </button>
           {token ? (
               <>
-                <Link onClick={() => setIsMobileMenuOpen(false)} to="/dashboard" className="w-full text-center hover:underline text-decoration-none text-white">
+                <a onClick={() => setIsMobileMenuOpen(false)} href="/dashboard" className="w-full text-center hover:underline text-decoration-none text-white">
                   Dashboard
-                </Link>
-                <Link onClick={() => setIsMobileMenuOpen(false)} to="/logout" className="w-full text-center hover:underline text-decoration-none text-white">
+                </a>
+                <a onClick={() => setIsMobileMenuOpen(false)} href="/logout" className="w-full text-center hover:underline text-decoration-none text-white">
                   Logout
-                </Link>
+                </a>
               </>
           ) : (
             <>
@@ -88,6 +88,9 @@ const RootNavbar = () => {
               <a onClick={() => setIsMobileMenuOpen(false)} href="/register" className="w-full text-center hover:underline text-decoration-none text-white">
                 Register
               </a>
+              <a href="/services"> 
+                Services
+              </a>
             </>
           )}
         </div>
@@ -96,5 +99,5 @@ const RootNavbar = () => {
   );
 };
 
-// Exporting the RootNavbar component as the default export 
+// Exporting the RootNavbar component
 export default RootNavbar;

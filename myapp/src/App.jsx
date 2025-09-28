@@ -1,13 +1,13 @@
 // importing the necessary modules 
-import { Component } from 'react';
 import Home from "./Pages/Home/Home";
+import { Component, Fragment } from 'react';
 import { AuthContext } from './Auth/AuthContext';
 import Register from "./Pages/Register/Register";
 import Dashboard from "./Pages/Dashboard/Dashboard";
+import Services from "./Pages/Services/Services";
 import AnalyzedHistoryData from './Pages/AnalyzedData/AnalyzedData';
 import TrainNeuralNetwork from './Pages/TrainNeuralNetwork/TrainNetwork';
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { Fragment } from 'react';
 
 // Setting the token variable 
 let tokenValue = localStorage.getItem("xAuthToken") || null; 
@@ -57,6 +57,7 @@ class App extends Component {
               <Route path="/dashboard" element={<Dashboard /> } />
               <Route path="/history" element={<AnalyzedHistoryData /> } /> 
               <Route path="/trainNeuralNetwork" element={<TrainNeuralNetwork /> } />
+              <Route path="/services" element={<Services /> } /> 
               <Route path="*" exact={true} element={<Dashboard /> } />
           </Routes>
           </BrowserRouter>
@@ -77,6 +78,7 @@ class App extends Component {
                 <Route path="/dashboard" element={<Home />} />
                 <Route path="/login" element={<Home /> } /> 
                 <Route path="/register" element={<Register />} />
+                 <Route path="/services" element={<Services /> } />
                 <Route path="*" exact={true} element={<Home />} />
               </Routes>
           </BrowserRouter>

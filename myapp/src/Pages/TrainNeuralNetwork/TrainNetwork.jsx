@@ -163,7 +163,7 @@ const TrainNeuralNetwork = () => {
             </div>
 
             {/* Adding the main div */}
-            <div className="container min-h-screen p-30 mx-auto my-10 mt-[110px] mb-[300px]">
+            <div className="container min-h-screen p-30 mx-auto pt-[200px] mb-[300px]">
                 <div className="flex flex-col items-center space-y-10 mb-[50px]">
                     <div className="w-full">
                         <h1 className="text-3xl font-bold mb-4">Train Neural Network</h1>
