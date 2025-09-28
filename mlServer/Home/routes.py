@@ -23,7 +23,7 @@ from .videoClass.videoAnalysis import VideoModelClass
 from flask import Blueprint, jsonify, request, send_from_directory
 
 # Paths for demonstration
-tempDir = "tempFiles"
+tempDir = "tempFile"
 
 # Creating an instance of the database 
 db = MongoDB() 
