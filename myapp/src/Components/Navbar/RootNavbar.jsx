@@ -39,9 +39,13 @@ const RootNavbar = () => {
               <a href="/dashboard" className="hover:underline text-decoration-none text-white">
                 Dashboard
               </a>
+              <a href="/about" className="hover:underline text-decoration-none text-white"> 
+                About 
+              </a>
               <a href="/logout" className="hover:underline text-decoration-none text-white">
                 Logout
-              </a>href           </>
+              </a> 
+            </>
         ) : (
           <>
             <a href="/login" className="mr-4 hover:underline text-decoration-none text-white">
@@ -52,7 +56,10 @@ const RootNavbar = () => {
             </a>
             <a href="/services" className="hover:underline text-decoration-none text-white"> 
                 Services
-              </a>
+            </a>
+            <a href="/about" className="hover:underline text-decoration-none text-white"> 
+              About 
+            </a>
           </>
         )}
       </div>

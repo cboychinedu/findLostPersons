@@ -29,7 +29,7 @@ const Footer = () => {
           {/* Column 2: Quick Links */}
           <div>
             <h3 className="text-xl font-bold text-white mb-4">Quick Links</h3>
-            <ul className="space-y-2">
+            <ul className="space-y-2 pl-[0rem]">
               <li>
                 <a href="/" className="text-sm text-white hover:text-white text-decoration-none transition-colors duration-300">
                   Home
@@ -46,8 +46,8 @@ const Footer = () => {
                 </a>
               </li>
               <li>
-                <a href="#" className="text-sm text-white text-decoration-none hover:text-white transition-colors duration-300">
-                  FAQ
+                <a href="/about" className="text-sm text-white text-decoration-none hover:text-white transition-colors duration-300">
+                  About
                 </a>
               </li>
             </ul>
@@ -56,7 +56,7 @@ const Footer = () => {
           {/* Column 3: Contact Us */}
           <div>
             <h3 className="text-xl font-bold text-white mb-4">Contact Us</h3>
-            <ul className="space-y-2 text-sm">
+            <ul className="space-y-2 text-sm pl-[0rem]">
               <li>Email: support@fmp.com</li>
               <li>Phone: +1 (555) 123-4567</li>
               <li>Address: 123 Missing Lane, Tech City, USA</li>
