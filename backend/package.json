@@ -1,7 +1,7 @@
 {
-  "name": "Video Finding Application",
+  "name": "video-finding-application",
   "version": "1.0.0",
-  "description": "A website for trading NFT",
+  "description": "A website for analyzing video/images frames for missing persons",
   "main": "dist/app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
