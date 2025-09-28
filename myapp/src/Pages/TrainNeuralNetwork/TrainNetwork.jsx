@@ -171,7 +171,7 @@ const TrainNeuralNetwork = () => {
                         <div className="mb-[60px] mt-[10px] h-[fit-content] w-full"> 
                             {/* Adding the youtube link */}
                             <iframe 
-                                className="w-[75%] h-[551px] object-contain rounded-lg shadow"
+                                className="w-[100%] h-[551px] object-contain rounded-lg shadow"
                                 width="956" 
                                 height="539" 
                                 src="https://www.youtube.com/embed/kOd9bkh4iL8" 

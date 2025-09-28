@@ -14,7 +14,7 @@ let tokenValue = localStorage.getItem("xAuthToken") || null;
 const Dashboard = () => {
   // Setting the state
   const [loading, setLoading] = useState(true);
-  const [userName, setUsername] = useState("Alan Smith");
+  const [userName, setUsername] = useState("John Doe");
   const [statusMessage, setStatusMessage] = useState("");
   const [detectionMessage, setDetectionMessage] = useState(null);
   const [isProcessingImage, setIsProcessingImage] = useState(false);

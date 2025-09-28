@@ -28,10 +28,10 @@ const DashboardNavbar = () => {
     // return the jsx component 
     return (
         <nav className="p-4 text-white flex justify-between items-center bg-[rgb(18,48,114)]"> 
-            <div className="text-lg font-bold flex items-center"> 
+            <a className="text-decoration-none text-lg font-bold flex items-center" href="/dashboard"> 
                 <img src={logo} alt="CIA logo" className="h-[50px]" /> 
                 <a href="/dashboard" className="ml-2 hover:underline text-decoration-none text-white">Find Missing Persons</a>
-            </div>
+            </a>
 
             {/* Hamburger menu for mobile */}
             <button 
@@ -72,11 +72,11 @@ const DashboardNavbar = () => {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
                         </svg>
                     </button>
-                    <a onClick={() => setIsMobileMenuOpen(false)} href="#" className="w-full text-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded hover:underline text-decoration-none">
+                    <a onClick={() => setIsMobileMenuOpen(false)} href="/trainNeuralNetwork" className="w-full text-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded hover:underline text-decoration-none">
                         Train Neural Net On Missing Persons
                     </a>
-                    <a onClick={() => setIsMobileMenuOpen(false)} href="#" className="w-full text-center hover:underline text-decoration-none text-white">
-                        Analyzed Videos
+                    <a onClick={() => setIsMobileMenuOpen(false)} href="/history" className="w-full text-center hover:underline text-decoration-none text-white">
+                        Analyzed Data
                     </a>
                     <a onClick={() => setIsMobileMenuOpen(false)} href="/dashboard" className="w-full text-center hover:underline text-decoration-none text-white">
                         Dashboard
