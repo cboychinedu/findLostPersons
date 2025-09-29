@@ -271,8 +271,11 @@ const Dashboard = () => {
 
               {/* Adding a selection tag to selected the trained ml model */}
               <div> 
-                  <label>Choose a trained machine learning model:</label>
-                  <select name="mlModel" id="mlModel" className="h-[37px] ml-2.5 w-1/5 border border-[#757575] rounded-md pl-2.5 bg-transparent">
+                  <label><b> Choose a trained machine learning model: </b></label>
+                  <select name="mlModel" id="mlModel" 
+                  className="h-[37px] ml-2.5 w-1/5 border 
+                  border-black rounded-md 
+                  pl-2.5 bg-transparent">
                     <option value="volvo">Mark Brown</option>
                     <option value="saab"> Sarah </option>
                     <option value="opel">Ada Face </option>
