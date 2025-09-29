@@ -87,7 +87,7 @@ const TrainNeuralNetwork = () => {
             // Setting the header configurations
             const config = {
                 headers: {
-                    'x-auth-token': tokenValue,
+                    'xAuthtoken': tokenValue,
                 }
             };
 

@@ -6,7 +6,12 @@ import imutils
 import numpy as np
 from imutils import paths 
 from sklearn.svm import SVC
+from bson.binary import Binary
+from Database.mongo import MongoDB
 from sklearn.preprocessing import LabelEncoder
+
+# Creating an instsance of the database class 
+db = MongoDB() 
 
 # Setting the path to the various models and weight
 # Setting the path to the model 
@@ -31,7 +36,7 @@ class TrainModelClass:
         self.confidenceValue = 0.6 
 
     # Creating a method to load the model from disk 
-    def loadModelFromDisk(self): 
+    def loadModelFromDisk(self, emailAddress=None): 
         # loading the model from disk 
         protoPath = os.path.sep.join([self.detectorModel, 'deploy.prototxt'])
         modelPathFile = os.path.sep.join([self.detectorModel, 'res10.caffemodel'])
@@ -53,18 +58,19 @@ class TrainModelClass:
         # Initialize the total number of faces processed 
         total = 0 
 
+        # Using try catch method
         try:
             # Creating a loop to loop through the images in the path specified 
             # loading the image, resizing it to have a width of 600 pixels and then 
             # grab the image dimensions, construct a blob from the image, and apply 
             # opencv deep learning face detector to localize the face and ensure that 
             # at least one face was found. 
-            for (i, imagePaths) in enumerate(imagePaths): 
+            for (i, imagePath) in enumerate(imagePaths): 
                 # Getting the name 
-                name = imagePaths.split(os.path.sep)[-2].lower()
+                name = imagePath.split(os.path.sep)[-2].lower()
 
                 # Reading the images 
-                image = cv2.imread(imagePaths)
+                image = cv2.imread(imagePath)
                 image = imutils.resize(image, width=600)
                 (h, w) = image.shape[:2]
 
@@ -146,8 +152,54 @@ class TrainModelClass:
             f.write(pickle.dumps(encoder))
             f.close() 
 
+            # Connecting into the database 
+            db.connect('mongodb://localhost:27017/', 'findLostFaces')
+
+            # Prepare the data and save to mongodb 
+            # read the saved pickle files back into memory as bytes 
+            # the embeddings data is the dictory embeddings 
+            with open(self.embeddings, 'rb') as f:
+                embeddingDataBytes = f.read() 
+
+            # The model is trained SVC classifier 
+            with open(self.recognizeModel, 'rb') as f: 
+                recognizerModel = f.read() 
+
+            # The encoder is trained LabelEncoder
+            with open(self.labelModel, 'rb') as f: 
+                labelEncoder = f.read() 
+
+            # Setting the ml data 
+            mlData = {
+                "name": "FaceRecognition_V1", 
+                "email": emailAddress,
+                "labels": self.labels,  
+                "totalFacesProcessed": total, 
+                "dateTrained":db.getCurrentTime(), 
+                "models": [
+                    {
+                        "type": "embeddingsData", 
+                        "description": "Known face embeddings and name", 
+                        "data": Binary(embeddingDataBytes)
+                    }, 
+                    {
+                        "type": "svcRecognizerModel", 
+                        "description": "Trained SVC classification model", 
+                        "data": Binary(recognizerModel)
+                    }, 
+                    {
+                        "type": "labelEncoder", 
+                        "description": "Trained LabelEncoder for names/labels", 
+                        "data": Binary(labelEncoder)
+                    }
+                ]
+            }
+
+            # Creating a collection 
+            result = db.saveMachineLearningModel(collectionName="models", data=mlData)
+
             # Setting the message 
-            message = "Successful training"
+            message = f"Successful training. Models saved to MongoDB with ID: {result}"
             status = "success" 
 
             # return success 
@@ -156,7 +208,7 @@ class TrainModelClass:
         # On exeception return the error
         except Exception as error:
             # Execute the block of code below 
-            message = error 
+            message = str(error) 
             status = "error"
 
             # Setting the error message 

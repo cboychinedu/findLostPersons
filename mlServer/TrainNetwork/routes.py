@@ -9,6 +9,7 @@
 
 # importing the necessary modules
 import os
+import jwt 
 import zipfile  
 from datetime import datetime
 from flask import Blueprint, jsonify, request
@@ -43,6 +44,15 @@ def trainModelFunction():
             zipImageFile = request.files['file']
             labels = request.form.get("labels")
 
+            # Getting the request headers 
+            token = request.headers.get('xAuthtoken')
+
+            # Decoding the token 
+            decodedToken = jwt.decode(token, options={"verify_signature": False})
+
+            # Getting the email address 
+            emailAddress = decodedToken["email"]
+
             # Saving giving the files a unique name using timestamp  
             timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
             
@@ -65,7 +75,7 @@ def trainModelFunction():
             trainmodel = TrainModelClass(labels=labels)
 
             # Training the model on the uploaded images in zip format 
-            (message, status) = trainmodel.loadModelFromDisk() 
+            (message, status) = trainmodel.loadModelFromDisk(emailAddress=emailAddress) 
 
             # Checking the message and status 
             if (status == "error"): 
@@ -89,19 +99,6 @@ def trainModelFunction():
                     "statusCode": 200
                 })
 
-
-
-
-
-
-
-
-
-
-
-
-
-
         # Unless exception as error 
         except Exception as error: 
             print(f"[ERROR]: An error occurred during training - {str(error)}")
@@ -109,6 +106,6 @@ def trainModelFunction():
             # Exception error message to the client 
             return jsonify({
                 "status": "error", 
-                "message": error, 
+                "message": str(error), 
                 "statusCode": 500
             })

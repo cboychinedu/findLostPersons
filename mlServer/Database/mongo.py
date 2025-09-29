@@ -2,6 +2,7 @@
 
 # Importing the necessary modules 
 import json 
+import datetime
 from flask import jsonify
 from pymongo import MongoClient 
 
@@ -15,6 +16,28 @@ class MongoDB:
     def connect(self, uri, dbName): 
         self.clinet = MongoClient(uri) 
         self.db = self.clinet[dbName]
+
+    # Get the currect time 
+    def getCurrentTime(self): 
+        # Generates the current time in a universally accepted
+        # Standardized format (ISO 8601)
+        nowUtc = datetime.datetime.utcnow()
+
+        # Format it into an ISO 8601 string, suitable for JSON/BSON 
+        # the isoformat() method handles this automatically 
+        return nowUtc.isoformat() 
+    
+    # Creating a method for saving the trained machine learing 
+    # model into the mongodb database 
+    def saveMachineLearningModel(self, collectionName, data):
+        # Getting the collection object 
+        collection = self.db[collectionName]
+
+        # Saving the collection data 
+        result = collection.insert_one(data)
+        
+        # Returning the result 
+        return result.acknowledged 
 
     # Creating a method for saving the analyzed video 
     def saveVideoAnalysis(self, collectionName, data): 
