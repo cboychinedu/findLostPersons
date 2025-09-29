@@ -1,11 +1,13 @@
 // Importing the necessary modules 
-import React, { useState, Fragment } from 'react';
+import { Fragment } from 'react';
 import Footer from "@components/Footer/Footer";
 import RootNavbar from '@components/Navbar/RootNavbar';
-import { Search, Map, Users, BookOpen, MessageSquare, Shield, ChevronRight, ArrowLeft, Send, CheckCircle, Lightbulb } from 'lucide-react';
+import { 
+    Users, MessageSquare, 
+    Shield, Lightbulb } 
+from 'lucide-react';
 
-
-// --- About Page Helper Component ---
+// Setting the pillar card 
 const PillarCard = ({ title, description, icon: Icon, color }) => (
     <div className="p-6 rounded-xl bg-white border border-gray-100 shadow-md transition-shadow hover:shadow-lg">
         <Icon size={32} className={`mx-auto mb-3 ${color}`} />
@@ -14,7 +16,7 @@ const PillarCard = ({ title, description, icon: Icon, color }) => (
     </div>
 );
 
-// 
+// Defining the about page 
 const AboutPage = () => {
     return (
         <Fragment> 
@@ -84,5 +86,3 @@ const AboutPage = () => {
 
 // Exporting the about page 
 export default AboutPage; 
-
-

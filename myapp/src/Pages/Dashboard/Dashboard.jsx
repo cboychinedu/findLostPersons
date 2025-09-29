@@ -258,6 +258,7 @@ const Dashboard = () => {
         <div className="min-h-screen bg-gray-100 font-sans text-gray-800">
           <DashboardNavbar />
 
+          {/* Adding the dashboard */}
           <div className="container p-4 md:p-8">
             <header className="text-left my-8 mt-[150px]">
               <h1 className="text-4xl font-extrabold text-gray-900">Dashboard</h1>
@@ -267,6 +268,19 @@ const Dashboard = () => {
               <p className="text-left mt-4 text-gray-500">
                 The system will process your image or video and display the results below.
               </p>
+
+              {/* Adding a selection tag to selected the trained ml model */}
+              <div> 
+                  <label>Choose a trained machine learning model:</label>
+                  <select name="mlModel" id="mlModel" className="h-[37px] ml-2.5 w-1/5 border border-[#757575] rounded-md pl-2.5 bg-transparent">
+                    <option value="volvo">Mark Brown</option>
+                    <option value="saab"> Sarah </option>
+                    <option value="opel">Ada Face </option>
+                    <option value="audi">Skimmer Face </option>
+                  </select>
+              </div>
+
+              {/* Adding the status message */}
               {statusMessage && (
                 <p className="mt-4 font-semibold text-blue-600">{statusMessage}</p>
               )}
