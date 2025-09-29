@@ -5,7 +5,9 @@ import DashboardNavbar from "@components/Navbar/DashboardNavbar";
 import Footer from "@components/Footer/Footer";
 
 // Establish socket connection once to the server
-const socket = io(process.env.REACT_APP_SOCKET_URL);
+const socket = io(process.env.REACT_APP_SOCKET_URL, {
+  transports: ["websocket", "polling"],
+});
 
 // Getting the token value
 let tokenValue = localStorage.getItem("xAuthToken") || null;
@@ -32,8 +34,12 @@ const Dashboard = () => {
 
   // Function to handle the model selection dropdown menu 
   const handleModelSelectChange = (event) => {
+    // Test 
+    // console.log(event);
+    const selectedMlModel = document.querySelector("#mlModel");   
+
     // Setting the selected model id value 
-    setSelectedModelId(event.target.value); 
+    setSelectedModelId(selectedMlModel.value); 
   }
 
   // Creating a function to fetch the model
@@ -73,8 +79,10 @@ const Dashboard = () => {
       // Get the data and save the username 
       let modelData = await response.json();
 
+      console.log(modelData); 
+
       // Saving the models into the models state 
-      setModelTypes(modelData); 
+      setModelTypes(modelData || []); 
 
       // Set the initial selected model ID 
       if (modelData && modelData.length > 0) {
@@ -248,11 +256,11 @@ const Dashboard = () => {
   const handleAnalyzeImage = () => {
     if (imageInputRef.current?.files.length > 0) {
       // Check if the model is selected before proceeding 
-      if (!selectedModelId) {
-        // Settin the status message 
-        setStatusMessage("Please select a trained model before analysis."); 
-        return; 
-      }
+      // if (!selectedModelId) {
+      //   // Settin the status message 
+      //   setStatusMessage("Please select a trained model before analysis."); 
+      //   return; 
+      // }
 
       // Setting the processing image to be true 
       setIsProcessingImage(true);
@@ -260,11 +268,7 @@ const Dashboard = () => {
 
       // Setting the status message 
       setStatusMessage("Analyzing image...");
-      setDetectionMessage(null);
-
-
-      console.log(selectedModelId)
-      return; 
+      setDetectionMessage(null); 
 
       // Getting the image files 
       const file = imageInputRef.current.files[0];
@@ -274,7 +278,7 @@ const Dashboard = () => {
           fileData: event.target.result,
           fileName: file.name,
           token: tokenValue,
-          modelId: selectedModelId, 
+          // modelId: selectedModelId, 
         });
       };
       reader.readAsDataURL(file);
@@ -345,56 +349,62 @@ const Dashboard = () => {
         <div className="min-h-screen bg-gray-100 font-sans text-gray-800">
           <DashboardNavbar />
 
-          {/* Adding the dashboard */}
-          <div className="container p-4 md:p-8">
-            <header className="text-left my-8 mt-[150px]">
-              <h1 className="text-4xl font-extrabold text-gray-900">Dashboard</h1>
+          <div className="container mx-auto p-4 md:p-8">
+            <header className="text-left my-8 mt-[160px]">
+              <h1 className="text-4xl font-extrabold text-gray-900">Analysis Dashboard</h1>
               <p className="mt-2 text-lg text-gray-600">
                 Welcome, <b>{userName}</b>. Upload media for analysis.
               </p>
-              <p className="text-left mt-4 text-gray-500">
-                The system will process your image or video and display the results below.
-              </p>
 
               {/* Adding a selection tag to selected the trained ml model */}
-              <div> 
-                  <label><b> Choose a trained machine learning model: </b></label>
+              {/* Adding a selection tag to select the trained ML model */}
+              <div className="mt-6 p-4 bg-gray-50 rounded-lg shadow-inner"> 
+                <label htmlFor="mlModel" className="font-semibold text-gray-700 block mb-2">
+                  Choose a trained machine learning model: 
+                </label>
                   <select 
                     name="mlModel" 
                     id="mlModel" 
-                    className="h-[37px] ml-2.5 w-1/5 border border-black rounded-md pl-2.5 bg-transparent"
-                    value={selectedModelId}
+                    value={selectedModelId} 
                     onChange={handleModelSelectChange}
-                    >
-                    {modelTypes && Array.isArray(modelTypes) && modelTypes.map((model, index) => (
+                    className="h-10 w-full md:w-1/2 border border-gray-300 rounded-lg p-2 bg-white focus:ring-indigo-500 focus:border-indigo-500 transition duration-150"
+                  >
+                    <option value="">Select a model</option>
+
+                    {Array.isArray(modelTypes) && modelTypes.length > 0 ? (
+                      modelTypes.map((model) => (
                         <option 
-                            key={model._id}
-                            id={model._id} 
-                            value={model._id}
-                            >
-                            {/* Display the 'labels' property as the text */}
-                            {model.labels} 
+                          key={model._id?.$oid || model._id} 
+                          value={model._id?.$oid || model._id}
+                        >
+                          {model.labels || "Unnamed Model"}
                         </option>
-                    ))}
+                      ))
+                    ) : (
+                      <option value="" disabled>
+                        No models available
+                      </option>
+                    )}
                   </select>
               </div>
 
+
               {/* Adding the status message */}
               {statusMessage && (
-                <p className="mt-4 font-semibold text-blue-600">{statusMessage}</p>
+                <p className="mt-4 p-3 bg-blue-100 border-l-4 border-blue-500 text-blue-800 rounded">{statusMessage}</p>
               )}
               {detectionMessage && (
-                <p className="mt-2 font-semibold text-red-600">{detectionMessage}</p>
+                <p className="mt-2 p-3 bg-red-100 border-l-4 border-red-500 text-red-800 rounded">{detectionMessage}</p>
               )}
             </header>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 my-12">
               {/* ---------- Image Section ---------- */}
-              <div className="bg-white p-6 rounded-lg shadow-xl">
+              <div className="bg-white p-6 rounded-xl shadow-2xl border border-gray-200">
                 <h2 className="text-2xl font-semibold mb-4 text-center text-gray-900">
                   Image Analysis
                 </h2>
-                <div className="flex justify-center h-80 w-full bg-black rounded-lg shadow-inner overflow-hidden">
+                <div className="flex justify-center h-80 w-full bg-gray-900 rounded-lg shadow-inner overflow-hidden border-2 border-indigo-300">
                   {imagePreviewUrl ? (
                     <img
                       src={imagePreviewUrl}
@@ -402,15 +412,15 @@ const Dashboard = () => {
                       className="w-full h-full object-contain"
                     />
                   ) : (
-                    <div className="grid place-items-center text-gray-500">
-                      No image selected.
+                    <div className="grid place-items-center text-gray-400">
+                      Upload an image file (.jpg, .png)
                     </div>
                   )}
                 </div>
                 <div className="flex justify-center gap-4 mt-6">
                   <button
                     onClick={handleImageUploadButtonClick}
-                    className="h-12 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-lg shadow-md transition-all duration-300 transform hover:scale-105"
+                    className="h-12 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-xl shadow-md transition-all duration-300 transform hover:scale-105"
                     disabled={isProcessingImage || isProcessingVideo}
                   >
                     Upload Image
@@ -418,9 +428,9 @@ const Dashboard = () => {
                   <button
                     onClick={handleAnalyzeImage}
                     disabled={!imagePreviewUrl || isProcessingImage || isProcessingVideo}
-                    className={`h-12 font-bold py-2 px-6 rounded-lg shadow-md transition-all duration-300 transform hover:scale-105 ${
+                    className={`h-12 font-bold py-2 px-6 rounded-xl shadow-md transition-all duration-300 transform hover:scale-105 ${
                       imagePreviewUrl && !isProcessingImage && !isProcessingVideo
-                        ? "bg-blue-500 hover:bg-blue-600 text-white"
+                        ? "bg-indigo-500 hover:bg-indigo-600 text-white"
                         : "bg-gray-400 text-gray-700 cursor-not-allowed"
                     }`}
                   >
@@ -450,18 +460,14 @@ const Dashboard = () => {
               </div>
 
               {/* ---------- Video Section ---------- */}
-              <div className="bg-white p-6 rounded-lg shadow-xl">
+              <div className="bg-white p-6 rounded-xl shadow-2xl border border-gray-200">
                 <h2 className="text-2xl font-semibold mb-4 text-center text-gray-900">
                   Video Analysis
                 </h2>
-                <div className="flex justify-center h-80 w-full bg-black rounded-lg shadow-inner overflow-hidden">
+                <div className="flex justify-center h-80 w-full bg-gray-900 rounded-lg shadow-inner overflow-hidden border-2 border-indigo-300">
                   {videoPreviewUrl ? (
-                    // Corrected video element.
-                    // The src attribute is now directly on the video tag, which is more reliable.
-                    // The key prop forces React to re-mount the component when the URL changes,
-                    // ensuring the browser loads the new video.
                     <video 
-                      key={videoPreviewUrl} // Force re-render when videoPreviewUrl changes
+                      key={videoPreviewUrl} 
                       controls 
                       className="w-full h-full object-contain"
                       src={videoPreviewUrl}
@@ -470,15 +476,15 @@ const Dashboard = () => {
                       Your browser cannot load the video.
                     </video>
                   ) : (
-                    <div className="grid place-items-center text-gray-500">
-                      No video selected.
+                    <div className="grid place-items-center text-gray-400">
+                      Upload a video file (.mp4, .mov)
                     </div>
                   )}
                 </div>
                 <div className="flex justify-center gap-4 mt-6">
                   <button
                     onClick={handleVideoUploadButtonClick}
-                    className="h-12 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-lg shadow-md transition-all duration-300 transform hover:scale-105"
+                    className="h-12 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-xl shadow-md transition-all duration-300 transform hover:scale-105"
                     disabled={isProcessingImage || isProcessingVideo}
                   >
                     Upload Video
@@ -486,9 +492,9 @@ const Dashboard = () => {
                   <button
                     onClick={handleAnalyzeVideo}
                     disabled={!videoPreviewUrl || isProcessingImage || isProcessingVideo}
-                    className={`h-12 font-bold py-2 px-6 rounded-lg shadow-md transition-all duration-300 transform hover:scale-105 ${
+                    className={`h-12 font-bold py-2 px-6 rounded-xl shadow-md transition-all duration-300 transform hover:scale-105 ${
                       videoPreviewUrl && !isProcessingVideo && !isProcessingImage
-                        ? "bg-blue-500 hover:bg-blue-600 text-white"
+                        ? "bg-indigo-500 hover:bg-indigo-600 text-white"
                         : "bg-gray-400 text-gray-700 cursor-not-allowed"
                     }`}
                   >
@@ -519,7 +525,6 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* Adding the footer  */}
           <Footer /> 
         </div>
 

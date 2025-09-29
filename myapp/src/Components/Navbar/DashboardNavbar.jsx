@@ -55,6 +55,9 @@ const DashboardNavbar = () => {
                 <a href="/dashboard" className="hover:underline text-decoration-none text-white">
                     Dashboard 
                 </a>
+                <a href="/services" className="hover:underline text-decoration-none text-white"> 
+                    Services 
+                </a>
                 <a onClick={logoutUser} href="#" className="text-decoration-none text-white"> Logout </a>
             </div>
 

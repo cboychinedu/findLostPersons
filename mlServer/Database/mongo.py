@@ -3,8 +3,11 @@
 # Importing the necessary modules 
 import json 
 import datetime
+from bson.objectid import ObjectId
 from flask import jsonify
 from pymongo import MongoClient 
+from bson import json_util 
+
 
 # Creating a class for handling the database connections 
 class MongoDB: 
@@ -24,7 +27,6 @@ class MongoDB:
         nowUtc = datetime.datetime.utcnow()
 
         # Format it into an ISO 8601 string, suitable for JSON/BSON 
-        # the isoformat() method handles this automatically 
         return nowUtc.isoformat() 
     
     # Creating a method for saving the trained machine learing 
@@ -36,8 +38,8 @@ class MongoDB:
         # Saving the collection data 
         result = collection.insert_one(data)
         
-        # Returning the result 
-        return result.acknowledged 
+        # Returning the result 
+        return result
 
     # Creating a method for saving the analyzed video 
     def saveVideoAnalysis(self, collectionName, data): 
@@ -71,33 +73,28 @@ class MongoDB:
 
         # Find all the data for image analysis by the specified 
         # email address 
-        data = collection.find(query, {
+        data = list(collection.find(query, {
             "_id": 1, 
             "predictedLabel": 1, 
             "proba": 1, 
             "imageUrl": 1, 
             "type": 1 
-        })
+        })) # Convert Cursor to list immediately
 
-        # if the returned type is None type, execute the block 
-        # of code below 
-        if (data == None): 
-            # Return the following 
+        # The check for 'data == None' is not needed since find() returns a Cursor 
+        # and list(Cursor) returns an empty list if no results are found.
+        if not data: 
             return jsonify({
                 "status": "error", 
                 "message": "Error fetching the image history data", 
                 "statusCode": 404 
             })
         
-        # Else if the history data for the image exists, 
-        # Execute the block of code below 
-        else: 
-            # Convert the MongoDB documents into a json object 
-            jsonData = json.dumps(list(data), default=str)
-            jsonData = jsonify(json.loads(jsonData))
-
-            # Return the json object 
-            return jsonData 
+        # --- CORRECTION 1: Use json.dumps with json_util.default ---
+        # This converts the list of Python dictionaries (including ObjectId) 
+        # to a JSON string. Then use Flask's response object.
+        jsonString = json.dumps(data, default=json_util.default)
+        return jsonString
         
     # Creating a method for retriving the video data 
     def retriveVideoData(self, collectionName, email):
@@ -109,33 +106,56 @@ class MongoDB:
 
         # Find all the data for the video analysis by the 
         # specified email address
-        data = collection.find(query, {
+        data = list(collection.find(query, {
             "_id": 1, 
             "predictedLabel": 1, 
             "proba": 1, 
             "videoUrl": 1, 
             "type": 1 
-        })
+        }))
 
-        # if the returned type is None type, execute the 
-        # block of code below 
-        if (data == None): 
-            # Return the following 
+        if not data: 
             return jsonify({
                 "status": "error", 
                 "message": "Error fetching the video history data", 
                 "statusCode": 404 
             })
         
-        # Else if the history data for the video file exists 
-        # Execute the block of code below 
-        else: 
-            # Convert the mongodb documents into a json object 
-            jsonData = json.dumps(list(data), default=str) 
-            jsonData = jsonify(json.loads(jsonData))
+        # --- CORRECTION 2: Use json.dumps with json_util.default ---
+        jsonString = json.dumps(data, default=json_util.default) 
+        return jsonString 
+        
+    # Creating a method for retriving a single model 
+    def retriveASingleMachineLearningModel(self, id, collectionName="models"): 
+        # Setting the query 
+        query = {"_id": id }
 
-            # Return the json object 
-            return jsonData 
+        # Getting the collection 
+        collection = self.db[collectionName]
+
+        # Find a single document 
+        data = collection.find_one(query, {
+            "_id": 1, 
+            "models": 1, 
+            "totalFacesProcessed": 1, 
+            "labels": 1 
+        })
+
+        if data is None: 
+            return jsonify({
+                "status": "error", 
+                "message": "No models with the specified id value", 
+                "statusCode": 404 
+            }) 
+        
+        # --- CORRECTION 3: Return the Python dictionary for internal use (or jsonify it) ---
+        # For model loading in the ImageModelClass, it expects the Python dictionary.
+        # Returning the dictionary here is much cleaner than returning a Flask Response object.
+        return data
+
+        # If you were forced to return JSON, this is how you'd do it:
+        # jsonString = json.dumps(data, default=json_util.default)
+        # return jsonString 
         
     # Creating a method for retriving the machine learning models 
     def retriveMachineLearningModels(self, email, collectionName="models"): 
@@ -146,7 +166,7 @@ class MongoDB:
         collection = self.db[collectionName]
         
         # Find all the data for the model to perform analysis 
-        data = collection.find(query, {
+        data = list(collection.find(query, {
             "_id": 1, 
             "name": 1, 
             "email": 1, 
@@ -154,25 +174,18 @@ class MongoDB:
             "totalFacesProcessed": 1, 
             "dateTrained": 1, 
             "models": 1 
-        })
+        }))
 
-        # if the returned type is None type, execute the 
-        # block of code below 
-        if (data == None): 
-            # Return the following 
+        # 
+        if not data: 
             return jsonify({
                 "status": "error", 
                 "message": "No models on the database", 
                 "statusCode": 400
             })
         
-        # Else if the history data for the video file exists 
-        # Execute the block of code below 
-        else: 
-            # Convert the mongodb documents into a json object 
-            jsonData = json.dumps(list(data), default=str)
-            jsonData = jsonify(json.loads(jsonData))
+        # --- CORRECTION 4: Use json.dumps with json_util.default ---
+        jsonString = json.dumps(data, default=json_util.default)
 
-            # Return the json object 
-            return jsonData 
-
+        # 
+        return jsonString 

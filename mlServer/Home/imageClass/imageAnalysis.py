@@ -2,7 +2,10 @@
 import os
 import cv2
 import pickle
+from Database.mongo import MongoDB
 import numpy as np
+from flask import Flask, jsonify
+from bson.objectid import ObjectId 
 
 # Setting the path to the model
 modelPath = "models"
@@ -10,10 +13,12 @@ modelPath = "models"
 # Output path
 outputPath = os.path.join(modelPath, 'output')
 
+# Creating an instance of the database 
+db = MongoDB() 
+
 # Defining a class to load the model
-class ImageModelClass:
-    def __init__(self, image):
-        # Load the model and the image
+class ImageModelClass: # Class names use PascalCase
+    def __init__(self, image): # method parameters use camelCase
         self.image = image
         self.detectorModel = os.path.join(modelPath, "faceDetectionModel")
         self.embeddingModel = os.path.join(modelPath, "embeddingModel.t7")
@@ -34,13 +39,13 @@ class ImageModelClass:
         self.le = pickle.load(open(self.labelModel, "rb"))
 
     # Creating a method for processing the image
-    def processImage(self):
+    def processImage(self): 
         # Load the image
         image = cv2.imread(self.image)
         if image is None:
             raise FileNotFoundError(f"Image not found at path: {self.image}")
 
-        (h, w) = image.shape[:2]
+        (height, width) = image.shape[:2] # Renamed h and w to full names
 
         # Construct a blob from the image
         imageBlob = cv2.dnn.blobFromImage(cv2.resize(image, (300, 300)), 1.0, (300, 300),
@@ -52,23 +57,21 @@ class ImageModelClass:
         detections = self.detector.forward()
 
         # Return the processed image
-        return (detections, image, w, h, imageBlob)
+        return (detections, image, width, height, imageBlob) # Return width and height
 
     # Creating a method for performing the face recognition
-    def performFaceRecognition(self):
+    def performFaceRecognition(self): # method name uses camelCase
         # Getting the processed image
-        (detections, image, w, h, imageBlob) = self.processImage()
-        predName = "No face detected"
+        (detections, image, width, height, imageBlob) = self.processImage() # Use camelCase variables
+        predName = "No face detected" # local variable uses camelCase
         proba = 0.0
 
         # Creating a loop to loop over the detections and make predictions on the image
-        # Also extract the confidence associated with the predictions,
-        # and filter out weak detections
         for i in range(0, detections.shape[2]):
             confidence = detections[0, 0, i, 2]
             if confidence > self.confidenceValue:
                 # Compute the (x, y)-coordinates of the bounding box for the face
-                box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
+                box = detections[0, 0, i, 3:7] * np.array([width, height, width, height])
                 (startX, startY, endX, endY) = box.astype("int")
 
                 # Extract the face ROI
@@ -80,7 +83,6 @@ class ImageModelClass:
                     continue
 
                 # Construct a blob for the face ROI, then pass the blob through
-                # our face embedding model to obtain the 128-d quantification of the face
                 faceBlob = cv2.dnn.blobFromImage(face, 1.0 / 255, (96, 96),
                                                  (0, 0, 0), swapRB=True, crop=False)
                 self.embedder.setInput(faceBlob)
@@ -98,9 +100,7 @@ class ImageModelClass:
                 cv2.rectangle(image, (startX, startY), (endX, endY), (0, 0, 255), 4)
                 cv2.putText(image, predName, (startX, y), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 0, 255), 2)
                 
-                return (image, predName, proba)
+                # return (image, predName, proba)
 
         # Return the image
         return (image, predName, proba)
-
-

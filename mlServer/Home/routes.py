@@ -76,7 +76,7 @@ def uploadVideo():
 # ------------------------------
 # IMAGE analysis
 # ------------------------------
-def analyzeImageTask(sid, fileData, fileName, token):
+def analyzeImageTask(sid, fileData, fileName, token, modelId=None):
     try:
         # CORRECTED: Changed tempFiles to tempDir
         imagePath = os.path.join(tempDir, f"{datetime.now().strftime('%Y%m%d%H%M%S')}_{fileName}")
@@ -91,6 +91,7 @@ def analyzeImageTask(sid, fileData, fileName, token):
         saveImagePath = os.path.join(tempDir, f"processed_{datetime.now().strftime('%Y%m%d%H%M%S')}_{fileName}")
 
         base64Data = fileData.split(",")[1] if "," in fileData else fileData
+
         imageBytes = base64.b64decode(base64Data)
 
         with open(imagePath, "wb") as f:
@@ -99,6 +100,7 @@ def analyzeImageTask(sid, fileData, fileName, token):
         # Emit progress with a type identifier
         socketio.emit("progress", {"data": 25, "type": "image"}, room=sid)
 
+        # Getting the object detection model for image analysis 
         objectDetection = ImageModelClass(image=imagePath)
         (image, predName, proba) = objectDetection.performFaceRecognition()
 
@@ -147,8 +149,12 @@ def analyzeImageTask(sid, fileData, fileName, token):
 def handleAnalyzeImage(data):
     socketio.start_background_task(
         analyzeImageTask, 
-        request.sid, data.get("fileData"), 
-        data.get("fileName"), data.get('token'))
+        request.sid, 
+        data.get("fileData"), 
+        data.get("fileName"), 
+        data.get('token'), 
+        # data.get('modelId')
+    )
 
 
 # ------------------------------

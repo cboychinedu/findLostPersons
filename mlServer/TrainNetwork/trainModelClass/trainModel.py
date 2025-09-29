@@ -152,9 +152,6 @@ class TrainModelClass:
             f.write(pickle.dumps(encoder))
             f.close() 
 
-            # Displaying success 
-            print("[INFO]: Model Trained Successfully...")
-
             # Connecting into the database 
             db.connect('mongodb://localhost:27017/', 'findLostFaces')
 
@@ -172,6 +169,10 @@ class TrainModelClass:
             with open(self.labelModel, 'rb') as f: 
                 labelEncoder = f.read() 
 
+            # Embedding model 
+            with open(self.embeddingModel, 'rb') as f: 
+                embeddingModel = f.read() 
+
             # Setting the ml data 
             mlData = {
                 "name": "FaceRecognition_V1", 
@@ -182,16 +183,19 @@ class TrainModelClass:
                 "models": [
                     {
                         "type": "embeddingsData", 
+                        "fileName": "embeddings.pickle",
                         "description": "Known face embeddings and name", 
                         "data": Binary(embeddingDataBytes)
                     }, 
                     {
                         "type": "svcRecognizerModel", 
+                        "fileName": "recognizer.pickle", 
                         "description": "Trained SVC classification model", 
                         "data": Binary(recognizerModel)
                     }, 
                     {
                         "type": "labelEncoder", 
+                        "fileName": "le.pickle",
                         "description": "Trained LabelEncoder for names/labels", 
                         "data": Binary(labelEncoder)
                     }
@@ -200,6 +204,9 @@ class TrainModelClass:
 
             # Creating a collection 
             result = db.saveMachineLearningModel(collectionName="models", data=mlData)
+
+            # Displaying success 
+            print("[INFO]: Model Trained, And Saved Successfully...")
 
             # Setting the message 
             message = f"Successful training. Models saved to MongoDB with ID: {result}"
