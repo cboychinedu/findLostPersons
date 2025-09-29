@@ -12,12 +12,16 @@ import os
 import jwt 
 import zipfile  
 from datetime import datetime
+from Database.mongo import MongoDB
 from flask import Blueprint, jsonify, request
 from flask_cors import cross_origin
 from .trainModelClass.trainModel import TrainModelClass
 
 # Setting the blue print configuration 
 trainNetwork = Blueprint("trainNetwork", __name__)
+
+# Creating an instance of the mongodb class 
+db = MongoDB() 
 
 # Defining the necessary directories
 uploadsDir = "uploads"
@@ -26,6 +30,40 @@ datasetDir = "dataset"
 @trainNetwork.route("/", methods=["GET"])
 def homePage(): 
     return jsonify({"home": "home message"})
+
+# Creating a route for displaying all the database models 
+@trainNetwork.route("/displayModels", methods=["POST"])
+# @cross_origin(origin="http://localhost:3000")
+def displayModels(): 
+    # Using try except method to get the models from the 
+    # database 
+    try:
+        # Getting the request headers 
+        token = request.headers.get("xAuthtoken")
+
+        # Connecting to the mongodb database 
+        db.connect('mongodb://localhost:27017/', 'findLostFaces')
+
+        # Decoding the token 
+        decodedToken = jwt.decode(token, options={"verify_signature": False})
+
+        # Retriving all the models saved on the user email 
+        results = db.retriveMachineLearningModels(email=decodedToken["email"], collectionName="models")
+
+        # returning the json object results 
+        return results; 
+
+    except Exception as e: 
+        # Converting the error into a string 
+        error = str(e)
+
+        # Returning the Json object 
+        return jsonify({
+            "status": "error", 
+            "message": error, 
+            "statusCode": 404, 
+        })
+    
 
 # Setting the train network routes 
 @trainNetwork.route("/trainModel", methods=["POST"])

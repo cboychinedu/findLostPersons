@@ -1,31 +1,138 @@
-import React, { Fragment, useEffect, useState, useRef } from "react";
+// Importing the necessary modules 
 import io from "socket.io-client";
-import DashboardNavbar from "../../Components/Navbar/DashboardNavbar"
-import MoonLoader from "react-spinners/MoonLoader";
-import BarLoader from "react-spinners/BarLoader";
+import React, { Fragment, useEffect, useState, useRef } from "react";
+import DashboardNavbar from "@components/Navbar/DashboardNavbar";
+import Footer from "@components/Footer/Footer";
 
+// Establish socket connection once to the server
+const socket = io(process.env.REACT_APP_SOCKET_URL);
 
-// Establish socket connection once
-const socket = io("http://127.0.0.1:3001");
+// Getting the token value
+let tokenValue = localStorage.getItem("xAuthToken") || null;
 
-const App = () => {
-  // States
+// Creating the dashboard function component
+const Dashboard = () => {
+  // Setting the state
   const [loading, setLoading] = useState(true);
-  const [userName] = useState("Alan Smith");
+  const [userName, setUsername] = useState("John Doe");
   const [statusMessage, setStatusMessage] = useState("");
+  const [detectionMessage, setDetectionMessage] = useState(null);
   const [isProcessingImage, setIsProcessingImage] = useState(false);
   const [isProcessingVideo, setIsProcessingVideo] = useState(false);
   const [imageProgress, setImageProgress] = useState(0);
   const [videoProgress, setVideoProgress] = useState(0);
   const [imagePreviewUrl, setImagePreviewUrl] = useState(null);
   const [videoPreviewUrl, setVideoPreviewUrl] = useState(null);
+  const [modelTypes, setModelTypes] = useState(null); 
 
-  // Refs
+  // Setting the refs for the image and video inputs
   const imageInputRef = useRef(null);
   const videoInputRef = useRef(null);
 
+  // Creating a function to fetch the model
+  const fetchModel = async () => {
+    // Using try catch method 
+    try {
+      // if the token value is not present, set the username as guest 
+      if (!tokenValue) {
+        // Set the username 
+        setUsername("Guest"); 
+
+      }
+
+      // Making a request to the backend to get the user's trained models 
+      const response = await fetch(`${process.env.REACT_APP_MACHINE_LEARNING_SERVER}/train/displayModels`, {
+        method: "POST", 
+        headers: {
+          "Content-Type": "application/json", 
+          "Authorization": `Bearer ${tokenValue}`, 
+          "xAuthtoken": tokenValue, 
+        }
+      });
+      
+      // If there is no response, execute the block 
+      // of code below 
+      if (!response.ok) {
+        // Log the error 
+        console.log("Failed to fetch model data: ", response.status, response.statusText, response.message); 
+
+        // Setting the status message 
+        setStatusMessage(response.message); 
+
+        // Pausing the progress 
+        return; 
+      }
+
+      // Get the data and save the username 
+      let modelData = await response.json();
+      
+      console.log(modelData); 
+
+      // Saving the models into the models state 
+      setModelTypes(modelData);  
+
+    }
+
+    // Catch the error 
+    catch (error) {
+      // On error connecting to the server, execute 
+      // the block of code below 
+      setStatusMessage("Error fetching the model data: ", error); 
+    }
+  }
+
+  // Corrected function to fetch the username from the server
+  const fetchUsername = async () => {
+    try {
+      // If the token value is not present, set the username
+      // as guest
+      if (!tokenValue) {
+        // Set the username
+        setUsername("Guest");
+        return;
+      }
+
+      // Making a request to the backend to get the user's username
+      // NOTE: Replace this mock URL with your actual backend endpoint.
+      const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/api/username`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${tokenValue}`,
+          "token": tokenValue,
+        }
+      });
+
+      // If there is no response, set the username to an error state
+      if (!response.ok) {
+        // Log the error, and set the username as guest
+        console.error("Failed to fetch username:", response.status, response.statusText);
+        setUsername("Guest");
+        return;
+      }
+
+      // Get the data and save the user name
+      let data = await response.json();
+      setUsername(data.userName);
+    } 
+    // Catching the error
+    catch (error) {
+      // On error to the server, execute the block of code below
+      console.error("Error fetching the username:", error);
+      // Set the username as guest
+      setUsername("Guest");
+    }
+  };
+
   // Socket event listeners
   useEffect(() => {
+    // Fetch the username on component mount
+    fetchUsername();
+
+    // Fetch the model data on component mount 
+    fetchModel(); 
+
+    // Socket event listeners
     socket.on("connect", () => {
       console.log("Connected to server via WebSocket");
     });
@@ -46,18 +153,26 @@ const App = () => {
     });
 
     socket.on("analysisComplete", (data) => {
-      console.log("✅ Analysis completed:", data);
+      console.log("Analysis completed:", data);
       if (data.type === "image") {
         setImagePreviewUrl(data.resultUrl);
         setStatusMessage("Image analysis complete!");
         setImageProgress(100);
         setIsProcessingImage(false);
-      } else if (data.type === "video") {
+      } 
+      // Corrected video analysis logic.
+      // The state update is sufficient to trigger a re-render of the component
+      // and update the video element. Direct DOM manipulation is not needed.
+      else if (data.type === "video") {
         setVideoPreviewUrl(data.resultUrl);
         setStatusMessage("Video analysis complete!");
         setVideoProgress(100);
         setIsProcessingVideo(false);
       }
+    });
+
+    socket.on("detectionEvent", (data) => {
+      setDetectionMessage(data.message);
     });
 
     socket.on("analysisError", (data) => {
@@ -69,11 +184,13 @@ const App = () => {
       setVideoProgress(0);
     });
 
+    // Cleanup function for the effect
     return () => {
       socket.off("connect");
       socket.off("progress");
       socket.off("analysisComplete");
       socket.off("analysisError");
+      socket.off("detectionEvent");
     };
   }, []);
 
@@ -122,6 +239,7 @@ const App = () => {
       setIsProcessingImage(true);
       setImageProgress(0);
       setStatusMessage("Analyzing image...");
+      setDetectionMessage(null);
 
       const file = imageInputRef.current.files[0];
       const reader = new FileReader();
@@ -129,6 +247,7 @@ const App = () => {
         socket.emit("analyzeImage", {
           fileData: event.target.result,
           fileName: file.name,
+          token: tokenValue,
         });
       };
       reader.readAsDataURL(file);
@@ -144,12 +263,13 @@ const App = () => {
       setIsProcessingVideo(true);
       setVideoProgress(0);
       setStatusMessage("Uploading video...");
+      setDetectionMessage(null);
 
       const formData = new FormData();
       formData.append("file", file);
 
       try {
-        const response = await fetch("http://127.0.0.1:3001/upload-video", {
+        const response = await fetch(`${process.env.REACT_APP_MACHINE_LEARNING_SERVER}/uploadVideo`, {
           method: "POST",
           body: formData,
         });
@@ -163,6 +283,7 @@ const App = () => {
         setStatusMessage("Upload complete. Starting analysis...");
         socket.emit("startVideoAnalysis", {
           fileName: result.fileName,
+          token: tokenValue,
         });
         
       } catch (error) {
@@ -184,6 +305,7 @@ const App = () => {
     </div>
   );
 
+  // Rendering the dashboard component
   return (
     <Fragment>
       {loading ? (
@@ -192,18 +314,40 @@ const App = () => {
         <div className="min-h-screen bg-gray-100 font-sans text-gray-800">
           <DashboardNavbar />
 
-
+          {/* Adding the dashboard */}
           <div className="container p-4 md:p-8">
-            <header className="text-center my-8">
+            <header className="text-left my-8 mt-[150px]">
               <h1 className="text-4xl font-extrabold text-gray-900">Dashboard</h1>
               <p className="mt-2 text-lg text-gray-600">
                 Welcome, <b>{userName}</b>. Upload media for analysis.
               </p>
-              <p className="mt-4 max-w-2xl mx-auto text-gray-500">
+              <p className="text-left mt-4 text-gray-500">
                 The system will process your image or video and display the results below.
               </p>
+
+              {/* Adding a selection tag to selected the trained ml model */}
+              <div> 
+                  <label><b> Choose a trained machine learning model: </b></label>
+                  <select name="mlModel" id="mlModel" 
+                  className="h-[37px] ml-2.5 w-1/5 border 
+                  border-black rounded-md 
+                  pl-2.5 bg-transparent">
+                    {modelTypes.map((type, index) => (
+                      <option>{type[index]["email"]}</option>
+                    ))}
+                    <option value="volvo">Mark Brown</option>
+                    <option value="saab"> Sarah </option>
+                    <option value="opel">Ada Face </option>
+                    <option value="audi">Skimmer Face </option>
+                  </select>
+              </div>
+
+              {/* Adding the status message */}
               {statusMessage && (
                 <p className="mt-4 font-semibold text-blue-600">{statusMessage}</p>
+              )}
+              {detectionMessage && (
+                <p className="mt-2 font-semibold text-red-600">{detectionMessage}</p>
               )}
             </header>
 
@@ -275,8 +419,17 @@ const App = () => {
                 </h2>
                 <div className="flex justify-center h-80 w-full bg-black rounded-lg shadow-inner overflow-hidden">
                   {videoPreviewUrl ? (
-                    <video controls className="w-full h-full object-contain">
-                      <source src={videoPreviewUrl} type="video/mp4" />
+                    // Corrected video element.
+                    // The src attribute is now directly on the video tag, which is more reliable.
+                    // The key prop forces React to re-mount the component when the URL changes,
+                    // ensuring the browser loads the new video.
+                    <video 
+                      key={videoPreviewUrl} // Force re-render when videoPreviewUrl changes
+                      controls 
+                      className="w-full h-full object-contain"
+                      src={videoPreviewUrl}
+                      id="videoPreview"
+                    >
                       Your browser cannot load the video.
                     </video>
                   ) : (
@@ -328,11 +481,16 @@ const App = () => {
               </div>
             </div>
           </div>
+
+          {/* Adding the footer  */}
+          <Footer /> 
         </div>
+
+
       )}
     </Fragment>
   );
 };
 
-// Exporting the application as app 
-export default App;
+// Exporting the application as app
+export default Dashboard;

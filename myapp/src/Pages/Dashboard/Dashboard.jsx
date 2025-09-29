@@ -23,10 +23,74 @@ const Dashboard = () => {
   const [videoProgress, setVideoProgress] = useState(0);
   const [imagePreviewUrl, setImagePreviewUrl] = useState(null);
   const [videoPreviewUrl, setVideoPreviewUrl] = useState(null);
+  const [modelTypes, setModelTypes] = useState([]); 
+  const [selectedModelId, setSelectedModelId] = useState('');
 
   // Setting the refs for the image and video inputs
   const imageInputRef = useRef(null);
   const videoInputRef = useRef(null);
+
+  // Function to handle the model selection dropdown menu 
+  const handleModelSelectChange = (event) => {
+    // Setting the selected model id value 
+    setSelectedModelId(event.target.value); 
+  }
+
+  // Creating a function to fetch the model
+  const fetchModel = async () => {
+    // Using try catch method 
+    try {
+      // if the token value is not present, set the username as guest 
+      if (!tokenValue) {
+        // Set the username 
+        setUsername("Guest"); 
+
+      }
+
+      // Making a request to the backend to get the user's trained models 
+      const response = await fetch(`${process.env.REACT_APP_MACHINE_LEARNING_SERVER}/train/displayModels`, {
+        method: "POST", 
+        headers: {
+          "Content-Type": "application/json", 
+          "Authorization": `Bearer ${tokenValue}`, 
+          "xAuthtoken": tokenValue, 
+        }
+      });
+      
+      // If there is no response, execute the block 
+      // of code below 
+      if (!response.ok) {
+        // Log the error 
+        console.log("Failed to fetch model data: ", response.status, response.statusText, response.message); 
+
+        // Setting the status message 
+        setStatusMessage(response.message); 
+
+        // Pausing the progress 
+        return; 
+      }
+
+      // Get the data and save the username 
+      let modelData = await response.json();
+
+      // Saving the models into the models state 
+      setModelTypes(modelData); 
+
+      // Set the initial selected model ID 
+      if (modelData && modelData.length > 0) {
+        // Set the selected model id value 
+        setSelectedModelId(modelData[0]._id); 
+      } 
+
+    }
+
+    // Catch the error 
+    catch (error) {
+      // On error connecting to the server, execute 
+      // the block of code below 
+      setStatusMessage("Error fetching the model data: ", error); 
+    }
+  }
 
   // Corrected function to fetch the username from the server
   const fetchUsername = async () => {
@@ -75,6 +139,9 @@ const Dashboard = () => {
   useEffect(() => {
     // Fetch the username on component mount
     fetchUsername();
+
+    // Fetch the model data on component mount 
+    fetchModel(); 
 
     // Socket event listeners
     socket.on("connect", () => {
@@ -180,11 +247,26 @@ const Dashboard = () => {
   // Emit image to backend
   const handleAnalyzeImage = () => {
     if (imageInputRef.current?.files.length > 0) {
+      // Check if the model is selected before proceeding 
+      if (!selectedModelId) {
+        // Settin the status message 
+        setStatusMessage("Please select a trained model before analysis."); 
+        return; 
+      }
+
+      // Setting the processing image to be true 
       setIsProcessingImage(true);
       setImageProgress(0);
+
+      // Setting the status message 
       setStatusMessage("Analyzing image...");
       setDetectionMessage(null);
 
+
+      console.log(selectedModelId)
+      return; 
+
+      // Getting the image files 
       const file = imageInputRef.current.files[0];
       const reader = new FileReader();
       reader.onload = (event) => {
@@ -192,10 +274,15 @@ const Dashboard = () => {
           fileData: event.target.result,
           fileName: file.name,
           token: tokenValue,
+          modelId: selectedModelId, 
         });
       };
       reader.readAsDataURL(file);
-    } else {
+    } 
+    // Else if the if statement did not execute, execute 
+    // the block of code below 
+    else {
+      // Setting the status message 
       setStatusMessage("Please select an image file first.");
     }
   };
@@ -272,14 +359,23 @@ const Dashboard = () => {
               {/* Adding a selection tag to selected the trained ml model */}
               <div> 
                   <label><b> Choose a trained machine learning model: </b></label>
-                  <select name="mlModel" id="mlModel" 
-                  className="h-[37px] ml-2.5 w-1/5 border 
-                  border-black rounded-md 
-                  pl-2.5 bg-transparent">
-                    <option value="volvo">Mark Brown</option>
-                    <option value="saab"> Sarah </option>
-                    <option value="opel">Ada Face </option>
-                    <option value="audi">Skimmer Face </option>
+                  <select 
+                    name="mlModel" 
+                    id="mlModel" 
+                    className="h-[37px] ml-2.5 w-1/5 border border-black rounded-md pl-2.5 bg-transparent"
+                    value={selectedModelId}
+                    onChange={handleModelSelectChange}
+                    >
+                    {modelTypes && Array.isArray(modelTypes) && modelTypes.map((model, index) => (
+                        <option 
+                            key={model._id}
+                            id={model._id} 
+                            value={model._id}
+                            >
+                            {/* Display the 'labels' property as the text */}
+                            {model.labels} 
+                        </option>
+                    ))}
                   </select>
               </div>
 

@@ -136,4 +136,43 @@ class MongoDB:
 
             # Return the json object 
             return jsonData 
+        
+    # Creating a method for retriving the machine learning models 
+    def retriveMachineLearningModels(self, email, collectionName="models"): 
+        # Setting the query 
+        query = { "email": email } 
+
+        # Getting the collection 
+        collection = self.db[collectionName]
+        
+        # Find all the data for the model to perform analysis 
+        data = collection.find(query, {
+            "_id": 1, 
+            "name": 1, 
+            "email": 1, 
+            "labels": 1, 
+            "totalFacesProcessed": 1, 
+            "dateTrained": 1, 
+            "models": 1 
+        })
+
+        # if the returned type is None type, execute the 
+        # block of code below 
+        if (data == None): 
+            # Return the following 
+            return jsonify({
+                "status": "error", 
+                "message": "No models on the database", 
+                "statusCode": 400
+            })
+        
+        # Else if the history data for the video file exists 
+        # Execute the block of code below 
+        else: 
+            # Convert the mongodb documents into a json object 
+            jsonData = json.dumps(list(data), default=str)
+            jsonData = jsonify(json.loads(jsonData))
+
+            # Return the json object 
+            return jsonData 
 

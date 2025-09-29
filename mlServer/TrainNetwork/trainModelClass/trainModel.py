@@ -152,6 +152,9 @@ class TrainModelClass:
             f.write(pickle.dumps(encoder))
             f.close() 
 
+            # Displaying success 
+            print("[INFO]: Model Trained Successfully...")
+
             # Connecting into the database 
             db.connect('mongodb://localhost:27017/', 'findLostFaces')
 
