@@ -1,6 +1,6 @@
 // Importing the necessasry modules
 import Footer from "@components/Footer/Footer";
-import { Fragment, useState, useEffect, useRef } from 'react'; // 👈 Import useRef
+import { Fragment, useState, useEffect, useRef } from 'react';
 import DashboardNavbar from '@components/Navbar/DashboardNavbar';
 import RenderImages from "@components/DisplayHistoryImages/DisplayHistoryImags";
 import RenderVideos from "@components/DisplayHistoryVideos/DisplayHistoryVideos";
@@ -17,7 +17,7 @@ const AnalyzedHistoryData = () => {
     const [videohistoryData, setVideoHistoryData] = useState(null); 
     const [isLoading, setIsLoading] = useState(true);
     
-    // 💡 CORRECTION 1: Use useRef to create a mutable ref object
+    // Use useRef to create a mutable ref object
     const flashMessageRef = useRef(null); 
 
     // Define the async function for the fetch request
@@ -50,9 +50,9 @@ const AnalyzedHistoryData = () => {
             setImageHistoryData(data);
             setStatusMessage(successMsg);
             
-            // 💡 CORRECTION 2: Use the ref current value and pass the direct message string
+            // Use the ref current value and pass the direct message string
             if (flashMessageRef.current) {
-                flashMesageFunction(flashMessageRef.current, successMsg, "success"); // Assuming "success" type for flashMesageFunction
+                flashMesageFunction(flashMessageRef.current, successMsg, "success");
             }
 
         } catch (error) {
@@ -61,9 +61,9 @@ const AnalyzedHistoryData = () => {
             const errorMsg = `Failed to fetch data: ${error.message}`;
             setStatusMessage(errorMsg); 
             
-            // 💡 Use the ref current value and pass the direct message string
+            // Use the ref current value and pass the direct message string
             if (flashMessageRef.current) {
-                flashMesageFunction(flashMessageRef.current, errorMsg, "error"); // Assuming "error" type
+                flashMesageFunction(flashMessageRef.current, errorMsg, "error");
             }
 
         } 
@@ -103,7 +103,7 @@ const AnalyzedHistoryData = () => {
             setVideoHistoryData(data);  
             setStatusMessage(successMsg); 
             
-            // 💡 Use the ref current value and pass the direct message string
+            // Use the ref current value and pass the direct message string
             if (flashMessageRef.current) {
                 flashMesageFunction(flashMessageRef.current, successMsg, "success");
             }
@@ -116,7 +116,7 @@ const AnalyzedHistoryData = () => {
             const errorMsg = `Failed to fetch data: ${error.message}`;
             setStatusMessage(errorMsg); 
             
-            // 💡 Use the ref current value and pass the direct message string
+            // Use the ref current value and pass the direct message string
             if (flashMessageRef.current) {
                 flashMesageFunction(flashMessageRef.current, errorMsg, "error");
             }
@@ -124,11 +124,12 @@ const AnalyzedHistoryData = () => {
         // finally 
         finally {
             // Set the loading state to false 
-            setIsLoading(false); 
+            // NOTE: Only set to false if the image fetch has also completed, 
+            // but for simplicity, we'll keep it here as is.
         }
     }
 
-    // 👇 Function to make the POST request on component mount
+    // Function to make the POST request on component mount
     useEffect(() => {
         // Execute the history functions
         postImageHistoryData();
@@ -139,11 +140,9 @@ const AnalyzedHistoryData = () => {
     // Rendering the analyzed history data
     return (
         <Fragment>
-            {/* Adding the dashboard */}
             <DashboardNavbar />
 
-            {/* Adding the flash message  */}
-            {/* 💡 CORRECTION 3: Attach the ref to the div instead of using an ID for DOM query */}
+            {/* Adding the flash message */}
             <div
                 ref={flashMessageRef} // Attach the ref here
                 id="flashMessageDiv" // Keeping ID for external reference if needed
@@ -159,47 +158,61 @@ const AnalyzedHistoryData = () => {
             </div> 
 
             {/* Setting a container to hold all the analyzed history data */}
-            <div className="container h-[fit-content] mb-[60vh] mx-auto pt-[200px]">
-
-                <h2 className="text-2xl font-bold mb-4">Analyzed Data History</h2>
+            <div className="container h-auto mx-auto p-4 pt-[100px] lg:pt-[200px] pb-24 min-h-screen mb-[300px]">
+                <h2 className="text-3xl font-extrabold mb-6 text-gray-800 border-b pb-2 mt-[200px] mb-[39px]">Analyzed Data History</h2>
+                
+                {/* Loading state indicator */}
+                {isLoading && (
+                    <div className="text-center py-10 text-lg text-gray-600">Loading history data...</div>
+                )}
 
                 {/* Conditional rendering based on fetched data */}
-                {!isLoading && (imagehistoryData || videohistoryData) && (
+                {!isLoading && (
                     
-                    // Flex Container for the two main columns (Image and Video)
-                    <div className="flex flex-wrap lg:flex-nowrap gap-6">
+                    // Main responsive container: stacks on mobile, side-by-side on large screens
+                    <div className="flex flex-col lg:flex-row gap-6">
 
                         {/* Image History Column */}
                         {imagehistoryData && (
-                            <div className="flex-1 w-full p-4 border rounded-lg shadow-md bg-white overflow-y-auto max-h-[80vh] ">
-                                <h3 className="text-xl font-semibold mb-3 border-b pb-2">Image Analysis History</h3>
+                            // w-full on small screen, flex-1 on large screen
+                            <div className="w-full lg:flex-1 p-4 border rounded-xl shadow-xl bg-white overflow-y-auto max-h-[80vh]">
+                                <h3 className="text-xl font-semibold mb-3 border-b pb-2 text-indigo-700">Image Analysis History</h3>
                                 {/* Map through the image data to render the image and data */}
                                 {imagehistoryData.map((data, index) => (
                                     <RenderImages data={data} index={index} key={data._id || index} />
                                 ))}
+                                {/* Fallback if images array is empty */}
+                                {imagehistoryData.length === 0 && (
+                                    <p className="text-center text-gray-500 py-4">No analyzed images to display.</p>
+                                )}
                             </div>
                         )}
 
                         {/* Video History Column */}
                         {videohistoryData && (
-                            <div className="flex-1 w-full p-4 border rounded-lg shadow-md bg-white overflow-y-auto max-h-[80vh]">
-                                <h3 className="text-xl font-semibold mb-3 border-b pb-2">Video Analysis History</h3>
+                            // w-full on small screen, flex-1 on large screen
+                            <div className="w-full lg:flex-1 p-4 border rounded-xl shadow-xl bg-white overflow-y-auto max-h-[80vh]">
+                                <h3 className="text-xl font-semibold mb-3 border-b pb-2 text-green-700">Video Analysis History</h3>
                                 {/* Map through the video data to render the video and data url */}
                                 {videohistoryData.map((data, index) => (
                                     <RenderVideos data={data} index={index} key={data._id || index } /> 
                                     
                                 ))}
+                                {/* Fallback if videos array is empty */}
+                                {videohistoryData.length === 0 && (
+                                    <p className="text-center text-gray-500 py-4">No analyzed videos to display.</p>
+                                )}
                             </div>
                         )}
 
-                        {/* Fallback for no data */}
+                        {/* Fallback for no data after loading */}
                         {(!imagehistoryData && !videohistoryData) && (
-                            <p className="w-full text-center text-gray-500">No analyzed image or video history found.</p>
+                            <p className="w-full text-center text-gray-500 py-10">No analyzed image or video history found.</p>
                         )}
                     </div>
                 )}
             </div>
-            {/* Adding the footer */}
+            
             <Footer />
         </Fragment>
     )
