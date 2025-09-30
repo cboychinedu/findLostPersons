@@ -1,11 +1,11 @@
 // Importing the necessary modules 
 import io from "socket.io-client";
-import React, { Fragment, useEffect, useState, useRef } from "react";
-import DashboardNavbar from "@components/Navbar/DashboardNavbar";
 import Footer from "@components/Footer/Footer";
-import LoadingScreen from "@components/LoadingScreen/LoadingScreen";
 import { useAnalyzeImage } from "@hooks/useAnalyzeImage";
 import { useAnalyzeVideo } from "@hooks/useAnalyzeVideo";
+import { Fragment, useEffect, useState, useRef } from "react";
+import DashboardNavbar from "@components/Navbar/DashboardNavbar";
+import LoadingScreen from "@components/LoadingScreen/LoadingScreen";
 
 // Establish socket connection once to the server
 const socket = io(process.env.REACT_APP_SOCKET_URL, {
@@ -80,9 +80,7 @@ const Dashboard = () => {
       }
 
       // Get the data and save the username 
-      let modelData = await response.json();
-
-      console.log(modelData); 
+      let modelData = await response.json(); 
 
       // Saving the models into the models state 
       setModelTypes(modelData || []); 
@@ -159,6 +157,7 @@ const Dashboard = () => {
       console.log("Connected to server via WebSocket");
     });
 
+    // Progress update event handling
     socket.on("progress", (data) => {
       const newProgress = parseFloat(data.data);
       if (data.type === "image") {
@@ -174,6 +173,7 @@ const Dashboard = () => {
       }
     });
 
+    // Analysis complete event handling
     socket.on("analysisComplete", (data) => {
       console.log("Analysis completed:", data);
       if (data.type === "image") {
@@ -193,10 +193,12 @@ const Dashboard = () => {
       }
     });
 
+    // Detection event handling
     socket.on("detectionEvent", (data) => {
       setDetectionMessage(data.message);
     });
 
+    // Analysis error handling
     socket.on("analysisError", (data) => {
       console.error("Analysis error:", data);
       setStatusMessage("Error: " + data.message);
@@ -230,6 +232,8 @@ const Dashboard = () => {
     }
     imageInputRef.current.click();
   };
+
+  // Video upload button click handler
   const handleVideoUploadButtonClick = () => {
     if (isProcessingImage || isProcessingVideo) {
       setStatusMessage("Cannot upload while analysis is in progress.");
@@ -338,7 +342,7 @@ const Dashboard = () => {
             </header>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 my-12">
-              {/* ---------- Image Section ---------- */}
+              {/* Image Analysis Section */}
               <div className="bg-white p-6 rounded-xl shadow-2xl border border-gray-200">
                 <h2 className="text-2xl font-semibold mb-4 text-center text-gray-900">
                   Image Analysis
@@ -398,7 +402,7 @@ const Dashboard = () => {
                 )}
               </div>
 
-              {/* ---------- Video Section ---------- */}
+              {/* Video Analysis Section */}
               <div className="bg-white p-6 rounded-xl shadow-2xl border border-gray-200">
                 <h2 className="text-2xl font-semibold mb-4 text-center text-gray-900">
                   Video Analysis
@@ -473,5 +477,5 @@ const Dashboard = () => {
   );
 };
 
-// Exporting the application as app
+// Exporting the dashboard component
 export default Dashboard;

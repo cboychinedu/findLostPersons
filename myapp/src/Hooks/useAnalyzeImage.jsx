@@ -1,4 +1,4 @@
-// src/hooks/useAnalyzeImage.js
+// Importing the necessary modules 
 import React from 'react';
 
 /**
@@ -25,6 +25,7 @@ export const useAnalyzeImage = ({
   setDetectionMessage,
   socket,
 }) => {
+  // Function to handle image analysis
   const handleAnalyzeImage = () => {
     // Check if a file is selected
     if (imageInputRef.current?.files.length > 0) {
@@ -61,7 +62,9 @@ export const useAnalyzeImage = ({
       // Start reading the file
       reader.readAsDataURL(file);
 
-    } else {
+    } 
+    // else 
+    else {
       // If no file is selected
       setStatusMessage("Please select an image file first.");
     }

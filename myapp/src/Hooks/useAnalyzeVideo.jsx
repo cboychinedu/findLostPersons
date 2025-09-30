@@ -1,10 +1,11 @@
-// src/hooks/useAnalyzeVideo.js
+// Importing the necessary modules 
+import React from 'react';
 
 /**
  * Custom hook to handle the video analysis logic.
  * It manages file validation, state updates, the video upload process, 
  * and the final socket emission to start server-side analysis.
- * * @param {object} params - The parameters needed for the analysis.
+ * @param {object} params - The parameters needed for the analysis.
  * @param {React.MutableRefObject<HTMLInputElement>} params.videoInputRef - Ref to the file input element.
  * @param {string} params.tokenValue - The user's authentication token.
  * @param {function} params.setIsProcessingVideo - State setter to control video processing status.
@@ -25,9 +26,19 @@ export const useAnalyzeVideo = ({
   // Use the environment variable from the scope where the hook is used
   const ML_SERVER_URL = process.env.REACT_APP_MACHINE_LEARNING_SERVER;
 
+// Function to handle video analysis
   const handleAnalyzeVideo = async () => {
+    // Check if a file is selected
     const file = videoInputRef.current?.files[0];
     
+    // Validate file type (basic check)
+    const validVideoTypes = ["video/mp4", "video/webm", "video/ogg"];
+    if (file && !validVideoTypes.includes(file.type)) {
+      setStatusMessage("Please select a valid video file (mp4, webm, ogg).");
+      return;
+    }
+
+    // Proceed if a file is selected
     if (file) {
       // 1. Initial State Setup
       setIsProcessingVideo(true);
@@ -46,11 +57,13 @@ export const useAnalyzeVideo = ({
           body: formData,
         });
 
+        // if response is not ok, throw an error
         if (!response.ok) {
           // Throw an error if the HTTP request failed
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
+        // Parse the JSON response
         const result = await response.json();
         
         // 4. Start Analysis via Socket
@@ -60,7 +73,10 @@ export const useAnalyzeVideo = ({
           token: tokenValue,
         });
         
-      } catch (error) {
+      } 
+
+      // Catch any errors during the upload or analysis initiation
+      catch (error) {
         // 5. Handle Errors
         console.error("Video upload failed:", error);
         setStatusMessage("Error uploading video: " + error.message);
@@ -75,5 +91,7 @@ export const useAnalyzeVideo = ({
     }
   };
 
+  // Return the handleAnalyzeVideo function 
+  // so it can be used in components
   return handleAnalyzeVideo;
 };
