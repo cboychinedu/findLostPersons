@@ -8,7 +8,7 @@
 # The video analysis has been updated to serve processed files
 # via an HTTP route instead of sending them over a WebSocket.
 
-# Import OpenCV for image and video processing
+# Importing the necessary modules
 import cv2
 import os
 import base64
@@ -33,10 +33,6 @@ os.makedirs(tempDir, exist_ok=True)
 
 # Create a Flask blueprint named "home"
 home = Blueprint("home", __name__)
-
-# ------------------------------
-# Setting the routes for the home blueprint
-# ------------------------------
 
 # Route for the homepage
 @home.route("/", methods=["GET"])
