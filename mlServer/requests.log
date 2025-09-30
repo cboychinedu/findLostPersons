@@ -1,0 +1,8 @@
+09/29/2025 09:08:12 PM  * Debugger is active! _internal.py _internal /opt/anaconda3/envs/ml/lib/python3.12/site-packages/werkzeug/_internal.py
+09/29/2025 09:08:12 PM  * Debugger PIN: 727-636-671 _internal.py _internal /opt/anaconda3/envs/ml/lib/python3.12/site-packages/werkzeug/_internal.py
+09/29/2025 09:08:12 PM 127.0.0.1 - - [29/Sep/2025 21:08:12] "GET /socket.io/?EIO=4&transport=polling&t=k9a20xny HTTP/1.1" 200 - _internal.py _internal /opt/anaconda3/envs/ml/lib/python3.12/site-packages/werkzeug/_internal.py
+09/29/2025 09:08:19 PM 127.0.0.1 - - [29/Sep/2025 21:08:19] "GET /socket.io/?EIO=4&transport=polling&t=k9mi1rrt HTTP/1.1" 200 - _internal.py _internal /opt/anaconda3/envs/ml/lib/python3.12/site-packages/werkzeug/_internal.py
+09/29/2025 09:08:19 PM 127.0.0.1 - - [29/Sep/2025 21:08:19] "POST /socket.io/?EIO=4&transport=polling&t=k9miwyem&sid=Y2uwsxxG821wWpf_AAAB HTTP/1.1" 200 - _internal.py _internal /opt/anaconda3/envs/ml/lib/python3.12/site-packages/werkzeug/_internal.py
+09/29/2025 09:08:19 PM 127.0.0.1 - - [29/Sep/2025 21:08:19] "GET /socket.io/?EIO=4&transport=polling&t=k9mix6rn&sid=Y2uwsxxG821wWpf_AAAB HTTP/1.1" 200 - _internal.py _internal /opt/anaconda3/envs/ml/lib/python3.12/site-packages/werkzeug/_internal.py
+09/29/2025 09:08:19 PM 127.0.0.1 - - [29/Sep/2025 21:08:19] "GET /socket.io/?EIO=4&transport=polling&t=k9mkdg0a&sid=Y2uwsxxG821wWpf_AAAB HTTP/1.1" 200 - _internal.py _internal /opt/anaconda3/envs/ml/lib/python3.12/site-packages/werkzeug/_internal.py
+09/29/2025 09:08:45 PM  * Detected change in '/Users/mbonuchinedu/Documents/Projects/findLostPersons/mlServer/History/routes.py', reloading _internal.py _internal /opt/anaconda3/envs/ml/lib/python3.12/site-packages/werkzeug/_internal.py

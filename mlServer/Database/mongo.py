@@ -152,10 +152,6 @@ class MongoDB:
         # For model loading in the ImageModelClass, it expects the Python dictionary.
         # Returning the dictionary here is much cleaner than returning a Flask Response object.
         return data
-
-        # If you were forced to return JSON, this is how you'd do it:
-        # jsonString = json.dumps(data, default=json_util.default)
-        # return jsonString 
         
     # Creating a method for retriving the machine learning models 
     def retriveMachineLearningModels(self, email, collectionName="models"): 

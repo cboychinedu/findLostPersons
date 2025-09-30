@@ -3,6 +3,9 @@ import io from "socket.io-client";
 import React, { Fragment, useEffect, useState, useRef } from "react";
 import DashboardNavbar from "@components/Navbar/DashboardNavbar";
 import Footer from "@components/Footer/Footer";
+import LoadingScreen from "@components/LoadingScreen/LoadingScreen";
+import { useAnalyzeImage } from "@hooks/useAnalyzeImage";
+import { useAnalyzeVideo } from "@hooks/useAnalyzeVideo";
 
 // Establish socket connection once to the server
 const socket = io(process.env.REACT_APP_SOCKET_URL, {
@@ -251,94 +254,30 @@ const Dashboard = () => {
       setStatusMessage("Video selected, ready for analysis.");
     }
   };
+  
+  // Using the custom hook for image analysis
+  const handleAnalyzeImage = useAnalyzeImage({
+      imageInputRef,
+      tokenValue,
+      selectedModelId,
+      setIsProcessingImage,
+      setImageProgress,
+      setStatusMessage,
+      setDetectionMessage,
+      socket,
+  });
 
-  // Emit image to backend
-  const handleAnalyzeImage = () => {
-    if (imageInputRef.current?.files.length > 0) {
-      // Check if the model is selected before proceeding 
-      // if (!selectedModelId) {
-      //   // Settin the status message 
-      //   setStatusMessage("Please select a trained model before analysis."); 
-      //   return; 
-      // }
+  // Using the custom hook for video analysis 
+  const handleAnalyzeVideo = useAnalyzeVideo({
+    videoInputRef,
+    tokenValue,
+    setIsProcessingVideo,
+    setVideoProgress,
+    setStatusMessage,
+    setDetectionMessage,
+    socket,
+  });
 
-      // Setting the processing image to be true 
-      setIsProcessingImage(true);
-      setImageProgress(0);
-
-      // Setting the status message 
-      setStatusMessage("Analyzing image...");
-      setDetectionMessage(null); 
-
-      // Getting the image files 
-      const file = imageInputRef.current.files[0];
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        socket.emit("analyzeImage", {
-          fileData: event.target.result,
-          fileName: file.name,
-          token: tokenValue,
-          // modelId: selectedModelId, 
-        });
-      };
-      reader.readAsDataURL(file);
-    } 
-    // Else if the if statement did not execute, execute 
-    // the block of code below 
-    else {
-      // Setting the status message 
-      setStatusMessage("Please select an image file first.");
-    }
-  };
-
-  // Emit video to backend
-  const handleAnalyzeVideo = async () => {
-    const file = videoInputRef.current?.files[0];
-    if (file) {
-      setIsProcessingVideo(true);
-      setVideoProgress(0);
-      setStatusMessage("Uploading video...");
-      setDetectionMessage(null);
-
-      const formData = new FormData();
-      formData.append("file", file);
-
-      try {
-        const response = await fetch(`${process.env.REACT_APP_MACHINE_LEARNING_SERVER}/uploadVideo`, {
-          method: "POST",
-          body: formData,
-        });
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const result = await response.json();
-        
-        setStatusMessage("Upload complete. Starting analysis...");
-        socket.emit("startVideoAnalysis", {
-          fileName: result.fileName,
-          token: tokenValue,
-        });
-        
-      } catch (error) {
-        console.error("Video upload failed:", error);
-        setStatusMessage("Error uploading video: " + error.message);
-        setIsProcessingVideo(false);
-        setVideoProgress(0);
-      }
-    } else {
-      setStatusMessage("Please select a video file first.");
-    }
-  };
-
-  // Component for the loading screen
-  const LoadingScreen = () => (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white transition-opacity duration-500">
-      <div className="animate-spin rounded-full h-24 w-24 border-t-2 border-b-2 border-purple-500"></div>
-      <p className="mt-4 text-xl font-semibold">Loading Dashboard...</p>
-    </div>
-  );
 
   // Rendering the dashboard component
   return (

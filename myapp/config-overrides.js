@@ -10,6 +10,8 @@ module.exports = function override(config) {
     "@assets": path.resolve(__dirname, "src/Assets"),
     "@utils": path.resolve(__dirname, "src/Utils"),
     "@images": path.resolve(__dirname, "src/Images"), 
+    "@hooks": path.resolve(__dirname, "src/Hooks"),
+    "@pages": path.resolve(__dirname, "src/Pages"),
   };
 
   // returning the config object 
