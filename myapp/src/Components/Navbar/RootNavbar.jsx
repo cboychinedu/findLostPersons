@@ -95,7 +95,7 @@ const RootNavbar = () => {
               <a onClick={() => setIsMobileMenuOpen(false)} href="/register" className="w-full text-center hover:underline text-decoration-none text-white">
                 Register
               </a>
-              <a href="/services"> 
+              <a href="/services" className='w-full text-center hover:underline text-decoration-none text-white' onClick={() => setIsMobileMenuOpen(false)}>
                 Services
               </a>
             </>

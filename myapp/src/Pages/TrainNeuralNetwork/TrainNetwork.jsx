@@ -227,7 +227,7 @@ const TrainNeuralNetwork = () => {
                         {/* You can implement a form or a text area for adding annotations */}
                         <textarea
                             id="labels" 
-                            className="border border-[#d4d3d3] outline outline-white p-[20px] h-[165px] w-[38%]"
+                            className="border border-[#d4d3d3] outline outline-white p-[20px] h-[265px] w-full md:w-1/2 rounded-lg resize-none"
                             rows="4"
                             value={labels} // Controlled component
                             onChange={handleLabelsChange}
