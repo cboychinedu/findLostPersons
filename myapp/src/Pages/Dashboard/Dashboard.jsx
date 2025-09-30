@@ -310,6 +310,7 @@ const Dashboard = () => {
                     id="mlModel" 
                     value={selectedModelId} 
                     onChange={handleModelSelectChange}
+                    // Changed from w-1/2 to w-full on small screens
                     className="h-10 w-full md:w-1/2 border border-gray-300 rounded-lg p-2 bg-white focus:ring-indigo-500 focus:border-indigo-500 transition duration-150"
                   >
                     <option value="">Select a model</option>
@@ -341,12 +342,14 @@ const Dashboard = () => {
               )}
             </header>
 
+            {/* Grid layout remains 1 column on small screens, 2 columns on medium screens */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 my-12">
               {/* Image Analysis Section */}
               <div className="bg-white p-6 rounded-xl shadow-2xl border border-gray-200">
                 <h2 className="text-2xl font-semibold mb-4 text-center text-gray-900">
                   Image Analysis
                 </h2>
+                {/* Media Preview Area */}
                 <div className="flex justify-center h-80 w-full bg-gray-900 rounded-lg shadow-inner overflow-hidden border-2 border-indigo-300">
                   {imagePreviewUrl ? (
                     <img
@@ -360,10 +363,13 @@ const Dashboard = () => {
                     </div>
                   )}
                 </div>
-                <div className="flex justify-center gap-4 mt-6">
+                
+                {/* Image Buttons: Made them wrap on small screens and full width if needed */}
+                <div className="flex flex-wrap justify-center gap-4 mt-6">
                   <button
                     onClick={handleImageUploadButtonClick}
-                    className="h-12 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-xl shadow-md transition-all duration-300 transform hover:scale-105"
+                    // Added w-full sm:w-auto to make the button stretch on very small screens
+                    className="h-12 w-full sm:w-auto bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-xl shadow-md transition-all duration-300 transform hover:scale-105"
                     disabled={isProcessingImage || isProcessingVideo}
                   >
                     Upload Image
@@ -371,7 +377,8 @@ const Dashboard = () => {
                   <button
                     onClick={handleAnalyzeImage}
                     disabled={!imagePreviewUrl || isProcessingImage || isProcessingVideo}
-                    className={`h-12 font-bold py-2 px-6 rounded-xl shadow-md transition-all duration-300 transform hover:scale-105 ${
+                    // Added w-full sm:w-auto to make the button stretch on very small screens
+                    className={`h-12 w-full sm:w-auto font-bold py-2 px-6 rounded-xl shadow-md transition-all duration-300 transform hover:scale-105 ${
                       imagePreviewUrl && !isProcessingImage && !isProcessingVideo
                         ? "bg-indigo-500 hover:bg-indigo-600 text-white"
                         : "bg-gray-400 text-gray-700 cursor-not-allowed"
@@ -407,6 +414,7 @@ const Dashboard = () => {
                 <h2 className="text-2xl font-semibold mb-4 text-center text-gray-900">
                   Video Analysis
                 </h2>
+                {/* Media Preview Area */}
                 <div className="flex justify-center h-80 w-full bg-gray-900 rounded-lg shadow-inner overflow-hidden border-2 border-indigo-300">
                   {videoPreviewUrl ? (
                     <video 
@@ -424,10 +432,13 @@ const Dashboard = () => {
                     </div>
                   )}
                 </div>
-                <div className="flex justify-center gap-4 mt-6">
+                
+                {/* Video Buttons: Made them wrap on small screens and full width if needed */}
+                <div className="flex flex-wrap justify-center gap-4 mt-6">
                   <button
                     onClick={handleVideoUploadButtonClick}
-                    className="h-12 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-xl shadow-md transition-all duration-300 transform hover:scale-105"
+                    // Added w-full sm:w-auto
+                    className="h-12 w-full sm:w-auto bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-xl shadow-md transition-all duration-300 transform hover:scale-105"
                     disabled={isProcessingImage || isProcessingVideo}
                   >
                     Upload Video
@@ -435,7 +446,8 @@ const Dashboard = () => {
                   <button
                     onClick={handleAnalyzeVideo}
                     disabled={!videoPreviewUrl || isProcessingImage || isProcessingVideo}
-                    className={`h-12 font-bold py-2 px-6 rounded-xl shadow-md transition-all duration-300 transform hover:scale-105 ${
+                    // Added w-full sm:w-auto
+                    className={`h-12 w-full sm:w-auto font-bold py-2 px-6 rounded-xl shadow-md transition-all duration-300 transform hover:scale-105 ${
                       videoPreviewUrl && !isProcessingVideo && !isProcessingImage
                         ? "bg-indigo-500 hover:bg-indigo-600 text-white"
                         : "bg-gray-400 text-gray-700 cursor-not-allowed"
