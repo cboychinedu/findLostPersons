@@ -1,5 +1,5 @@
 // Importing the necessary modules 
-import React, { useContext, useState } from 'react';
+import { useContext, useState } from 'react';
 import { AuthContext } from '@auth/AuthContext';
 import logo from '@images/ciaLogo.png'; 
 

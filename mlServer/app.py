@@ -24,14 +24,14 @@ app.secret_key = os.getenv('SECRET_KEY')
 app.permanent_session_lifetime = timedelta(days=24)
 
 # Setting the cors configurations 
-CORS(app) 
-# CORS(app, resources={r"/*": {"origins": "*"}})
+# CORS(app) 
+CORS(app, resources={r"/*": {"origins": "*"}})
 # CORS(app,  
 #     origins=[
 #         "http://localhost:3000", 
 #         "http://localhost:3001", 
 #         "http://127.0.0.1:3000", 
-#         "http://127.0.0.1:3001"
+#         "http://127.0.0.1:3001",
 #     ], 
 #     methods=["POST", "GET", "PUT", "DELETE"],
 #     allow_headers=[
@@ -46,7 +46,7 @@ CORS(app)
 #         'Authorization',
 #         'Cache-Control', 
 #         'xtoken'
-#     ]) 
+# ]) 
 
 # Using socket io 
 # socketio = SocketIO(app, cors_allowed_origins="http://localhost:3000")

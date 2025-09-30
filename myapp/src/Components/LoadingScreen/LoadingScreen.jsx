@@ -6,6 +6,5 @@ const LoadingScreen = () => (
     </div>
 );
 
-
 // export the component
 export default LoadingScreen;

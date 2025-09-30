@@ -1,6 +1,6 @@
 // Importing the necessary modules and components 
-import React, { useContext, useState } from 'react';
-import { AuthContext } from '../../Auth/AuthContext'; 
+import { useContext, useState } from 'react';
+import { AuthContext } from '@auth/AuthContext'; 
 
 // Since we cannot use external files, we will use a simple inline SVG for the logo.
 const logoSVG = (
