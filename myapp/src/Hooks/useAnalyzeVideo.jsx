@@ -8,6 +8,7 @@ import React from 'react';
  * @param {object} params - The parameters needed for the analysis.
  * @param {React.MutableRefObject<HTMLInputElement>} params.videoInputRef - Ref to the file input element.
  * @param {string} params.tokenValue - The user's authentication token.
+ * @param {string} params.selectedModelId - The ID of the selected ML model.
  * @param {function} params.setIsProcessingVideo - State setter to control video processing status.
  * @param {function} params.setVideoProgress - State setter for the video progress percentage.
  * @param {function} params.setStatusMessage - State setter for the general status messages.
@@ -17,6 +18,7 @@ import React from 'react';
 export const useAnalyzeVideo = ({
   videoInputRef,
   tokenValue,
+  selectedModelId,
   setIsProcessingVideo,
   setVideoProgress,
   setStatusMessage,
@@ -71,6 +73,7 @@ export const useAnalyzeVideo = ({
         socket.emit("startVideoAnalysis", {
           fileName: result.fileName, // The file name returned by the server
           token: tokenValue,
+          modelId: selectedModelId, // Pass the selectedModelId 
         });
         
       } 

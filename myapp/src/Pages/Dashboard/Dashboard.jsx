@@ -275,6 +275,7 @@ const Dashboard = () => {
   const handleAnalyzeVideo = useAnalyzeVideo({
     videoInputRef,
     tokenValue,
+    selectedModelId,
     setIsProcessingVideo,
     setVideoProgress,
     setStatusMessage,

@@ -85,10 +85,11 @@ def uploadVideo():
 # ------------------------------
 # IMAGE ANALYSIS
 # ------------------------------
-
 # Function to analyze an image asynchronously
 def analyzeImageTask(sid, fileData, fileName, token, modelId=None):
+    # Using app_context to ensure Flask context is available
     with app.app_context():
+        # Using try block to catch exceptions
         try:
             # Connect to MongoDB database
             db.connect('mongodb://localhost:27017/', 'findLostFaces')
@@ -185,10 +186,11 @@ def handleAnalyzeImage(data):
 # ------------------------------
 # VIDEO ANALYSIS
 # ------------------------------
-
 # Function to analyze a video asynchronously
 def analyzeVideoTask(sid, fileName, token):
+    # Using app_context to ensure Flask context is available
     with app.app_context():
+        # Using try block to catch exceptions
         try:
             # Get the uploaded video path
             videoPath = os.path.join(tempDir, fileName)
