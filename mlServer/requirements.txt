@@ -9,4 +9,3 @@ flask-socketio
 imutils
 pymongo
 PyJWT
-icrawler
