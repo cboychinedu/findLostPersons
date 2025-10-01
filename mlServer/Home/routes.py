@@ -19,6 +19,7 @@ from extensions import socketio
 from datetime import datetime
 from Database.mongo import MongoDB
 from werkzeug.utils import secure_filename
+from bson.objectid import ObjectId
 from .imageClass.imageAnalysis import ImageModelClass
 from .videoClass.videoAnalysis import VideoModelClass
 from flask import Blueprint, jsonify, request, send_from_directory
@@ -86,7 +87,7 @@ def uploadVideo():
 # IMAGE ANALYSIS
 # ------------------------------
 # Function to analyze an image asynchronously
-def analyzeImageTask(sid, fileData, fileName, token, modelId=None):
+def analyzeImageTask(sid, fileData, fileName, token, modelId):
     # Using app_context to ensure Flask context is available
     with app.app_context():
         # Using try block to catch exceptions
@@ -125,10 +126,10 @@ def analyzeImageTask(sid, fileData, fileName, token, modelId=None):
                 f.write(imageBytes)
 
             # Emit progress update
-            socketio.emit("progress", {"data": 25, "type": "image"}, room=sid)
+            socketio.emit("progress", {"data": 25, "type": "image"}, room=sid) 
 
             # Perform face recognition on the image
-            objectDetection = ImageModelClass(image=imagePath)
+            objectDetection = ImageModelClass(image=imagePath, modelId=modelId)
             (image, predName, proba) = objectDetection.performFaceRecognition()
 
             # If a face is detected, notify the client
@@ -179,7 +180,8 @@ def handleAnalyzeImage(data):
         request.sid,
         data.get("fileData"), 
         data.get("fileName"), 
-        data.get('token')
+        data.get('token'), 
+        data.get("modelId")
     )
 
 

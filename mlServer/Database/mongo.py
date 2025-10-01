@@ -6,6 +6,7 @@
 
 # Importing the necessary modules 
 import json 
+import pickle 
 import datetime
 from bson.objectid import ObjectId
 from flask import jsonify
@@ -158,7 +159,11 @@ class MongoDB:
     # Creating a method for retriving a single model 
     def retriveASingleMachineLearningModel(self, id, collectionName="models"): 
         # Setting the query 
-        query = {"_id": id }
+        # if isinstance(id, str):
+        #     query = {"_id": ObjectId(id)}
+        # else:
+        #     query = {"_id": id}
+        query = {"_id": ObjectId(id) }
 
         # Getting the collection 
         collection = self.db[collectionName]
@@ -171,18 +176,18 @@ class MongoDB:
             "labels": 1 
         })
 
-        if data is None: 
-            return jsonify({
-                "status": "error", 
-                "message": "No models with the specified id value", 
-                "statusCode": 404 
-            }) 
+        # if the data is none type, execute the block of code below
+        if data is None:  
+            return (None, None, None)
         
-        # --- CORRECTION 3: Return the Python dictionary for internal use (or jsonify it) ---
-        # For model loading in the ImageModelClass, it expects the Python dictionary.
-        # Returning the dictionary here is much cleaner than returning a Flask Response object.
-        return data
+        # 
+        embeddings = pickle.loads(data['models'][0]['data']) 
+        recognizerModel = pickle.loads(data['models'][1]['data']) 
+        labelEncoder = pickle.loads(data['models'][2]['data']) 
         
+        # Return the models
+        return (embeddings, recognizerModel, labelEncoder)
+    
     # Creating a method for retriving the machine learning models 
     def retriveMachineLearningModels(self, email, collectionName="models"): 
         # Setting the query 
