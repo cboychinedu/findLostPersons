@@ -10,7 +10,7 @@ const userSchema = new mongodb.Schema({
 });
 
 // Creating the user model
-const User = mongodb.model('User', userSchema);
+const User = mongodb.model('users', userSchema);
 
 // Exporting the user model 
 export default User;

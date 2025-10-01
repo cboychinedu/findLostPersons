@@ -13,6 +13,7 @@ import cv2
 import os
 import base64
 import jwt 
+from flask import Flask
 from flask_socketio import emit
 from extensions import socketio
 from datetime import datetime
@@ -27,6 +28,9 @@ tempDir = "tempFiles"
 
 # Create a MongoDB database instance
 db = MongoDB() 
+
+# Create a Flask application instance
+app = Flask(__name__)
 
 # Ensure the temporary directory exists, create if missing
 os.makedirs(tempDir, exist_ok=True)
@@ -84,73 +88,85 @@ def uploadVideo():
 
 # Function to analyze an image asynchronously
 def analyzeImageTask(sid, fileData, fileName, token, modelId=None):
-    try:
-        # Create path for temporarily saving the uploaded image
-        imagePath = os.path.join(tempDir, f"{datetime.now().strftime('%Y%m%d%H%M%S')}_{fileName}")
+    with app.app_context():
+        try:
+            # Connect to MongoDB database
+            db.connect('mongodb://localhost:27017/', 'findLostFaces')
 
-        # Decode JWT token to extract user data
-        decodedToken = jwt.decode(token, options={"verify_signature": False})
-        # Get user email address from token
-        emailAddress = decodedToken["email"]
+            # Create path for temporarily saving the uploaded image
+            imagePath = os.path.join(tempDir, f"{datetime.now().strftime('%Y%m%d%H%M%S')}_{fileName}")
 
-        # Create path for saving processed image
-        saveImagePath = os.path.join(tempDir, f"processed_{datetime.now().strftime('%Y%m%d%H%M%S')}_{fileName}")
+            # Decode JWT token to extract user data
+            decodedToken = jwt.decode(token, options={"verify_signature": False})
 
-        # Extract base64 string from the file data
-        base64Data = fileData.split(",")[1] if "," in fileData else fileData
-        # Decode base64 string into bytes
-        imageBytes = base64.b64decode(base64Data)
+            # Get user email address from token
+            emailAddress = decodedToken["email"]
 
-        # Save the uploaded image to disk
-        with open(imagePath, "wb") as f:
-            f.write(imageBytes)
+            # Checking to see if the user email is on the database 
+            result = db.userInformation('users', emailAddress)
 
-        # Emit progress update
-        socketio.emit("progress", {"data": 25, "type": "image"}, room=sid)
+            # if the result is None, execute the block of code below
+            if result is None:
+                # Sending the error message to the client
+                socketio.emit("analysisError", {"message": "User not found"}, room=sid)
+                return
 
-        # Perform face recognition on the image
-        objectDetection = ImageModelClass(image=imagePath)
-        (image, predName, proba) = objectDetection.performFaceRecognition()
+            # Create path for saving processed image
+            saveImagePath = os.path.join(tempDir, f"processed_{datetime.now().strftime('%Y%m%d%H%M%S')}_{fileName}")
 
-        # If a face is detected, notify the client
-        if predName: 
-            socketio.emit("detectionEvent", {"message": f"{predName} Detected.", "type": "image"}, room=sid)
+            # Extract base64 string from the file data
+            base64Data = fileData.split(",")[1] if "," in fileData else fileData
+            # Decode base64 string into bytes
+            imageBytes = base64.b64decode(base64Data)
 
-        # Emit another progress update
-        socketio.emit("progress", {"data": 70, "type": "image"}, room=sid)
+            # Save the uploaded image to disk
+            with open(imagePath, "wb") as f:
+                f.write(imageBytes)
 
-        # Save processed image to disk
-        cv2.imwrite(saveImagePath, image)
+            # Emit progress update
+            socketio.emit("progress", {"data": 25, "type": "image"}, room=sid)
 
-        # Encode processed image as base64 string
-        with open(saveImagePath, "rb") as imgFile:
-            encodedString = base64.b64encode(imgFile.read()).decode("utf-8")
+            # Perform face recognition on the image
+            objectDetection = ImageModelClass(image=imagePath)
+            (image, predName, proba) = objectDetection.performFaceRecognition()
 
-        # Emit final progress update
-        socketio.emit("progress", {"data": 100, "type": "image"}, room=sid)
+            # If a face is detected, notify the client
+            if predName: 
+                socketio.emit("detectionEvent", {"message": f"{predName} Detected.", "type": "image"}, room=sid)
 
-        # Send analysis complete event with base64 result
-        socketio.emit("analysisComplete", {
-            "type": "image",
-            "resultUrl": f"data:image/jpeg;base64,{encodedString}"
-        }, room=sid)
+            # Emit another progress update
+            socketio.emit("progress", {"data": 70, "type": "image"}, room=sid)
 
-        # Connect to MongoDB database
-        db.connect('mongodb://localhost:27017/', 'findLostFaces') 
-        # Prepare data to save
-        data = {
-            "emailAddress": emailAddress, 
-            "predictedLabel": predName, 
-            "proba": proba, 
-            "imageUrl": f"data:image/jpeg;base64,{encodedString}", 
-            "type": "image"
-        }
-        # Save analysis result in database
-        db.saveImageAnalysis('imagesHistory', data)
+            # Save processed image to disk
+            cv2.imwrite(saveImagePath, image)
 
-    # Catch any exceptions and emit error event
-    except Exception as e:
-        socketio.emit("analysisError", {"message": str(e)}, room=sid)
+            # Encode processed image as base64 string
+            with open(saveImagePath, "rb") as imgFile:
+                encodedString = base64.b64encode(imgFile.read()).decode("utf-8")
+
+            # Emit final progress update
+            socketio.emit("progress", {"data": 100, "type": "image"}, room=sid)
+
+            # Send analysis complete event with base64 result
+            socketio.emit("analysisComplete", {
+                "type": "image",
+                "resultUrl": f"data:image/jpeg;base64,{encodedString}"
+            }, room=sid)
+    
+            # Prepare data to save
+            data = {
+                "emailAddress": emailAddress, 
+                "predictedLabel": predName, 
+                "proba": proba, 
+                "imageUrl": f"data:image/jpeg;base64,{encodedString}", 
+                "type": "image"
+            }
+            # Save analysis result in database
+            db.saveImageAnalysis('imagesHistory', data)
+
+        # Catch any exceptions and emit error event
+        except Exception as e:
+            socketio.emit("analysisError", {"message": str(e)}, room=sid)
 
 
 # Event listener for image analysis
@@ -159,7 +175,7 @@ def handleAnalyzeImage(data):
     # Start background task for image analysis
     socketio.start_background_task(
         analyzeImageTask, 
-        request.sid, 
+        request.sid,
         data.get("fileData"), 
         data.get("fileName"), 
         data.get('token')
@@ -172,94 +188,113 @@ def handleAnalyzeImage(data):
 
 # Function to analyze a video asynchronously
 def analyzeVideoTask(sid, fileName, token):
-    try:
-        # Get the uploaded video path
-        videoPath = os.path.join(tempDir, fileName)
-        # Decode JWT token
-        decodedToken = jwt.decode(token, options={"verify_signature": False})
-        # Get user email address
-        emailAddress = decodedToken['email']
-        
-        # Emit initial progress
-        socketio.emit("progress", {"data": 1, "type": "video"}, room=sid)
-
-        # Open video using OpenCV
-        cap = cv2.VideoCapture(videoPath)
-        # Define video codec
-        fourcc = cv2.VideoWriter_fourcc(*'avc1')
-        
-        # Create unique filename for processed video
-        processedFileName = f"processed_{datetime.now().strftime('%Y%m%d%H%M%S')}_{os.path.basename(videoPath)}"
-        # Create save path for processed video
-        saveVideoPath = os.path.join(tempDir, processedFileName)
-
-        # Create a video writer object
-        out = cv2.VideoWriter(
-            saveVideoPath, fourcc, 20.0,
-            (int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)),
-             int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)))
-        )
-
-        # Get total number of frames in video
-        frameCount = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-        # Initialize processed frame counter
-        processedFrames = 0
-
-        # Loop through video frames
-        while cap.isOpened():
-            # Read next frame
-            ret, frame = cap.read()
-            if not ret:
-                break
-
-            # Perform face recognition on frame
-            objectDetection = VideoModelClass(image=frame)
-            (processedFrame, predName, proba) = objectDetection.performFaceRecognition()
-            # Write processed frame to output video
-            out.write(processedFrame)
+    with app.app_context():
+        try:
+            # Get the uploaded video path
+            videoPath = os.path.join(tempDir, fileName)
             
-            # If a face is detected, notify the client
-            if predName: 
-                socketio.emit("detectionEvent", {"message": f"{predName}", "type": "video"}, room=sid)
+            # Decode JWT token
+            decodedToken = jwt.decode(token, options={"verify_signature": False})
+            
+            # Get user email address
+            emailAddress = decodedToken['email']
 
-            # Increment processed frames
-            processedFrames += 1
-            # Calculate progress percentage
-            progress = (processedFrames / frameCount) * 100
+            # Connect to MongoDB
+            db.connect('mongodb://localhost:27017/', 'findLostFaces')
 
-            # Send progress update every 10 frames or at the end
-            if processedFrames % 10 == 0 or processedFrames == frameCount:
-                socketio.emit("progress", {"data": progress, "type": "video"}, room=sid)
-        
-        # Release resources after processing
-        cap.release()
-        out.release()
-        
-        # Generate URL for processed video
-        videoUrl = f"http://127.0.0.1:3001/media/{processedFileName}"
-        
-        # Send analysis complete event with video URL
-        socketio.emit("analysisComplete", {
-            "type": "video",
-            "resultUrl": videoUrl
-        }, room=sid)
+            # Checking to see if the user email is on the database 
+            result = db.userInformation('users', emailAddress) 
 
-        # Connect to MongoDB
-        db.connect('mongodb://localhost:27017/', 'findLostFaces') 
-        # Prepare data for saving
-        data = {
-            "emailAddress": emailAddress, 
-            "predictedLabel": predName, 
-            "proba": proba, 
-            "videoUrl": videoUrl, 
-            "type": "video"
-        }
-        # Save video analysis results in database
-        db.saveVideoAnalysis('videoHistory', data)
+            # if the result is None, execute the block of code below
+            if result is None:
+                # Sending the error message to the client
+                socketio.emit("analysisError", {"message": "User not found"}, room=sid)
+                return
+            
+            # Emit initial progress
+            socketio.emit("progress", {"data": 1, "type": "video"}, room=sid)
 
-    # Handle exceptions and emit error event
-    except Exception as e:
-        socketio.emit("analysisError", {"message": str(e)}, room=sid)
+            # Open video using OpenCV
+            cap = cv2.VideoCapture(videoPath)
+            
+            # Define video codec
+            fourcc = cv2.VideoWriter_fourcc(*'avc1')
+            
+            # Create unique filename for processed video
+            processedFileName = f"processed_{datetime.now().strftime('%Y%m%d%H%M%S')}_{os.path.basename(videoPath)}"
+           
+            # Create save path for processed video
+            saveVideoPath = os.path.join(tempDir, processedFileName)
+
+            # Create a video writer object
+            out = cv2.VideoWriter(
+                saveVideoPath, fourcc, 20.0,
+                (int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)),
+                int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)))
+            )
+
+            # Get total number of frames in video
+            frameCount = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+            
+            # Initialize processed frame counter
+            processedFrames = 0
+
+            # Loop through video frames
+            while cap.isOpened():
+                # Read next frame
+                ret, frame = cap.read()
+                if not ret:
+                    break
+
+                # Perform face recognition on frame
+                objectDetection = VideoModelClass(image=frame)
+                (processedFrame, predName, proba) = objectDetection.performFaceRecognition()
+                # Write processed frame to output video
+                out.write(processedFrame)
+                
+                # If a face is detected, notify the client
+                if predName: 
+                    socketio.emit("detectionEvent", {"message": f"{predName}", "type": "video"}, room=sid)
+
+                # Increment processed frames
+                processedFrames += 1
+                # Calculate progress percentage
+                progress = (processedFrames / frameCount) * 100
+
+                # Send progress update every 10 frames or at the end
+                if processedFrames % 10 == 0 or processedFrames == frameCount:
+                    socketio.emit("progress", {"data": progress, "type": "video"}, room=sid)
+            
+            # Release resources after processing
+            cap.release()
+            out.release()
+            
+            # Generate URL for processed video
+            videoUrl = f"http://127.0.0.1:3001/media/{processedFileName}"
+            
+            # Send analysis complete event with video URL
+            socketio.emit("analysisComplete", {
+                "type": "video",
+                "resultUrl": videoUrl
+            }, room=sid)
+ 
+            # Prepare data for saving
+            data = {
+                "emailAddress": emailAddress, 
+                "predictedLabel": predName, 
+                "proba": proba, 
+                "videoUrl": videoUrl, 
+                "type": "video"
+            }
+
+            # Save video analysis results in database
+            db.saveVideoAnalysis('videoHistory', data)
+
+
+        # Handle exceptions and emit error event
+        except Exception as e:
+            # Emit error event to client
+            socketio.emit("analysisError", {"message": str(e)}, room=sid)
 
 
 # Event listener for video analysis
@@ -268,6 +303,6 @@ def handleStartVideoAnalysis(data):
     # Start background task for video analysis
     socketio.start_background_task(
         analyzeVideoTask, 
-        request.sid, 
+        request.sid,
         data.get("fileName"), data.get('token')
     )

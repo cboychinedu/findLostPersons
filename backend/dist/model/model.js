@@ -13,6 +13,6 @@ const userSchema = new mongoose_1.default.Schema({
     date: { type: Date, default: Date.now },
 });
 // Creating the user model
-const User = mongoose_1.default.model('User', userSchema);
+const User = mongoose_1.default.model('users', userSchema);
 // Exporting the user model 
 exports.default = User;

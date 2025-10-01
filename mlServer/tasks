@@ -1,0 +1,3 @@
+# Tomorrow Task 
+The system should be able to perfom a token check to verify if the user is 
+registered on the database before performing image and video analysis

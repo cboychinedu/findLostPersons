@@ -24,6 +24,32 @@ class MongoDB:
         self.clinet = MongoClient(uri) 
         self.db = self.clinet[dbName]
 
+    # Creating a method for getting the user's information 
+    def userInformation(self, collectionName, emailAddress): 
+        # Setting the query 
+        query = { 'emailAddress': emailAddress }
+        collection = self.db[collectionName]
+
+        # Find one data by the specified email address 
+        data = collection.find_one(query, {
+            "_id": 1, 
+            "fullname": 1, 
+            "emailAddress": 1,
+        }); 
+
+        # if the returned type is a None type, execute the block 
+        # of code below 
+        if data == None: 
+            # return None as a data type 
+            return None; 
+
+        # Convert the MongoDB documents into a json object 
+        json_data = json.dumps(dict(data), default=str)
+        json_data = jsonify(json_data); 
+
+        # Return the json object 
+        return json_data;
+
     # Get the currect time 
     def getCurrentTime(self): 
         # Generates the current time in a universally accepted
