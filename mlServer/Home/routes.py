@@ -62,6 +62,7 @@ def uploadVideo():
 
     # Get the uploaded file
     file = request.files['file']
+
     # If the filename is empty, return error
     if file.filename == '':
         return jsonify({"message": "No selected file"}), 400
@@ -70,12 +71,16 @@ def uploadVideo():
     if file:
         # Sanitize filename
         filename = secure_filename(file.filename)
+
         # Append timestamp to make the filename unique
         uniqueFilename = f"{datetime.now().strftime('%Y%m%d%H%M%S')}_{filename}"
+
         # Create full file path in temp directory
         filePath = os.path.join(tempDir, uniqueFilename)
+
         # Save the file
         file.save(filePath)
+        
         # Return success message with new filename
         return jsonify({"message": "File uploaded successfully", "fileName": uniqueFilename})
 

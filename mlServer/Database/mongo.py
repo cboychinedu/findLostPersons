@@ -154,6 +154,8 @@ class MongoDB:
         
         # --- CORRECTION 2: Use json.dumps with json_util.default ---
         jsonString = json.dumps(data, default=json_util.default) 
+
+        # Returning the json string 
         return jsonString 
         
     # Creating a method for retriving a single model 
@@ -177,12 +179,13 @@ class MongoDB:
             # Return None as a data type
             return (None, None, None)
         
-        # Pickling the models before returning them
+        # Pickling the embeddings, recognizerModel and labelEncoder 
+        # models before returning them
         embeddings = pickle.loads(data['models'][0]['data']) 
         recognizerModel = pickle.loads(data['models'][1]['data']) 
         labelEncoder = pickle.loads(data['models'][2]['data']) 
         
-        # Return the models
+        # Returning the models
         return (embeddings, recognizerModel, labelEncoder)
     
     # Creating a method for retriving the machine learning models 
