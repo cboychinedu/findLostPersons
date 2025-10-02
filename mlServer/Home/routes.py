@@ -133,6 +133,14 @@ def analyzeImageTask(sid, fileData, fileName, token, modelId):
             objectDetection = ImageModelClass(image=imagePath, modelId=modelId)
             (image, predName, proba) = objectDetection.performFaceRecognition()
 
+            # Check if no faces, proba, or image were detected 
+            if (predName is None) or (proba is None) or (image is None): 
+                socketio.emit("analysisError", {
+                    "type": "image",
+                    "message": "No faces detected in the uploaded image."
+                }, to=sid)
+                return
+
             # If a face is detected, notify the client
             if predName: 
                 socketio.emit("detectionEvent", {"message": f"{predName} Detected.", "type": "image"}, room=sid)
@@ -164,12 +172,15 @@ def analyzeImageTask(sid, fileData, fileName, token, modelId):
                 "imageUrl": f"data:image/jpeg;base64,{encodedString}", 
                 "type": "image"
             }
+
             # Save analysis result in database
             db.saveImageAnalysis('imagesHistory', data)
 
         # Catch any exceptions and emit error event
         except Exception as e:
-            socketio.emit("analysisError", {"message": str(e)}, room=sid)
+            # Emit error event to client
+            socketio.emit("analysisError", {"message": "Select a machine learning model..."}, room=sid)
+
 
 
 # Event listener for image analysis
@@ -254,6 +265,14 @@ def analyzeVideoTask(sid, fileName, token, modelId):
                 # Perform face recognition on frame
                 objectDetection = VideoModelClass(image=frame, modelId=modelId)
                 (processedFrame, predName, proba) = objectDetection.performFaceRecognition()
+
+                # Check if no faces were detected
+                if (predName is None) or (proba is None) or (processedFrame is None): 
+                    socketio.emit("analysisError", {
+                        "type": "image",
+                        "message": "No faces detected in the uploaded image."
+                    }, to=sid)
+                    return
                 
                 # Write processed frame to output video
                 out.write(processedFrame)
@@ -300,7 +319,7 @@ def analyzeVideoTask(sid, fileName, token, modelId):
         # Handle exceptions and emit error event
         except Exception as e:
             # Emit error event to client
-            socketio.emit("analysisError", {"message": str(e)}, room=sid)
+            socketio.emit("analysisError", {"message": "Select a machine learning model..."}, room=sid)
 
 
 # Event listener for video analysis

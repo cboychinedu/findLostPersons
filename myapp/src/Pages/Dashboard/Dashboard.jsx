@@ -29,21 +29,32 @@ const Dashboard = () => {
   const [imagePreviewUrl, setImagePreviewUrl] = useState(null);
   const [videoPreviewUrl, setVideoPreviewUrl] = useState(null);
   const [modelTypes, setModelTypes] = useState([]); 
-  const [selectedModelId, setSelectedModelId] = useState('');
+  const [selectedModelId, setSelectedModelId] = useState(null);
 
   // Setting the refs for the image and video inputs
   const imageInputRef = useRef(null);
   const videoInputRef = useRef(null);
 
   // Function to handle the model selection dropdown menu 
-  const handleModelSelectChange = (event) => {
-    // Test 
-    // console.log(event);
-    const selectedMlModel = document.querySelector("#mlModel");   
+  // const handleModelSelectChange = (event) => {
+  //   // Test 
+  //   // console.log(event);
+  //   const selectedMlModel = document.querySelector("#mlModel");   
 
-    // Setting the selected model id value 
-    setSelectedModelId(selectedMlModel.value); 
-  }
+  //   console.log("Selected Model: ", selectedMlModel.value);
+
+  //   // Setting the selected model id value 
+  //   setSelectedModelId(selectedMlModel.value); 
+  // }
+
+  // Handler for model selection
+  const handleModelSelectChange = (event) => {
+    const value = event.target.value;
+    console.log("Selected Model:", value);
+
+    // If "null" is chosen, store it as null
+    setSelectedModelId(value === "null" ? null : value);
+  };
 
   // Creating a function to fetch the model
   const fetchModel = async () => {
@@ -309,12 +320,11 @@ const Dashboard = () => {
                   <select 
                     name="mlModel" 
                     id="mlModel" 
-                    value={selectedModelId} 
+                    value={selectedModelId ?? "null"}  // fallback to "null" if nothing is selected
                     onChange={handleModelSelectChange}
-                    // Changed from w-1/2 to w-full on small screens
                     className="h-10 w-full md:w-1/2 border border-gray-300 rounded-lg p-2 bg-white focus:ring-indigo-500 focus:border-indigo-500 transition duration-150"
                   >
-                    <option value="">Select a model</option>
+                    <option value="null">Select a model</option>
 
                     {Array.isArray(modelTypes) && modelTypes.length > 0 ? (
                       modelTypes.map((model) => (
@@ -326,13 +336,12 @@ const Dashboard = () => {
                         </option>
                       ))
                     ) : (
-                      <option value="" disabled>
+                      <option value="null" disabled>
                         No models available
                       </option>
                     )}
                   </select>
               </div>
-
 
               {/* Adding the status message */}
               {statusMessage && (
@@ -390,7 +399,7 @@ const Dashboard = () => {
                   <input
                     type="file"
                     hidden
-                    accept="image/*"
+                    accept="image/jpeg,image/png,.jpg,.jpeg,.png"
                     ref={imageInputRef}
                     onChange={onImageFileChange}
                   />

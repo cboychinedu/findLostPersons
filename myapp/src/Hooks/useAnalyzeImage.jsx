@@ -1,20 +1,4 @@
-// Importing the necessary modules 
-import React from 'react';
-
-/**
- * Custom hook to handle the image analysis logic.
- * It encapsulates the file reading, state updates, and socket emission.
- * @param {object} params - The parameters needed for the analysis.
- * @param {React.MutableRefObject<HTMLInputElement>} params.imageInputRef - Ref to the file input element.
- * @param {string} params.tokenValue - The user's authentication token.
- * @param {string} params.selectedModelId - The ID of the selected ML model.
- * @param {function} params.setIsProcessingImage - State setter to control image processing status.
- * @param {function} params.setImageProgress - State setter for the image progress percentage.
- * @param {function} params.setStatusMessage - State setter for the general status messages.
- * @param {function} params.setDetectionMessage - State setter for detection-specific messages.
- * @param {object} params.socket - The established socket.io connection object.
- * @returns {function} The handleAnalyzeImage function ready to be called.
- */
+// Custom hook for analyzing an image using a selected model
 export const useAnalyzeImage = ({
   imageInputRef,
   tokenValue,
@@ -25,52 +9,77 @@ export const useAnalyzeImage = ({
   setDetectionMessage,
   socket,
 }) => {
-  // Function to handle image analysis
+  // Handler function to analyze the image
   const handleAnalyzeImage = () => {
-    // Check if a file is selected
+    // Check if a file is selected in the input
     if (imageInputRef.current?.files.length > 0) {
-      // NOTE: The model ID check is currently commented out in the original code,
-      // but you can uncomment it here if you wish to enforce model selection.
-      /*
-      if (!selectedModelId) {
+      // If no model is selected, set status message and return
+      if (selectedModelId === null) {
+        // Set the status message to prompt user to select a model
         setStatusMessage("Please select a trained model before analysis."); 
+
+        // Exit the function early
         return; 
       }
-      */
 
-      // Get the file
+      // Get the selected file
       const file = imageInputRef.current.files[0];
 
-      // Reset states and start processing
+      // Set processing state and reset progress and messages
       setIsProcessingImage(true);
-      setImageProgress(0);
-      setStatusMessage("Analyzing image...");
-      setDetectionMessage(null); 
 
-      // Read the file as a Data URL
+      // Reset progress and messages
+      setImageProgress(0);
+
+      // Set status message to indicate analysis is starting
+      setStatusMessage("Analyzing image...");
+
+      // Clear any previous detection messages
+      setDetectionMessage(null);  
+
+      // Create a FileReader to read the file
       const reader = new FileReader();
+
+      // When the file is loaded, emit the analyzeImage event with file data and other info
       reader.onload = (event) => {
-        // Emit the data to the backend via socket
+        // Emit the analyzeImage event with file data and other info
         socket.emit("analyzeImage", {
           fileData: event.target.result,
           fileName: file.name,
           token: tokenValue,
-          modelId: selectedModelId, // Pass the selectedModelId
+          modelId: selectedModelId,
         });
-      };
-      
-      // Start reading the file
-      reader.readAsDataURL(file);
 
+        // 🔹 Timeout fallback (20 seconds)
+        const timeoutId = setTimeout(() => {
+          // If no response in 20 seconds, reset states and set timeout message
+          setIsProcessingImage(false);
+
+          // Reset progress
+          setImageProgress(0);
+
+          // Set timeout status message
+          setStatusMessage("No faces detected or request timed out.");
+        }, 2000);
+
+        // 🔹 Listen for completion/error and clear timeout
+        const clearAll = () => clearTimeout(timeoutId);
+
+        // Listeners for analysis completion and errors
+        socket.once("analysisComplete", clearAll);
+        socket.once("analysisError", clearAll);
+      };
+
+      // Read the file as a data URL
+      reader.readAsDataURL(file);
     } 
-    // else 
+    // If no file is selected
     else {
-      // If no file is selected
+      // Set the status message to prompt user to select a file
       setStatusMessage("Please select an image file first.");
     }
   };
 
-  // Return the handleAnalyzeImage function 
-  // so it can be used in components
+  // Return the handler function 
   return handleAnalyzeImage;
 };
