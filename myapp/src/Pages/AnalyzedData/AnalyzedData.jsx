@@ -13,8 +13,8 @@ let tokenValue = localStorage.getItem("xAuthToken") || null;
 const AnalyzedHistoryData = () => {
     // Setting the state variables
     const [statusMessage, setStatusMessage] = useState("");
-    const [imagehistoryData, setImageHistoryData] = useState(null);
-    const [videohistoryData, setVideoHistoryData] = useState(null); 
+    const [imagehistoryData, setImageHistoryData] = useState([]);
+    const [videohistoryData, setVideoHistoryData] = useState([]); 
     const [isLoading, setIsLoading] = useState(true);
     
     // Use useRef to create a mutable ref object
@@ -47,7 +47,7 @@ const AnalyzedHistoryData = () => {
             const data = await response.json();
 
             // Update state with the fetched data and a success message
-            setImageHistoryData(data);
+            setImageHistoryData(Array.isArray(data) ? data : []);
             setStatusMessage(successMsg);
             
             // Use the ref current value and pass the direct message string
@@ -100,7 +100,7 @@ const AnalyzedHistoryData = () => {
             const data = await response.json(); 
 
             // Update the video state with the fetched data 
-            setVideoHistoryData(data);  
+            setVideoHistoryData(Array.isArray(data) ? data : []);  
             setStatusMessage(successMsg); 
             
             // Use the ref current value and pass the direct message string
