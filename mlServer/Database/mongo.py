@@ -158,11 +158,7 @@ class MongoDB:
         
     # Creating a method for retriving a single model 
     def retriveASingleMachineLearningModel(self, id, collectionName="models"): 
-        # Setting the query 
-        # if isinstance(id, str):
-        #     query = {"_id": ObjectId(id)}
-        # else:
-        #     query = {"_id": id}
+        # Setting the query = {"_id": id}
         query = {"_id": ObjectId(id) }
 
         # Getting the collection 
@@ -178,9 +174,10 @@ class MongoDB:
 
         # if the data is none type, execute the block of code below
         if data is None:  
+            # Return None as a data type
             return (None, None, None)
         
-        # 
+        # Pickling the models before returning them
         embeddings = pickle.loads(data['models'][0]['data']) 
         recognizerModel = pickle.loads(data['models'][1]['data']) 
         labelEncoder = pickle.loads(data['models'][2]['data']) 
@@ -207,8 +204,9 @@ class MongoDB:
             "models": 1 
         }))
 
-        # 
+        # if the data is none type, execute the block of code below
         if not data: 
+            # Return an error message 
             return jsonify({
                 "status": "error", 
                 "message": "No models on the database", 
@@ -218,5 +216,5 @@ class MongoDB:
         # --- CORRECTION 4: Use json.dumps with json_util.default ---
         jsonString = json.dumps(data, default=json_util.default)
 
-        # 
+        # Returning the json string 
         return jsonString 

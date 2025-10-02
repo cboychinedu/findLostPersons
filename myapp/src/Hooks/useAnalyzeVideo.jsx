@@ -1,6 +1,3 @@
-// Importing the necessary modules 
-import React from 'react';
-
 /**
  * Custom hook to handle the video analysis logic.
  * It manages file validation, state updates, the video upload process, 

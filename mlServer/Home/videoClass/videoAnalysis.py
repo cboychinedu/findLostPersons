@@ -2,6 +2,7 @@
 import os
 import cv2
 import pickle
+from Database.mongo import MongoDB
 import numpy as np
 
 # Setting the path to the model
@@ -10,18 +11,35 @@ modelPath = "models"
 # Output path
 outputPath = os.path.join(modelPath, 'output')
 
+# Creating an instance of the database 
+db = MongoDB()
+
+# Loading the models from mongoDB
+def loadModelFromDB(modelId):
+    # Connect to the database
+    db.connect("mongodb://localhost:27017/", "findLostFaces")
+
+    # Getting the model from the database
+    (embeddings, recognizerModel, labelEncoder) = db.retriveASingleMachineLearningModel(modelId, 'models') 
+
+    # return (pickle.loads(embeddings), pickle.loads(recognizerModel), pickle.loads(labelEncoder))
+    return (embeddings, recognizerModel, labelEncoder)
+
 # Defining a class to load the model
 class VideoModelClass:
-    def __init__(self, image):
+    def __init__(self, image, modelId):
         # Load the model and the image
         self.image = image
         self.detectorModel = os.path.join(modelPath, "faceDetectionModel")
         self.embeddingModel = os.path.join(modelPath, "embeddingModel.t7")
-        self.recognizerModel = os.path.join(outputPath, "recognizer.pickle")
-        self.labelModel = os.path.join(outputPath, "le.pickle")
+        # self.recognizerModel = os.path.join(outputPath, "recognizer.pickle")
+        # self.labelModel = os.path.join(outputPath, "le.pickle")
+
+        # Load model from database if modelData is provided
+        (self.embeddings, self.recognizer, self.le) = loadModelFromDB(modelId=modelId)
 
         # Loading the serialized face detector model into memory
-        self.confidenceValue = 0.5
+        self.confidenceValue = 0.6
         self.protoPath = os.path.join(self.detectorModel, 'deploy.prototxt')
         self.modelPath = os.path.join(self.detectorModel, 'res10.caffemodel')
         self.detector = cv2.dnn.readNetFromCaffe(self.protoPath, self.modelPath)
@@ -30,8 +48,8 @@ class VideoModelClass:
         self.embedder = cv2.dnn.readNetFromTorch(self.embeddingModel)
 
         # Correcting the way the pickle files are loaded
-        self.recognizer = pickle.load(open(self.recognizerModel, "rb"))
-        self.le = pickle.load(open(self.labelModel, "rb"))
+        # self.recognizer = pickle.load(open(self.recognizerModel, "rb"))
+        # self.le = pickle.load(open(self.labelModel, "rb"))
 
     # Creating a method for processing the image
     def processImage(self):

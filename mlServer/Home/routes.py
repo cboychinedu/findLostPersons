@@ -118,6 +118,7 @@ def analyzeImageTask(sid, fileData, fileName, token, modelId):
 
             # Extract base64 string from the file data
             base64Data = fileData.split(",")[1] if "," in fileData else fileData
+            
             # Decode base64 string into bytes
             imageBytes = base64.b64decode(base64Data)
 
@@ -189,7 +190,7 @@ def handleAnalyzeImage(data):
 # VIDEO ANALYSIS
 # ------------------------------
 # Function to analyze a video asynchronously
-def analyzeVideoTask(sid, fileName, token):
+def analyzeVideoTask(sid, fileName, token, modelId):
     # Using app_context to ensure Flask context is available
     with app.app_context():
         # Using try block to catch exceptions
@@ -251,8 +252,9 @@ def analyzeVideoTask(sid, fileName, token):
                     break
 
                 # Perform face recognition on frame
-                objectDetection = VideoModelClass(image=frame)
+                objectDetection = VideoModelClass(image=frame, modelId=modelId)
                 (processedFrame, predName, proba) = objectDetection.performFaceRecognition()
+                
                 # Write processed frame to output video
                 out.write(processedFrame)
                 
@@ -308,5 +310,7 @@ def handleStartVideoAnalysis(data):
     socketio.start_background_task(
         analyzeVideoTask, 
         request.sid,
-        data.get("fileName"), data.get('token')
+        data.get("fileName"), 
+        data.get('token'), 
+        data.get("modelId")
     )
