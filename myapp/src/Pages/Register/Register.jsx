@@ -1,7 +1,7 @@
 // Importing the necessary modules 
 import "./Register.css"; // Importing the CSS file for the Register component's styles.
 import RootNavbar from "@components/Navbar/RootNavbar"; 
-import ciaLogo from "@images/ciaLogo.png"; 
+import ciaLogo from "@images/blackbox.jpg"; 
 import { Fragment, useState } from "react"; 
 import Footer from "@components/Footer/Footer"; 
 import flashMessageFunction from "@components/FlashMessage/FlashMessage"; 
@@ -140,7 +140,7 @@ const Register = () => {
       <div className="flex flex-col md:flex-row items-center justify-center h-screen gap-10">
         
         {/* Logo */}
-        <div className="flex justify-center mt-[80px] ">
+        <div className="flex justify-center mt-[0px] ">
           <img src={ciaLogo} alt="CIA Logo" className="h-[250px]" />
         </div>
 
@@ -213,7 +213,7 @@ const Register = () => {
               <button
                 onClick={handleSubmitRegister}
                 type="submit"
-                className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-200"
+                className="w-full bg-black text-white py-2 rounded-lg hover:bg-blue-700 transition duration-200"
               >
                 Register
               </button>

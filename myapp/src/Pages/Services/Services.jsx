@@ -33,7 +33,7 @@ const Services = () => {
                     </div>
 
                     {/* Call to Action Banner - Responsive Layout */}
-                    <div className="mt-16 bg-indigo-700 text-white p-8 rounded-2xl shadow-xl flex flex-col md:flex-row items-center justify-between">
+                    <div className="mt-16 bg-black text-white p-8 rounded-2xl shadow-xl flex flex-col md:flex-row items-center justify-between">
                         <div className="mb-4 md:mb-0">
                             <h2 className="text-2xl font-bold">Ready to Start a Report?</h2>
                             <p className="text-indigo-200 mt-1">

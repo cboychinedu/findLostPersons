@@ -1,6 +1,7 @@
 // Importing the necessary module 
 import "./Home.css"; 
-import ciaLogo from "@images/ciaLogo.png";
+// import ciaLogo from "@images/ciaLogo.png";
+import ciaLogo from '@images/blackbox.jpg'; 
 import { Fragment, useEffect, useState, useContext } from 'react';
 import { MoonLoader } from 'react-spinners';
 import { AuthContext } from '@auth/AuthContext';
@@ -97,7 +98,7 @@ const Home = () => {
       {loading ? (
         // Loader spinner
         <div className="flex items-center justify-center h-screen">
-          <MoonLoader color="blue" size={100} /> 
+          <MoonLoader color="black" size={100} /> 
         </div>
       ) : (
         <Fragment>          
@@ -176,7 +177,7 @@ const Home = () => {
                 <div>
                   <button 
                     type="submit" 
-                    className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-200"
+                    className="w-full bg-black text-white py-2 rounded-lg hover:bg-blue-700 transition duration-200"
                   >
                     Login
                   </button>
