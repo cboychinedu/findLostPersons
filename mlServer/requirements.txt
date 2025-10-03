@@ -1,9 +1,10 @@
-numpy==1.26.4
+numpy==2.0.1
 flask
 flask_cors
 bcrypt
 python-dotenv 
 opencv-python
+opencv-python-headless
 scikit-learn
 flask-socketio
 imutils
