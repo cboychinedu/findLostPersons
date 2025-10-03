@@ -1,7 +1,7 @@
 // Importing the necessary modules 
 import { useContext, useState } from 'react';
 import { AuthContext } from '@auth/AuthContext';
-import logo from '@images/ciaLogo.png'; 
+import logo from '@images/blackbox.jpg'; 
 
 // Since we cannot use external files, we will use a simple inline SVG for the logo.
 const logoSVG = (
@@ -27,10 +27,10 @@ const DashboardNavbar = () => {
 
     // return the jsx component 
     return (
-        <nav className="p-4 fixed w-full text-white flex justify-between items-center bg-[rgb(18,48,114)]"> 
+        <nav className="p-4 fixed w-full text-white flex justify-between items-center bg-[black]"> 
             <a className="text-decoration-none text-lg font-bold flex items-center" href="/dashboard"> 
-                <img src={logo} alt="CIA logo" className="h-[50px]" /> 
-                <a href="/dashboard" className="ml-2 hover:underline text-decoration-none text-white">Find Missing Persons</a>
+                <img src={logo} alt="CIA logo" className="h-[50px] pt-[9px]" /> 
+                <a href="/dashboard" className="ml-2 hover:underline text-decoration-none text-white">Blackbox Analytics</a>
             </a>
 
             {/* Hamburger menu for mobile */}
@@ -63,7 +63,7 @@ const DashboardNavbar = () => {
 
             {/* Mobile menu (hidden by default) */}
             <div 
-                className={`fixed top-0 right-0 h-full w-64 bg-[rgb(18,48,114)] transform transition-transform duration-300 ease-in-out md:hidden z-50 ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}
+                className={`fixed top-0 right-0 h-full w-64 bg-[black] transform transition-transform duration-300 ease-in-out md:hidden z-50 ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}
             >
                 <div className="flex flex-col items-start p-4 space-y-4 pt-16">
                     <button 
@@ -71,13 +71,14 @@ const DashboardNavbar = () => {
                         className="absolute top-4 right-4 text-white focus:outline-none"
                         aria-label="Close menu"
                     >
-                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"> 
+                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
                         </svg>
                     </button>
-                    <a onClick={() => setIsMobileMenuOpen(false)} href="/trainNeuralNetwork" className="w-full text-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded hover:underline text-decoration-none">
+                    <a onClick={() => setIsMobileMenuOpen(false)} href="/trainNeuralNetwork" className="w-[100%] text-center bg-blue-500 hover:bg-blue-700 text-white mt-[70px] font-bold py-2 px-4 rounded hover:underline text-decoration-none">
                         Train Neural Net On Missing Persons
                     </a>
+
                     <a onClick={() => setIsMobileMenuOpen(false)} href="/history" className="w-full text-center hover:underline text-decoration-none text-white">
                         Analyzed Data
                     </a>

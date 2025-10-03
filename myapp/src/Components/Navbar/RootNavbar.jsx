@@ -14,11 +14,11 @@ const RootNavbar = () => {
 
   // Return the JSX for the navbar 
   return (
-    <nav className="p-4 text-white flex justify-between items-center bg-[rgb(18,48,114)]">
+    <nav className="p-4 text-white flex justify-between items-center bg-[black]">
       {/* Logo Section */}
       <div className="text-lg font-bold flex items-center">
         {logoSVG}
-        <a href="/" className="ml-2 hover:underline text-decoration-none text-white w-full">Find Missing Persons</a>
+        <a href="/" className="ml-2 hover:underline text-decoration-none text-white w-full">Blackbox Analytics</a>
       </div>
 
       {/* Hamburger menu for mobile */}
@@ -66,7 +66,7 @@ const RootNavbar = () => {
 
       {/* Mobile Menu (slides in) */}
       <div
-        className={`fixed top-0 right-0 h-full w-64 bg-[rgb(18,48,114)] transform transition-transform duration-300 ease-in-out md:hidden z-50 ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}
+        className={`fixed top-0 right-0 h-full w-64 bg-[black] transform transition-transform duration-300 ease-in-out md:hidden z-50 ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}
       >
         <div className="flex flex-col items-start p-4 space-y-4 pt-16">
           <button

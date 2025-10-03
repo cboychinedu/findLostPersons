@@ -1,6 +1,6 @@
 // Importing the necessary modules 
 import { Fragment } from "react";
-import ciaLogo from "@images/ciaLogo.png"; 
+import ciaLogo from "@images/blackbox.jpg"; 
 
 // Creating the footer 
 const Footer = () => {
@@ -10,13 +10,13 @@ const Footer = () => {
   // returning the jsx component 
   return (
     <Fragment> 
-      <footer className="bg-[rgb(18,48,114)] text-gray-200 py-12 shadow-inner mt-[160px]">
+      <footer className="bg-[black] text-gray-200 py-12 shadow-inner mt-[160px]">
         <div className="container mx-auto px-4">
           {/* Main Grid for Footer Content */}
           <div className="flex flex-col md:grid md:grid-cols-5 gap-8 mb-8 text-left">
             {/* Adding the logo column  */}
             <div className="flex items-center"> 
-              <img className="h-[100px] -ml-[45px] "src={ciaLogo} alt="ciaLogo" /> 
+              <img className="h-[100px]"src={ciaLogo} alt="ciaLogo" /> 
             </div>
 
             {/* Column 1: About */}
