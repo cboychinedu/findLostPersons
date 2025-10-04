@@ -61,6 +61,7 @@ I believe if we are able to train a machine learning model, and perform an analy
 - CSS Modules (Tailwind CSS)
 - Tensorflow 
 - JavaScript
+- MongoDB
 
 <h3> Key Features </h3>
 <p> 
@@ -92,6 +93,24 @@ I believe if we are able to train a machine learning model, and perform an analy
 
 ```bash 
     $ brew services start mongodb/brew/mongodb-community
+```
+
+<H4> Install MongodB on linux </h4>
+
+<a href="https://www.mongodb.com/docs/manual/administration/install-community/?linux-distribution=ubuntu&linux-package=default&operating-system=linux&search-linux=with-search-linux"> Install MongoDB </a>
+
+```bash 
+    $ sudo apt-get install gnupg curl 
+    $ curl -fsSL https://www.mongodb.org/static/pgp/server-8.0.asc | \
+   sudo gpg -o /usr/share/keyrings/mongodb-server-8.0.gpg \
+   --dearmor
+
+   $ echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-8.0.gpg ] https://repo.mongodb.org/apt/ubuntu noble/mongodb-org/8.2 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-8.2.list
+
+   $ sudo apt-get update -y 
+
+   $ sudo apt-get install -y mongodb-org
+
 ```
 
 <p>
