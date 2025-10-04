@@ -181,6 +181,13 @@ Once you find it, navigate into the folder and change your directory into the <b
 $ python app.py 
 ```
 
+4. Using Pm2 
+```bash 
+
+$ pm2 start task.py --name "my-python-task" --interpreter="/home/your-user/your-project/venv/bin/python3"
+
+```
+
 <h3> 3. React Server Setup </h3>
 <p> 
 Open another terminal and navigate to where the findLostPersons folder is located. <br> 
