@@ -110,13 +110,13 @@ def analyzeImageTask(sid, fileData, fileName, token, modelId):
             emailAddress = decodedToken["email"]
 
             # Checking to see if the user email is on the database 
-            result = db.userInformation('users', emailAddress)
+            # result = db.userInformation('users', emailAddress)
 
-            # if the result is None, execute the block of code below
-            if result is None:
-                # Sending the error message to the client
-                socketio.emit("analysisError", {"message": "User not found"}, room=sid)
-                return
+            # # if the result is None, execute the block of code below
+            # if result is None:
+            #     # Sending the error message to the client
+            #     socketio.emit("analysisError", {"message": "User not found"}, room=sid)
+            #     return
 
             # Create path for saving processed image
             saveImagePath = os.path.join(tempDir, f"processed_{datetime.now().strftime('%Y%m%d%H%M%S')}_{fileName}")
@@ -224,13 +224,13 @@ def analyzeVideoTask(sid, fileName, token, modelId):
             db.connect('mongodb://localhost:27017/', 'findLostFaces')
 
             # Checking to see if the user email is on the database 
-            result = db.userInformation('users', emailAddress) 
+            # result = db.userInformation('users', emailAddress) 
 
-            # if the result is None, execute the block of code below
-            if result is None:
-                # Sending the error message to the client
-                socketio.emit("analysisError", {"message": "User not found"}, room=sid)
-                return
+            # # if the result is None, execute the block of code below
+            # if result is None:
+            #     # Sending the error message to the client
+            #     socketio.emit("analysisError", {"message": "User not found"}, room=sid)
+            #     return
             
             # Emit initial progress
             socketio.emit("progress", {"data": 1, "type": "video"}, room=sid)

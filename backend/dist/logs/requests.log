@@ -2411,3 +2411,7 @@
 ::1 - - [03/Oct/2025:18:09:54 +0000] "OPTIONS /api/username HTTP/1.1" - - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
 ::1 - - [03/Oct/2025:18:09:54 +0000] "POST /api/username HTTP/1.1" - - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
 >>>>>>> development
+::1 - - [04/Oct/2025:01:30:52 +0000] "OPTIONS /api/username HTTP/1.1" - - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+::1 - - [04/Oct/2025:01:30:52 +0000] "POST /api/username HTTP/1.1" - - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+::1 - - [04/Oct/2025:01:31:37 +0000] "OPTIONS /api/username HTTP/1.1" - - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+::1 - - [04/Oct/2025:01:31:37 +0000] "POST /api/username HTTP/1.1" - - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
