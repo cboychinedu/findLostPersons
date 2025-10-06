@@ -54,6 +54,9 @@ I believe if we are able to train a machine learning model, and perform an analy
 </p>
 
 ## Technologies Used
+
+<img src="./images/nightVision.gif">
+
 - React
 - Python 
 - Nodejs 
