@@ -9,7 +9,7 @@ const logoSVG = (
 );
 
 // Dashboard component 
-const DashboardNavbar = () => {
+const DashboardNavbar = ({styles}) => {
     const { removeToken } = useContext(AuthContext);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); 
 
@@ -27,7 +27,7 @@ const DashboardNavbar = () => {
 
     // return the jsx component 
     return (
-        <nav className="p-4 fixed w-full text-white flex justify-between items-center bg-[black]"> 
+        <nav className="p-4 fixed w-full text-white flex justify-between items-center bg-[black]" style={styles}> 
             <a className="text-decoration-none text-lg font-bold flex items-center" href="/dashboard"> 
                 <img src={logo} alt="CIA logo" className="h-[50px] pt-[9px]" /> 
                 <a href="/dashboard" className="ml-2 hover:underline text-decoration-none text-white">Blackbox Analytics</a>
@@ -57,6 +57,9 @@ const DashboardNavbar = () => {
                 </a>
                 <a href="/services" className="hover:underline text-decoration-none text-white"> 
                     Services 
+                </a>
+                <a href="/about" className="hover:underline text-decoration-none text-white"> 
+                    About 
                 </a>
                 <a onClick={logoutUser} href="#" className="text-decoration-none text-white"> Logout </a>
             </div>
