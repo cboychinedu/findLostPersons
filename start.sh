@@ -6,7 +6,7 @@ echo "Hello, welcome to the Find Lost Persons project!"
 # Start backend
 echo "Starting backend..."
 cd backend/ 
-nohup npm start > backend.log 2>&1 &
+pm2 start dist/app.js --name "backendApp" 
 
 # Change to the project directory 
 cd ../ 
@@ -14,7 +14,12 @@ cd ../
 # Start ML server
 echo "Starting Machine learning server..."
 cd mlServer/
-nohup python3 app.py > mlserver.log 2>&1 &
+
+# Activating the ml environment 
+conda activate ml 
+
+# Starting the machine learing applications 
+pm2 start "app.py" --name "mlServerApp" --interpreter=python
 
 # Change to the project directory 
 cd ../
@@ -22,7 +27,12 @@ cd ../
 # Start ReactJS frontend
 echo "Starting ReactJS frontend..."
 cd myapp/ 
-nohup npm start > react.log 2>&1 &
+
+# Building the app 
+npm run build 
+
+# Starting the web application 
+pm2 serve build/ 3000 --name "frontendApp" --spa
 
 # All services started 
 echo "All services started."; 

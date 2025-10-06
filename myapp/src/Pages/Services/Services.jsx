@@ -2,17 +2,22 @@
 import { Fragment } from 'react'
 import Footer from "@components/Footer/Footer"; 
 import RootNavbar from '@components/Navbar/RootNavbar';
+import DashboardNavbar from '@components/Navbar/DashboardNavbar';
 import servicesData from '@components/ServiceData/ServicesData';
 import ServiceCard from '@components/ServiceData/ServiceCard';
+
+// Getting the user token 
+let tokenValue = localStorage.getItem("xAuthToken") || null;
 
 // Main App component containing the Services Page structure
 const Services = () => {
     return (
         <Fragment> 
-            {/* Adding the navbar  */}
-            <RootNavbar /> 
+            {/* Adding the navbar */}
+            {tokenValue ? <DashboardNavbar /> : <RootNavbar />}
 
-            <div className="min-h-screen bg-gray-50 font-sans p-4 sm:p-8 mt-[100px]">
+            {/* Main container for the services page */}
+            <div className="min-h-screen bg-gray-50 font-sans pt-[200px]">
                 <div className="max-w-6xl mx-auto">
                     
                     {/* Header Section - Responsive Centered Text */}

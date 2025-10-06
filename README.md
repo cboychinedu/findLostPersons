@@ -91,6 +91,12 @@ I believe if we are able to train a machine learning model, and perform an analy
 
 <p> On Mac, start the mongodb server </p>
 
+- Start the services 
+
+```bash 
+  $ brew services restart mongodb-community 
+```
+
 ```bash 
     $ brew services start mongodb/brew/mongodb-community
 ```

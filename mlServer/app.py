@@ -26,27 +26,6 @@ app.permanent_session_lifetime = timedelta(days=24)
 # Setting the cors configurations 
 # CORS(app) 
 CORS(app, resources={r"/*": {"origins": "*"}})
-# CORS(app,  
-#     origins=[
-#         "http://localhost:3000", 
-#         "http://localhost:3001", 
-#         "http://127.0.0.1:3000", 
-#         "http://127.0.0.1:3001",
-#     ], 
-#     methods=["POST", "GET", "PUT", "DELETE"],
-#     allow_headers=[
-#         'Origin',
-#         'X-Requested-With',
-#         'Content-Type',
-#         'Accept',
-#         'Access-Control-Allow-Methods', 
-#         'access-control-allow-orign', 
-#         'Access-Control-Allow-Origin', 
-#         'Access-Control-Allow-Headers',
-#         'Authorization',
-#         'Cache-Control', 
-#         'xtoken'
-# ]) 
 
 # Using socket io 
 # socketio = SocketIO(app, cors_allowed_origins="http://localhost:3000")
@@ -78,4 +57,4 @@ if __name__ == "__main__":
 	# app.run(port=3001, host="0.0.0.0", debug=True) 
 	# app.run() 
     # Using socket.run() insted of app.run() 
-    socketio.run(app, port=3001, host="localhost", debug=True)
+    socketio.run(app, port=3001, host="localhost", debug=True, allow_unsafe_werkzeug=True)

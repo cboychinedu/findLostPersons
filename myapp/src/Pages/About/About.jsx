@@ -2,10 +2,15 @@
 import { Fragment } from 'react';
 import Footer from "@components/Footer/Footer";
 import RootNavbar from '@components/Navbar/RootNavbar';
+import DashboardNavbar from '@components/Navbar/DashboardNavbar';
 import { 
     Users, MessageSquare, 
     Shield, Lightbulb } 
 from 'lucide-react';
+
+// Getting the user token 
+const tokenValue = localStorage.getItem("xAuthToken") || null;
+
 
 // Setting the pillar card 
 const PillarCard = ({ title, description, icon: Icon, color }) => (
@@ -21,7 +26,7 @@ const AboutPage = () => {
     return (
         <Fragment> 
             {/* Adding the navbar  */}
-            <RootNavbar /> 
+            {tokenValue ? <DashboardNavbar /> : <RootNavbar />}
 
             {/* Adding the container */}
             <div className="max-w-4xl mx-auto bg-white p-6 sm:p-10 rounded-2xl shadow-2xl mt-[100px] mb-[200px]">
