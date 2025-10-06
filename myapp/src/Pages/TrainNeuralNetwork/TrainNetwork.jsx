@@ -173,15 +173,13 @@ const TrainNeuralNetwork = () => {
                             <iframe 
                                 className="w-[100%] h-[551px] object-contain rounded-lg shadow"
                                 width="956" 
-                                height="539" 
-                                src="https://www.youtube.com/embed/kOd9bkh4iL8" 
-                                title="zavod project" 
+                                height="539"  
+                                src="https://www.youtube.com/embed/iltJwXQnsJQ" 
+                                title="How to train the model on Blackbox Analytics" 
                                 frameborder="0" 
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
                                 referrerpolicy="strict-origin-when-cross-origin" 
-                                allowfullscreen>
-
-                            </iframe>
+                                allowfullscreen></iframe>
                         </div>
 
                         <p className="mb-4">This is where you can train the machine's Neural Network model on the <b className="text-[18px] ml-[7px]"> missing person's image. </b> <br />

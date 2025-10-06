@@ -45,9 +45,9 @@ app.register_blueprint(trainNetwork, url_prefix="/train")
 logsDir = os.path.sep.join(['logs', 'requests.log']) 
 
 # Logging the configurations to a file on disk
-logging.basicConfig(filename=logsDir, level=logging.DEBUG,
-                    format="%(asctime)s %(message)s %(filename)s %(module)s %(pathname)s",
-                    datefmt="%m/%d/%Y %I:%M:%S %p")
+# logging.basicConfig(filename=logsDir, level=logging.DEBUG,
+#                     format="%(asctime)s %(message)s %(filename)s %(module)s %(pathname)s",
+#                     datefmt="%m/%d/%Y %I:%M:%S %p")
 
 # Socket variable
 # app.config["SOCKET_VARIABLE"] = socketio
