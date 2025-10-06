@@ -4,6 +4,8 @@ import DashboardNavbar from "@components/Navbar/DashboardNavbar";
 import RootNavbar from "@components/Navbar/RootNavbar";
 import Footer from "@components/Footer/Footer";
 import sections from "@components/HomeData/Sections";
+import imageOne from "@images/analysis1.jpeg"; 
+import imageTwo from "@images/analysis2.gif";
 
 // Mock token logic (since direct localStorage access is not guaranteed to be consistent, we simulate for demo)
 const tokenValue = localStorage.getItem("xAuthToken") || null;
@@ -118,7 +120,7 @@ const Home = () => {
                                         <div className="lg:w-1/2 mt-8 lg:mt-0 relative">
                                             <div className="p-8 bg-white rounded-xl shadow-2xl border border-indigo-200">
                                                 <div className="h-64 bg-indigo-50 rounded-lg flex items-center justify-center text-indigo-400 text-sm font-medium">
-                                                    [Placeholder: Analyzed Image with Bounding Boxes]
+                                                    <img src={imageOne} alt="[Placeholder: Analyzed Image with Bounding Boxes]" className="max-h-full max-w-full object-contain" />
                                                 </div>
                                             </div>
                                             <div className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-green-400 p-3 rounded-full shadow-xl animate-bounce duration-500">
@@ -140,10 +142,11 @@ const Home = () => {
                                                 <li>Supports common video formats (MP4, MOV).</li>
                                             </ul>
                                         </div>
+
                                         <div className="lg:w-1/2 mt-8 lg:mt-0 relative">
                                             <div className="p-8 bg-white rounded-xl shadow-2xl border border-indigo-200">
                                                 <div className="h-64 bg-indigo-50 rounded-lg flex items-center justify-center text-indigo-400 text-sm font-medium">
-                                                    [Placeholder: Video Player Interface]
+                                                    <img src={imageTwo} alt="[Placeholder: Analyzed Video with Bounding Boxes]" className="w-full h-full object-cover max-h-full max-w-full object-contain " />
                                                 </div>
                                             </div>
                                             <div className="absolute bottom-0 left-0 transform -translate-x-1/2 translate-y-1/2 bg-red-400 p-3 rounded-full shadow-xl animate-ping opacity-75"></div>
@@ -151,26 +154,10 @@ const Home = () => {
                                                 <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18H3a2 2 0 01-2-2V8a2 2 0 012-2h12a2 2 0 012 2v8a2 2 0 01-2 2H5z"></path></svg>
                                             </div>
                                         </div>
+
+
                                     </div>
                                 </div>
-                            </div>
-                        </section>
-                        
-                        {/* --- Final CTA Section --- */}
-                        <section className="bg-black py-16">
-                            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                                <h2 className="text-4xl font-extrabold text-white">
-                                    Ready to see your models in action?
-                                </h2>
-                                <p className="mt-4 text-xl text-indigo-100 max-w-2xl mx-auto">
-                                    Head over to the Dashboard to upload your first image or video and start your analysis now.
-                                </p>
-                                <a 
-                                    href="#" 
-                                    className="mt-8 inline-block px-12 py-4 text-lg font-bold text-indigo-600 bg-white rounded-full shadow-2xl hover:bg-gray-100 transition duration-300 transform hover:scale-105"
-                                >
-                                    Go to Dashboard
-                                </a>
                             </div>
                         </section>
                     </main>
