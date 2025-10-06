@@ -1,11 +1,12 @@
 // importing the necessary modules 
-import Home from "./Pages/Home/Home";
+import Login from "./Pages/Login/Login";
 import { Component, Fragment } from 'react';
 import { AuthContext } from './Auth/AuthContext';
 import Register from "./Pages/Register/Register";
 import Dashboard from "./Pages/Dashboard/Dashboard";
 import Services from "./Pages/Services/Services";
 import AboutPage from "./Pages/About/About";
+import Home from "./Pages/Home/Home";
 import AnalyzedHistoryData from './Pages/AnalyzedData/AnalyzedData';
 import TrainNeuralNetwork from './Pages/TrainNeuralNetwork/TrainNetwork';
 import { BrowserRouter, Route, Routes } from "react-router-dom";
@@ -54,6 +55,7 @@ class App extends Component {
           {/* Setting the routes configurations */}
           <Routes> 
               <Route path="/" element={<Dashboard />} />
+              <Route path="/login" element={<Dashboard /> } />
               <Route path="/register" element={<Dashboard />} />
               <Route path="/dashboard" element={<Dashboard /> } />
               <Route path="/history" element={<AnalyzedHistoryData /> } /> 
@@ -78,7 +80,7 @@ class App extends Component {
               <Routes> 
                 <Route path="/" element={<Home />} />
                 <Route path="/dashboard" element={<Home />} />
-                <Route path="/login" element={<Home /> } /> 
+                <Route path="/login" element={<Login /> } /> 
                 <Route path="/register" element={<Register />} />
                  <Route path="/services" element={<Services /> } />
                   <Route path="/about" element={<AboutPage />} /> 
