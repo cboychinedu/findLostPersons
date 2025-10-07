@@ -14,6 +14,7 @@ import os
 import base64
 import jwt 
 from flask import Flask
+from datetime import datetime
 from flask_socketio import emit
 from extensions import socketio
 from datetime import datetime
@@ -260,6 +261,9 @@ def analyzeVideoTask(sid, fileName, token, modelId):
             # Initialize processed frame counter
             processedFrames = 0
 
+            # Getting the time taken to process the video
+            fps = cap.get(cv2.CAP_PROP_FPS)
+
             # Loop through video frames
             while cap.isOpened():
                 # Read next frame
@@ -283,8 +287,26 @@ def analyzeVideoTask(sid, fileName, token, modelId):
                 out.write(processedFrame)
                 
                 # If a face is detected, notify the client
-                if predName: 
-                    socketio.emit("detectionEvent", {"message": f"{predName}", "type": "video"}, room=sid)
+                if predName:
+                    # Get the current frame number
+                    frameNumber = int(cap.get(cv2.CAP_PROP_POS_FRAMES))
+
+                    # Calculate timestamp in seconds
+                    timestamp = frameNumber / fps if fps > 0 else 0
+
+                    # Convert timestamp to HH:MM:SS format
+                    timestamp = str(datetime.utcfromtimestamp(timestamp).strftime('%H:%M:%S'))
+                    # Convert timestamp (seconds) to formatted video time (HH:MM:SS.ms)
+                    # hours = int(timestamp // 3600)
+                    # minutes = int((timestamp % 3600) // 60)
+                    # seconds = int(timestamp % 60)
+                    # milliseconds = int((timestamp * 1000) % 1000)
+
+                    # # Format the timestamp string
+                    # timestamp = f"{hours:02d}:{minutes:02d}:{seconds:02d}.{milliseconds:03d}"
+
+                    # # Emit detection event with timestamp
+                    socketio.emit("detectionEvent", {"message": f"{predName} Detected at: {timestamp}", "type": "video"}, room=sid)
 
                 # Increment processed frames
                 processedFrames += 1

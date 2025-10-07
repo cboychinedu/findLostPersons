@@ -13,7 +13,7 @@ import accessLogStream from './logs/logger';
 import corsOptions from "./corsConfig/corsConfig";
 
 // Setting the database url 
-const databaseUri:string = "mongodb://localhost:27017/findLostFaces"; 
+const databaseUri:string = "mongodb://127.0.0.1:27017/findLostFaces"; 
 
 // Configuring the environment variables 
 dotenv.config(); 
