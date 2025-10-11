@@ -26,6 +26,15 @@ class App extends Component {
 
   // Lifecycle method equivalent to useEffect with an empty dependency array []
   componentDidMount() {
+    // Getting the context daa from this.context 
+    const { setToken } = this.context; 
+
+    // Set the token value only once when the component mounts 
+    if (tokenValue !== null) {
+        // Set the token 
+        setToken(tokenValue); 
+    }
+
     // setting the timer 
     this.timer = setTimeout(() => {
       this.setState({ loading: false });
@@ -40,10 +49,7 @@ class App extends Component {
   // render method to return the JSX
   render() {
     // Getting the context data 
-    const { isLoggedIn, xAuthToken, setToken } = this.context; 
-
-    // Setting the token value
-    setToken(tokenValue);
+    const { isLoggedIn, xAuthToken } = this.context; 
 
     // If the token value, and islogged in condition 
     // is presetn, redirect the user to the dashboard page
