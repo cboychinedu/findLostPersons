@@ -94,6 +94,13 @@ I believe if we are able to train a machine learning model, and perform an analy
     $ brew services start mongodb/brew/mongodb-community
 ```
 
+<p> Disable the error messages in Nodejs </p>
+
+```bash 
+  $ npm config set audit false 
+  
+```
+
 <p>
 <ul>
 <li> Node.js & Express: A robust and scalable backend runtime and web framework. </li>
