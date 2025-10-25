@@ -18,7 +18,7 @@ let tokenValue = localStorage.getItem("xAuthToken") || null;
 // Creating the dashboard function component
 const Dashboard = () => {
   // Setting the state
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [userName, setUsername] = useState("Guest");
   const [statusMessage, setStatusMessage] = useState("");
   const [detectionMessage, setDetectionMessage] = useState(null);
@@ -233,7 +233,7 @@ const Dashboard = () => {
   useEffect(() => {
     const timer = setTimeout(() => setLoading(false), 1000);
     return () => clearTimeout(timer);
-  }, []);
+  }, [loading]);
 
   // File input triggers
   const handleImageUploadButtonClick = () => {

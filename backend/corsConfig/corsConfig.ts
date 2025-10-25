@@ -10,7 +10,6 @@ const corsOptions = {
     origin: function (origin:any, callback:any) {
         // Allow requests with no origin (mobile app, curl, Postman) 
         if (!origin) return callback(null, true); 
-
         // Setting the allowed origins 
         const allowedOrigin = [
             "http://localhost:5000", 

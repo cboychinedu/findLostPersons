@@ -104,6 +104,11 @@ I believe if we are able to train a machine learning model, and perform an analy
     $ brew services start mongodb/brew/mongodb-community
 ```
 
+<p> Having further issues with mongodb, visit this website. 
+
+  <a href="https://stackoverflow.com/questions/57856809/installing-mongodb-with-homebrew"> link </a>
+</p>
+
 <H4> Install MongodB on linux </h4>
 
 <a href="https://www.mongodb.com/docs/manual/administration/install-community/?linux-distribution=ubuntu&linux-package=default&operating-system=linux&search-linux=with-search-linux"> Install MongoDB </a>
