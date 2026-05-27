@@ -121,7 +121,7 @@ const Register = () => {
   // Rendering the component's UI.
   return (
     <Fragment>
-    <div> 
+    <div className="sticky top-0 z-50"> 
         <RootNavbar /> 
     </div>
     {/* Flash Message */}

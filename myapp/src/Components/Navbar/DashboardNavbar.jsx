@@ -27,7 +27,7 @@ const DashboardNavbar = ({styles}) => {
 
     // return the jsx component 
     return (
-        <nav className="p-4 fixed w-full text-white flex justify-between items-center bg-[black]" style={styles}> 
+        <nav className="p-4 w-full text-white flex justify-between items-center bg-[black] sticky top-0 z-50 h-[34px]" style={styles}> 
             <a className="text-decoration-none text-lg font-bold flex items-center" href="/dashboard"> 
                 <img src={logo} alt="CIA logo" className="h-[50px] pt-[9px]" /> 
                 <a href="/dashboard" className="ml-2 hover:underline text-decoration-none text-white">Blackbox Analytics</a>

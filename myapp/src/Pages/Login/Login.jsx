@@ -89,7 +89,7 @@ const Login = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false); 
-    }, 3000); 
+    }, 1000); 
     return () => clearTimeout(timer); 
   }, []);
 
@@ -103,7 +103,7 @@ const Login = () => {
       ) : (
         <Fragment>          
           {/* Flash Message */}
-          <div> 
+          <div className="sticky top-0 z-50">
             <RootNavbar /> 
           </div>
           <div
