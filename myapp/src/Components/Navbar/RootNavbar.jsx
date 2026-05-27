@@ -14,7 +14,7 @@ const RootNavbar = () => {
 
   // Return the JSX for the navbar 
   return (
-    <nav className="p-4 text-white flex justify-between items-center bg-[black] sticky top-0 z-50 h-[34px]">
+    <nav className="p-4 text-white flex justify-between items-center bg-[black] sticky top-0 z-50 h-[60px]">
       {/* Logo Section */}
       <div className="text-lg font-bold flex items-center">
         {logoSVG}

@@ -27,7 +27,7 @@ const DashboardNavbar = ({styles}) => {
 
     // return the jsx component 
     return (
-        <nav className="p-4 w-full text-white flex justify-between items-center bg-[black] sticky top-0 z-50 h-[34px]" style={styles}> 
+        <nav className="p-4 w-full text-white flex justify-between items-center bg-[black] sticky top-0 z-50 h-[60px]" style={styles}> 
             <a className="text-decoration-none text-lg font-bold flex items-center" href="/dashboard"> 
                 <img src={logo} alt="CIA logo" className="h-[50px] pt-[9px]" /> 
                 <a href="/dashboard" className="ml-2 hover:underline text-decoration-none text-white">Blackbox Analytics</a>
@@ -46,7 +46,7 @@ const DashboardNavbar = ({styles}) => {
 
             {/* Desktop navigation as */}
             <div className="hidden md:flex items-center space-x-4"> 
-                <a href="/trainNeuralNetwork" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded hover:underline text-decoration-none mt-[2px] "> 
+                <a href="/trainNeuralNetwork" className="bg-blue-500 hover:bg-blue-700 text-white text-[12px] font-bold py-2 px-4 rounded hover:underline text-decoration-none mt-[2px] "> 
                     Train Neural Net On Missing Persons
                 </a> 
                 <a href="/history" className="hover:underline text-decoration-none text-white"> 
@@ -78,7 +78,7 @@ const DashboardNavbar = ({styles}) => {
                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
                         </svg>
                     </button>
-                    <a onClick={() => setIsMobileMenuOpen(false)} href="/trainNeuralNetwork" className="w-[100%] text-center bg-blue-500 hover:bg-blue-700 text-white mt-[70px] font-bold py-2 px-4 rounded hover:underline text-decoration-none">
+                    <a onClick={() => setIsMobileMenuOpen(false)} href="/trainNeuralNetwork" className="w-[100%] text-center text-[12px] bg-blue-500 hover:bg-blue-700 text-white mt-[70px] font-bold py-2 px-4 rounded hover:underline text-decoration-none">
                         Train Neural Net On Missing Persons
                     </a>
 
